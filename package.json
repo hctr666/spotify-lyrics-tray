@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "start": "electron --trace-warnings .",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "prepare": "husky install"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "author": "hctr.441@gmail.com",
@@ -16,7 +17,9 @@
     "eslint": "^8.36.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.5.0",
+    "husky": "^8.0.3",
     "jest": "^28.1.1",
+    "lint-staged": "13.2.0",
     "prettier": "^2.7.1"
   },
   "dependencies": {
@@ -24,5 +27,11 @@
     "jwt-decode": "^3.1.2",
     "node-fetch": "^2.6.7",
     "uuid": "^8.3.2"
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "prettier --check --ignore-unknown --write",
+      "yarn lint"
+    ]
   }
 }
