@@ -1,0 +1,28 @@
+{
+  "name": "spotify-lyrics-tray-app",
+  "version": "1.0.0",
+  "description": "A minimalist Spotify lyrics tray app",
+  "main": "src/main/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron --trace-warnings .",
+    "lint": "eslint ."
+  },
+  "repository": "https://github.com/electron/electron-quick-start",
+  "author": "hctr.441@gmail.com",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^19.0.4",
+    "eslint": "^8.36.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "jest": "^28.1.1",
+    "prettier": "^2.7.1"
+  },
+  "dependencies": {
+    "electron-store": "^8.0.2",
+    "jwt-decode": "^3.1.2",
+    "node-fetch": "^2.6.7",
+    "uuid": "^8.3.2"
+  }
+}
