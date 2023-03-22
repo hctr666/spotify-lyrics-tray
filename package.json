@@ -20,7 +20,7 @@
     "husky": "^8.0.3",
     "jest": "^28.1.1",
     "lint-staged": "13.2.0",
-    "prettier": "^2.7.1"
+    "prettier": "^2.8.6"
   },
   "dependencies": {
     "electron-store": "^8.0.2",
