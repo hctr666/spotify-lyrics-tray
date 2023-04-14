@@ -7,7 +7,8 @@
   "scripts": {
     "start": "electron --trace-warnings .",
     "lint": "eslint .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "jest"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "author": "hctr.441@gmail.com",
@@ -19,6 +20,7 @@
     "eslint-config-prettier": "^8.5.0",
     "husky": "^8.0.3",
     "jest": "^28.1.1",
+    "jest-environment-jsdom": "^29.5.0",
     "lint-staged": "13.2.0",
     "prettier": "^2.7.1"
   },
