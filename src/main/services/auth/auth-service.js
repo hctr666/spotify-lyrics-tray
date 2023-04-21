@@ -7,8 +7,8 @@ const { REDIRECT_URI } = require('../../constants/spotify')
 const { SpotifyClient } = require('../../libs/spotify-client/')
 const { getUrlSearchParams } = require('../../helpers/getUrlSearchParams')
 
-const CLIENT_ID = 'a92f1695d1dc47059c7397cd93d381ed'
-const CLIENT_SECRET = '34d7045f3b0145bc9c0e19465eab8941'
+const CLIENT_ID = 'client-id'
+const CLIENT_SECRET = 'client-secret'
 const AUTH_TOKEN_ID = 'spm:auth-token'
 
 class AuthService extends BaseService {
