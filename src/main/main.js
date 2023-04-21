@@ -95,20 +95,6 @@ class Application {
             details.requestHeaders['User-Agent'] =
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'
 
-            // details.requestHeaders['referer'] = 'https://accounts.spotify.com/'
-            // details.requestHeaders['sec-fetch-site'] = 'same-site'
-            // details.requestHeaders['sec-ch-ua'] =
-            //   '"Chromium";v="112", "Google Chrome";v="112", "Not:A-Brand";v="99"'
-
-            // details.requestHeaders['sec-ch-ua-platform'] = 'macOS'
-            // if (
-            //   details.url.includes(
-            //     'https://spclient.wg.spotify.com/color-lyrics/v2/track/'
-            //   )
-            // ) {
-            //   details.requestHeaders['app-platform'] = 'WebPlayer' // necessary to make lyrics request work!
-            // }
-
             callback({ requestHeaders: details.requestHeaders })
           }
         )

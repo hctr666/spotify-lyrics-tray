@@ -30,7 +30,8 @@ function init() {
   })
 
   window.Auth.subscribeOnAuthChange((_, value) => {
-    console.log({ ctx: 'renderer:app', value })
+    window.Core.log({ ctx: 'app:renderer', value })
+
     const { isAuthenticated } = value
 
     if (isAuthenticated) {
@@ -43,7 +44,8 @@ function init() {
   })
 
   window.Application.subscribeOnConnectionChange((_, status) => {
-    console.log({ ctx: 'renderer:app', status })
+    window.Core.log({ ctx: 'app:renderer', status })
+
     if (status.connected) {
       connectButton.style.display = 'none'
       disconnectButton.style.display = ''

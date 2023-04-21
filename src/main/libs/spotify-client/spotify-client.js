@@ -4,8 +4,6 @@ const fetch = require('node-fetch')
 const ACCOUNTS_DOMAIN = 'https://accounts.spotify.com'
 
 const fetchToken = async ({ body, headers }) => {
-  console.log(JSON.stringify(body))
-  console.log(JSON.stringify(headers))
   const response = await fetch(`${ACCOUNTS_DOMAIN}/api/token`, {
     method: 'POST',
     body: new URLSearchParams(body).toString(),
