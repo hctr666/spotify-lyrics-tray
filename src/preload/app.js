@@ -5,6 +5,7 @@ const {
   SLA_LYRICS_CONNECT,
   SLA_AUTH_SIGN_OUT,
   SLA_AUTH_SIGN_IN,
+  SLA_AUTH_STATUS,
 } = require('../main/constants/ipc-main-channels')
 
 const {
@@ -27,9 +28,9 @@ contextBridge.exposeInMainWorld('Application', {
 contextBridge.exposeInMainWorld('Auth', {
   signOut: () => ipcRenderer.send(SLA_AUTH_SIGN_OUT),
   signIn: () => ipcRenderer.send(SLA_AUTH_SIGN_IN),
-  subscribeOnAuthChange: listener => {
-    ipcRenderer.addListener('spm-auth-change', listener)
+  subscribeOnAuthStatus: listener => {
+    ipcRenderer.addListener(SLA_AUTH_STATUS, listener)
 
-    return () => ipcRenderer.removeListener('spm-auth-change', listener)
+    return () => ipcRenderer.removeListener(SLA_AUTH_STATUS, listener)
   },
 })

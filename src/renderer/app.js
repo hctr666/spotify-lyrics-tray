@@ -29,12 +29,10 @@ function init() {
     window.Auth.signIn()
   })
 
-  window.Auth.subscribeOnAuthChange((_, value) => {
-    window.Core.log({ ctx: 'app:renderer', value })
+  window.Auth.subscribeOnAuthStatus((_, status) => {
+    window.Core.log({ ctx: 'app:renderer', status })
 
-    const { isAuthenticated } = value
-
-    if (isAuthenticated) {
+    if (status.isAuthenticated) {
       signInButton.style.display = 'none'
       signOutButton.style.display = ''
     } else {

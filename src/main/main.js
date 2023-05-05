@@ -8,6 +8,7 @@ const AuthWindow = require('./windows/auth-window')
 const SpotifyWebWindow = require('./windows/spotify-web-window')
 const AppTray = require('./tray/app-tray')
 const TrayManager = require('./tray/tray-manager')
+const { SLA_AUTH_STATUS } = require('./constants/ipc-main-channels')
 
 global.isAppQuitting = false
 
@@ -43,7 +44,7 @@ class Application {
             console.error(error)
           }
 
-          appWindow.webContents.send('spm-auth-change', {
+          appWindow.webContents.send(SLA_AUTH_STATUS, {
             isAuthenticated: this.authService.isAuthenticated(),
           })
 
@@ -65,7 +66,7 @@ class Application {
         })
 
         this.authService.on('logout', () => {
-          appWindow.webContents.send('spm-auth-change', {
+          appWindow.webContents.send(SLA_AUTH_STATUS, {
             isAuthenticated: false,
           })
         })
@@ -85,7 +86,7 @@ class Application {
             const appWindow = this.appWindow.getInstance()
 
             if (appWindow) {
-              appWindow.webContents.send('spm-auth-change', {
+              appWindow.webContents.send(SLA_AUTH_STATUS, {
                 isAuthenticated: true,
               })
               appWindow.show()
