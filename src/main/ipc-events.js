@@ -6,6 +6,7 @@ const {
   SLA_AUTH_SIGN_IN,
   SLA_LYRICS_CONNECTION_STATUS,
   SLA_LOG,
+  SLA_SHOW_APP_WINDOW,
 } = require('./constants/ipc-main-channels')
 const {
   SLA_LYRICS_CONNECTION_CHANGED,
@@ -29,6 +30,12 @@ const initIPCEvents = () => {
     }
   })
 
+  ipcMain.on(SLA_SHOW_APP_WINDOW, async () => {
+    const appWindow = global.appWindow.getInstance()
+
+    appWindow.show()
+  })
+
   ipcMain.on(SLA_AUTH_SIGN_OUT, () => {
     console.log({ ctx: 'ipc-main', message: 'API sign out' })
     global.authService.logout()
@@ -40,7 +47,7 @@ const initIPCEvents = () => {
   })
 
   ipcMain.handle(SLA_LYRICS_CONNECTION_STATUS, (_, status) => {
-    console.log({ ctx: 'ipc-main:handle', status })
+    console.log({ ctx: 'ipc-main', status })
 
     /** @type {Electron.BrowserWindow | null} */
     const appWindow = global.appWindow.getInstance()

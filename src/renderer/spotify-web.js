@@ -74,10 +74,19 @@ const getTrackLyrics = async trackId => {
   return null
 }
 
+const getShowAppAfterLogin = () =>
+  localStorage.getItem('showAppAfterLogin') === 'true'
+
+const setShowAppAfterLogin = value => {
+  localStorage.setItem('showAppAfterLogin', value)
+}
+
 const init = () =>
   new Promise((_resolve, reject) => {
     try {
       const { isLoggedIn } = getAppData()
+      const showAppAfterLogin = getShowAppAfterLogin()
+
       window.Core.log({
         ctx: 'spotify-web:renderer',
         connected: isLoggedIn,
@@ -86,13 +95,21 @@ const init = () =>
       window.SpotifyWeb.sendLyricsConnectionStatus({
         connected: isLoggedIn,
       }).then(() => {
+        if (showAppAfterLogin) {
+          window.SpotifyWeb.showAppWindow()
+          setShowAppAfterLogin(false)
+        }
+
         window.Core.log({
           ctx: 'spotify-web:renderer',
           message: 'Status sent!',
+          showAppAfterLogin,
         })
       })
 
       window.SpotifyWeb.subscribeOnLoginInvoked(() => {
+        setShowAppAfterLogin(true)
+
         const loginButton = document.querySelector(LOGIN_BUTTON_SELECTOR)
 
         if (!isLoggedIn && loginButton) {
@@ -142,8 +159,6 @@ const onDOMReady = () =>
 
 onDOMReady()
   .then(init)
-  // .then(payload => {
-  // })
   .catch(payload => {
     window.Core.log(payload, 'error')
   })

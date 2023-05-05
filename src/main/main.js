@@ -6,6 +6,8 @@ const { AuthService } = require('./services/auth')
 const AppWindow = require('./windows/app-window')
 const AuthWindow = require('./windows/auth-window')
 const SpotifyWebWindow = require('./windows/spotify-web-window')
+const AppTray = require('./tray/app-tray')
+const TrayManager = require('./tray/tray-manager')
 
 global.isAppQuitting = false
 
@@ -14,16 +16,17 @@ class Application {
     this.authService = new AuthService()
     this.appWindow = new AppWindow()
     this.authWindow = new AuthWindow()
-
     this.spotifyWebWindow = new SpotifyWebWindow()
+    this.appTray = new AppTray()
 
     global.authService = this.authService
     global.authWindow = this.authWindow
     global.appWindow = this.appWindow
     global.spotifyWebWindow = this.spotifyWebWindow
+    global.appTray = this.appTray
   }
 
-  initAppEvents = () => {
+  initializeAppEvents = () => {
     app
       .whenReady()
       .then(() => {
@@ -66,6 +69,8 @@ class Application {
             isAuthenticated: false,
           })
         })
+
+        this.initializeTray()
       })
       .then(() => {
         const filter = {
@@ -79,10 +84,11 @@ class Application {
 
             const appWindow = this.appWindow.getInstance()
 
-            if (appWindow && appWindow.isVisible()) {
+            if (appWindow) {
               appWindow.webContents.send('spm-auth-change', {
                 isAuthenticated: true,
               })
+              appWindow.show()
             }
 
             return this.authWindow.destroy()
@@ -111,10 +117,21 @@ class Application {
       global.isAppQuitting = true
     })
   }
+
+  initializeTray = () => {
+    this.appTray.create()
+
+    const tray = this.appTray.getInstance()
+    const window = this.appWindow.getInstance()
+
+    const trayManager = new TrayManager(tray, window)
+
+    global.trayManager = trayManager
+  }
 }
 
 const application = new Application()
 
-application.initAppEvents()
+application.initializeAppEvents()
 
 initIPCEvents()

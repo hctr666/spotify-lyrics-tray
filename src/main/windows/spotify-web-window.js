@@ -6,6 +6,9 @@ const { getIsSpotifyOpenUrl } = require('../helpers/isSpotifyOpenUrl')
 const { getIsSpotifyAccountsUrl } = require('../helpers/isSpotifyAccountsUrl')
 const { SPOTIFY_WEB_URL } = require('../constants/spotify')
 const BaseWindow = require('./base-window')
+const { isDevelopment } = require('../helpers/environment')
+
+const isDev = isDevelopment()
 
 const getSpotifyRendererScript = async () => {
   try {
@@ -24,46 +27,37 @@ const getSpotifyRendererScript = async () => {
  * in charge of providing lyrics to the main application
  */
 class SpotifyWebWindow extends BaseWindow {
-  url = SPOTIFY_WEB_URL
-
   async create() {
     this.window = new BrowserWindow({
-      show: false,
-      width: 800,
+      show: isDev,
+      width: 750,
       height: 600,
       webPreferences: {
         preload: path.join(__dirname, '..', '..', 'preload/spotify-web.js'),
-        devTools: true,
+        devTools: isDev,
       },
     })
 
     try {
-      await this.window.loadURL(this.url)
-
-      this.#handleWindowDidFinishLoad()
+      await this.window.loadURL(SPOTIFY_WEB_URL)
     } catch (error) {
       throw new Error(error)
     }
 
-    this.window.webContents.on('did-finish-load', event => {
-      this.url = event.sender.getURL()
-      this.#handleWindowDidFinishLoad()
-    })
+    this.window.webContents.on(
+      'did-finish-load',
+      this.#handleWindowDidFinishLoad
+    )
 
-    this.window.on('show', e => {
-      const isSpotifyOpenUrl = getIsSpotifyOpenUrl(e.sender.getURL())
-
-      if (isSpotifyOpenUrl) {
-        this.window.webContents.openDevTools()
-      }
-    })
+    this.initDevtools()
 
     return this.window
   }
 
-  #handleWindowDidFinishLoad = async () => {
-    const isSpotifyOpenUrl = getIsSpotifyOpenUrl(this.url)
-    const isSpotifyAccountsUrl = getIsSpotifyAccountsUrl(this.url)
+  #handleWindowDidFinishLoad = async event => {
+    const url = event.sender.getURL()
+    const isSpotifyOpenUrl = getIsSpotifyOpenUrl(url)
+    const isSpotifyAccountsUrl = getIsSpotifyAccountsUrl(url)
 
     // Handling when the window has loaded url under 'open' subdomain
     if (isSpotifyOpenUrl) {
@@ -77,7 +71,7 @@ class SpotifyWebWindow extends BaseWindow {
   }
 
   #handleOpenSubdomainWasLoaded = async () => {
-    if (this.window.isVisible()) {
+    if (this.window.isVisible() && !isDev) {
       this.window.hide()
     }
 

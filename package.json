@@ -5,7 +5,7 @@
   "main": "src/main/main.js",
   "private": true,
   "scripts": {
-    "start": "electron --trace-warnings .",
+    "start": "NODE_ENV=development electron --trace-warnings .",
     "lint": "eslint .",
     "prepare": "husky install",
     "test": "jest"

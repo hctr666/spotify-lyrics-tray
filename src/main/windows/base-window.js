@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 const { BrowserWindow } = require('electron')
+const { isDevelopment } = require('../helpers/environment')
 
 class BaseWindow {
   constructor() {
@@ -18,6 +19,15 @@ class BaseWindow {
 
   getInstance() {
     return this.window && !this.window.isDestroyed() ? this.window : null
+  }
+
+  initDevtools() {
+    if (isDevelopment()) {
+      this.window.webContents.openDevTools({
+        mode: 'undocked',
+        activate: false,
+      })
+    }
   }
 }
 

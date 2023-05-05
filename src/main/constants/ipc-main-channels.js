@@ -4,5 +4,6 @@ module.exports = {
   SLA_LYRICS_CONNECT: 'sla:lyrics:connect',
   SLA_LYRICS_DISCONNECT: 'sla:lyrics:disconnect',
   SLA_LYRICS_CONNECTION_STATUS: 'sla:lyrics:connection-status',
-  SLA_LOG: 'sla:log',
+  SLA_LOG: 'sla:core:log',
+  SLA_SHOW_APP_WINDOW: 'sla:app:show-window',
 }

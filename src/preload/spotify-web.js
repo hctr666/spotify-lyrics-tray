@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 const {
   SLA_LYRICS_CONNECTION_STATUS,
+  SLA_SHOW_APP_WINDOW,
 } = require('../main/constants/ipc-main-channels')
 const {
   SLA_LYRICS_WEB_LOGIN_INVOKED,
@@ -18,4 +19,5 @@ contextBridge.exposeInMainWorld('SpotifyWeb', {
     return () =>
       ipcRenderer.removeListener(SLA_LYRICS_WEB_LOGIN_INVOKED, listener)
   },
+  showAppWindow: () => ipcRenderer.send(SLA_SHOW_APP_WINDOW),
 })

@@ -1,6 +1,6 @@
 function init() {
   const connectButton = document.getElementById('connect-lyrics')
-  const disconnectButton = document.getElementById('diconnect-lyrics')
+  const disconnectButton = document.getElementById('disconnect-lyrics')
   const signOutButton = document.getElementById('sign-out')
   const signInButton = document.getElementById('sign-in')
 
