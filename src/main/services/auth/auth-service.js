@@ -1,5 +1,4 @@
 // TODO: consider PKCE implementation for more security
-// TODO: Move secrets to .env
 
 const { BaseService } = require('../base')
 const SafeStore = require('../../libs/safe-store')
@@ -7,9 +6,9 @@ const { REDIRECT_URI } = require('../../constants/spotify')
 const { SpotifyClient } = require('../../libs/spotify-client/')
 const { getUrlSearchParams } = require('../../helpers/getUrlSearchParams')
 
-const CLIENT_ID = 'client-id'
-const CLIENT_SECRET = 'client-secret'
-const AUTH_TOKEN_ID = 'spm:auth-token'
+const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID
+const CLIENT_SECRET = process.env.SPOTIFY_SECRET
+const AUTH_TOKEN_ID = 'sla:auth-token'
 
 class AuthService extends BaseService {
   constructor() {
