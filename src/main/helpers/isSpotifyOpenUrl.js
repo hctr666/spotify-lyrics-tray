@@ -1,3 +1,3 @@
-const getIsSpotifyOpenUrl = url => url.match(/^https:\/\/open.spotify.com/i)
+const getIsSpotifyOpenUrl = url => /^https:\/\/open.spotify.com/i.test(url)
 
 module.exports = { getIsSpotifyOpenUrl }

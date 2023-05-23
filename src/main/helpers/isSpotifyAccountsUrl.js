@@ -1,4 +1,4 @@
 const getIsSpotifyAccountsUrl = url =>
-  url.match(/^https:\/\/accounts.spotify.com/i)
+  /^https:\/\/accounts.spotify.com/i.test(url)
 
 module.exports = { getIsSpotifyAccountsUrl }
