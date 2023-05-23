@@ -1,37 +1,22 @@
 // TODO: consider PKCE implementation for more security
-
 const { BaseService } = require('../base')
 const SafeStore = require('../../libs/safe-store')
-const { REDIRECT_URI } = require('../../constants/spotify')
 const { SpotifyClient } = require('../../libs/spotify-client/')
 const { getUrlSearchParams } = require('../../helpers/getUrlSearchParams')
 
-const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID
-const CLIENT_SECRET = process.env.SPOTIFY_SECRET
 const AUTH_TOKEN_ID = 'sla:auth-token'
 
 class AuthService extends BaseService {
   constructor() {
     super()
     this.safeStore = new SafeStore()
-
-    this.spotifyClient = new SpotifyClient({
-      clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET,
-      redirectURI: REDIRECT_URI,
-    })
-
     this.events = ['logout']
   }
 
-  accessToken = null
   refreshToken = null
-  tokenType = null
 
   getAuthUrl = () => {
-    return this.spotifyClient.getAuthorizeUrl(
-      'user-read-private user-read-email'
-    )
+    return SpotifyClient.getAuthorizeUrl('user-read-playback-state')
   }
 
   isAuthenticated = () => {
@@ -49,10 +34,11 @@ class AuthService extends BaseService {
 
   logout = () => {
     this.safeStore.deletePassword(AUTH_TOKEN_ID)
-    this.accessToken = null
     this.refreshToken = null
 
-    this.eventEmitter.emit('logout')
+    SpotifyClient.setAccessToken(null)
+
+    this.emit('logout')
   }
 
   requestRefreshToken = async () => {
@@ -60,10 +46,9 @@ class AuthService extends BaseService {
 
     if (authToken) {
       try {
-        const data = await this.spotifyClient.getRefreshToken(authToken)
+        const token = await SpotifyClient.getRefreshToken(authToken)
 
-        this.accessToken = data.access_token
-        this.tokenType = data.token_type
+        SpotifyClient.setAccessToken(token.access_token)
       } catch (error) {
         this.logout()
         throw new Error(error)
@@ -76,11 +61,11 @@ class AuthService extends BaseService {
       const params = getUrlSearchParams(callbackUrl)
       const code = params.get('code')
 
-      const data = await this.spotifyClient.getAccessToken(code)
+      const token = await SpotifyClient.getAccessToken(code)
 
-      this.accessToken = data.access_token
-      this.tokenType = data.token_type
-      this.refreshToken = data.refresh_token
+      this.refreshToken = token.refresh_token
+
+      SpotifyClient.setAccessToken(token.access_token)
 
       if (this.refreshToken) {
         this.safeStore.setPassword(AUTH_TOKEN_ID, this.refreshToken)
