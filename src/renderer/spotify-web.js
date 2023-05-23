@@ -56,11 +56,10 @@ const getTrackLyrics = async trackId => {
       },
     })
 
-    const data = await response
+    const data = await response.json()
 
-    return data.json()
+    return data
   } catch (error) {
-    console.error('Unable to get lyrics')
     window.Core.log(
       {
         ctx: 'spotify-web:renderer',
@@ -121,14 +120,22 @@ const init = () =>
         }
       })
 
-      if (isLoggedIn) {
-        // getTrackLyrics('5tZ9PdmbvEDrk6tIxFAUp0').then(data => {
-        //   window.Core.log({
-        //     ctx: 'spotify-web:renderer',
-        //     lyrics: data,
-        //   })
-        // })
-      }
+      window.SpotifyWeb.subscribeOnPlaybackStateChange((_event, state) => {
+        const currentTrackId = localStorage.getItem('currentTrackId')
+
+        // Make sure we only extract the lyrics when a different track is playing
+        if (isLoggedIn && state.isPlaying && currentTrackId !== state.trackId) {
+          getTrackLyrics(state.trackId).then(data => {
+            window.Core.log({
+              ctx: 'spotify-web:renderer',
+              lyrics: data?.lyrics.lines,
+              isLineSynced: data?.lyrics.syncType === 'LINE_SYNCED',
+            })
+
+            localStorage.setItem('currentTrackId', state.trackId)
+          })
+        }
+      })
     } catch (error) {
       reject(error)
     }

@@ -41,7 +41,7 @@ function init() {
     }
   })
 
-  window.Application.subscribeOnConnectionChange((_, status) => {
+  window.Application.subscribeOnConnectionChange((_event, status) => {
     window.Core.log({ ctx: 'app:renderer', status })
 
     if (status.connected) {

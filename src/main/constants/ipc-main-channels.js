@@ -7,4 +7,5 @@ module.exports = {
   SLA_LYRICS_CONNECTION_STATUS: 'sla:lyrics:connection-status',
   SLA_LOG: 'sla:core:log',
   SLA_SHOW_APP_WINDOW: 'sla:app:show-window',
+  SLA_PLAYBACK_STATE_CHANGE: 'sla:app:playback-state-change',
 }

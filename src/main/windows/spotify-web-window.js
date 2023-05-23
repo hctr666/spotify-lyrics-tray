@@ -40,13 +40,15 @@ class SpotifyWebWindow extends BaseWindow {
 
     try {
       await this.window.loadURL(SPOTIFY_WEB_URL)
+      this.#handleWindowDidFinishLoad(SPOTIFY_WEB_URL)
     } catch (error) {
       throw new Error(error)
     }
 
     this.window.webContents.on(
       'did-finish-load',
-      this.#handleWindowDidFinishLoad
+      async event =>
+        await this.#handleWindowDidFinishLoad(event.sender.getURL())
     )
 
     this.initDevtools()
@@ -54,8 +56,7 @@ class SpotifyWebWindow extends BaseWindow {
     return this.window
   }
 
-  #handleWindowDidFinishLoad = async event => {
-    const url = event.sender.getURL()
+  #handleWindowDidFinishLoad = async url => {
     const isSpotifyOpenUrl = getIsSpotifyOpenUrl(url)
     const isSpotifyAccountsUrl = getIsSpotifyAccountsUrl(url)
 
@@ -79,7 +80,7 @@ class SpotifyWebWindow extends BaseWindow {
 
     // Injecting renderer script this way as we're loading and external web
     // TODO: research other ways to inject the renderer into this window
-    this.window.webContents.executeJavaScript(rendererScript)
+    await this.window.webContents.executeJavaScript(rendererScript)
   }
 }
 

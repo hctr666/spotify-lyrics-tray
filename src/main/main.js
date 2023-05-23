@@ -3,24 +3,32 @@ const { app, session, safeStorage } = require('electron')
 const { initIPCEvents } = require('./ipc-events')
 const { REDIRECT_URI } = require('./constants/spotify')
 const { AuthService } = require('./services/auth')
+const {
+  SpotifyPlaybackService,
+} = require('./services/spotify/spotify-playback-service')
 const AppWindow = require('./windows/app-window')
 const AuthWindow = require('./windows/auth-window')
 const SpotifyWebWindow = require('./windows/spotify-web-window')
 const AppTray = require('./tray/app-tray')
 const TrayManager = require('./tray/tray-manager')
-const { SLA_AUTH_STATUS } = require('./constants/ipc-main-channels')
+const {
+  SLA_AUTH_STATUS,
+  SLA_PLAYBACK_STATE_CHANGE,
+} = require('./constants/ipc-main-channels')
 
 global.isAppQuitting = false
 
 class Application {
   constructor() {
     this.authService = new AuthService()
+    this.spotifyPlaybackService = new SpotifyPlaybackService()
     this.appWindow = new AppWindow()
     this.authWindow = new AuthWindow()
     this.spotifyWebWindow = new SpotifyWebWindow()
     this.appTray = new AppTray()
 
     global.authService = this.authService
+    global.spotifyPlaybackService = this.spotifyPlaybackService
     global.authWindow = this.authWindow
     global.appWindow = this.appWindow
     global.spotifyWebWindow = this.spotifyWebWindow
@@ -49,6 +57,22 @@ class Application {
           })
 
           await this.spotifyWebWindow.create()
+
+          const spotifyWebWindow = this.spotifyWebWindow.getInstance()
+
+          this.spotifyPlaybackService.on('state-changed', state => {
+            spotifyWebWindow?.webContents.send(SLA_PLAYBACK_STATE_CHANGE, state)
+          })
+
+          appWindow
+            .on('blur', () => {
+              this.spotifyPlaybackService.stopStateCheck()
+            })
+            .on('focus', () => {
+              if (this.authService.isAuthenticated()) {
+                this.spotifyPlaybackService.initStateCheck()
+              }
+            })
         })
 
         app.on('activate', () => {
@@ -69,6 +93,8 @@ class Application {
           appWindow.webContents.send(SLA_AUTH_STATUS, {
             isAuthenticated: false,
           })
+
+          this.spotifyPlaybackService.abortStateCheck()
         })
 
         this.initializeTray()
