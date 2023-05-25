@@ -19,7 +19,7 @@ const publicUrlOrPath = getPublicUrlOrPath(
   process.env.PUBLIC_URL
 )
 
-const buildPath = process.env.BUILD_PATH || 'build'
+const buildPath = process.env.BUILD_PATH || 'src/renderer/app/build'
 
 const moduleFileExtensions = [
   'web.mjs',
@@ -51,14 +51,14 @@ const resolveModule = (resolveFn, filePath) => {
 // config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
-  appPath: resolveApp('.'),
+  appPath: resolveApp('src/renderer/app'),
   appBuild: resolveApp(buildPath),
-  appPublic: resolveApp('public'),
-  appHtml: resolveApp('public/index.html'),
-  appIndexJs: resolveModule(resolveApp, 'src/renderer/app/index'),
+  appPublic: resolveApp('src/renderer/app/public'),
+  appHtml: resolveApp('src/renderer/app/public/index.html'),
+  appIndexJs: resolveModule(resolveApp, 'src/renderer/app/src/index'),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('src'),
-  appTsConfig: resolveApp('tsconfig.json'),
+  appSrc: resolveApp('src/renderer/app/src'),
+  appTsConfig: resolveApp('src/renderer/app/tsconfig.json'),
   appJsConfig: resolveApp('jsconfig.json'),
   yarnLockFile: resolveApp('yarn.lock'),
   testsSetup: resolveModule(resolveApp, 'src/setupTests'),

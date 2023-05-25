@@ -682,6 +682,9 @@ module.exports = function (webpackEnv) {
             }),
             configOverwrite: {
               compilerOptions: {
+                // Avoiding to overwrite compiler options defined by the project
+                // this allows webpack to resolve aliases (paths) coming from tsconfig file
+                ...require(paths.appTsConfig)?.compilerOptions,
                 sourceMap: isEnvProduction
                   ? shouldUseSourceMap
                   : isEnvDevelopment,
