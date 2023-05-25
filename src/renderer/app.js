@@ -29,7 +29,7 @@ function init() {
     window.Auth.signIn()
   })
 
-  window.Auth.subscribeOnAuthStatus((_, status) => {
+  window.Auth.subscribeOnAuthStateChange((_, status) => {
     window.Core.log({ ctx: 'app:renderer', status })
 
     if (status.isAuthenticated) {
