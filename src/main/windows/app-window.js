@@ -21,9 +21,7 @@ class AppWindow extends BaseWindow {
       },
     })
 
-    this.window.loadFile(
-      path.join(__dirname, '..', '..', 'renderer/index.html')
-    )
+    this.window.loadURL('http://localhost:4014')
 
     this.#initializeEvents()
     this.initDevtools()

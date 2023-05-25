@@ -45,7 +45,7 @@ class Application {
 
         const appWindow = this.appWindow.create()
 
-        appWindow.webContents.on('did-finish-load', async () => {
+        appWindow.webContents.once('did-finish-load', async () => {
           try {
             await this.authService.requestRefreshToken()
           } catch (error) {
@@ -56,9 +56,7 @@ class Application {
             isAuthenticated: this.authService.isAuthenticated(),
           })
 
-          await this.spotifyWebWindow.create()
-
-          const spotifyWebWindow = this.spotifyWebWindow.getInstance()
+          const spotifyWebWindow = await this.spotifyWebWindow.create()
 
           this.spotifyPlaybackService.on('state-changed', state => {
             spotifyWebWindow?.webContents.send(SLA_PLAYBACK_STATE_CHANGE, state)
