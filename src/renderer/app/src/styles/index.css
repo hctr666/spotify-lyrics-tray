@@ -5,3 +5,6 @@
 :root {
   --theme-color-gray-dark: #1f1f1f;
 }
+
+@import "./layout.css";
+@import "./buttons.css";

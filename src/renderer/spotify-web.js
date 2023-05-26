@@ -86,25 +86,27 @@ const init = () =>
       const { isLoggedIn } = getAppData()
       const showAppAfterLogin = getShowAppAfterLogin()
 
+      const connectionStatus = isLoggedIn ? 'connected' : 'disconnected'
+
       window.Core.log({
         ctx: 'spotify-web:renderer',
-        connected: isLoggedIn,
+        connectionStatus,
       })
 
-      window.SpotifyWeb.sendLyricsConnectionStatus({
-        connected: isLoggedIn,
-      }).then(() => {
-        if (showAppAfterLogin) {
-          window.SpotifyWeb.showAppWindow()
-          setShowAppAfterLogin(false)
+      window.SpotifyWeb.sendLyricsConnectionStatus(connectionStatus).then(
+        () => {
+          if (showAppAfterLogin) {
+            window.SpotifyWeb.showAppWindow()
+            setShowAppAfterLogin(false)
+          }
+
+          window.Core.log({
+            ctx: 'spotify-web:renderer',
+            message: 'Status sent!',
+            showAppAfterLogin,
+          })
         }
-
-        window.Core.log({
-          ctx: 'spotify-web:renderer',
-          message: 'Status sent!',
-          showAppAfterLogin,
-        })
-      })
+      )
 
       window.SpotifyWeb.subscribeOnLoginInvoked(() => {
         setShowAppAfterLogin(true)

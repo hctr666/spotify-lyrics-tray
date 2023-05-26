@@ -45,7 +45,7 @@ class Application {
 
         const appWindow = this.appWindow.create()
 
-        appWindow.webContents.once('did-finish-load', async () => {
+        appWindow.webContents.on('did-finish-load', async () => {
           try {
             await this.authService.requestRefreshToken()
           } catch (error) {

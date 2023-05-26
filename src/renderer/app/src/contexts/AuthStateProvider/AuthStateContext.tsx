@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 
-interface AuthState {
+export interface AuthState {
   isAuthenticated: boolean
 }
 

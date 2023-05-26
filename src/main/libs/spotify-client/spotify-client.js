@@ -105,16 +105,18 @@ class SpotifyClient {
     return token
   }
 
+  // TODO: keep commented until start with the lyrics view
   getPlaybackState = async ({ onRateLimitApplied } = {}) => {
-    const { data, retryAfter } = await this.fetchWebApi(
-      'v1/me/player?market=ES'
-    )
+    // const { data, retryAfter } = await this.fetchWebApi(
+    //   'v1/me/player?market=ES'
+    // )
 
-    if (retryAfter && onRateLimitApplied) {
-      return onRateLimitApplied(Number(retryAfter))
-    }
+    // if (retryAfter && onRateLimitApplied) {
+    //   return onRateLimitApplied(Number(retryAfter))
+    // }
 
-    return data
+    // return data
+    return null
   }
 }
 

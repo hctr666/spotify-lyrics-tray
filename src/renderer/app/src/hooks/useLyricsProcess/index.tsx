@@ -1,0 +1,1 @@
+export { useLyricsProcess } from './useLyricsProcess'

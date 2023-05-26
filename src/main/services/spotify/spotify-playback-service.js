@@ -2,10 +2,6 @@ const { Emittable } = require('../../libs/emittable/emittable')
 const { SpotifyClient } = require('../../libs/spotify-client')
 
 class SpotifyPlaybackService extends Emittable {
-  constructor() {
-    super()
-  }
-
   events = ['state-changed']
   retryAfter = 3000
 

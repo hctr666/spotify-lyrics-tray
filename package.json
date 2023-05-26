@@ -10,7 +10,8 @@
     "renderer:build": "node scripts/renderer-build.js",
     "renderer:test": "node scripts/renderer-test.js",
     "lint": "eslint .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "typecheck": "tsc --project ./src/renderer/app/tsconfig.json"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "author": "hctr.441@gmail.com",

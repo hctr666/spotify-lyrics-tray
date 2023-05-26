@@ -1,0 +1,8 @@
+.button {
+  @apply px-5 py-2 shadow-md rounded-full;
+}
+
+.button-primary {
+  @apply button;
+  @apply bg-purple-700 hover:bg-purple-900 text-white;
+}

@@ -14,10 +14,10 @@ const {
 
 require('./core')
 
-contextBridge.exposeInMainWorld('Application', {
-  connectLyrics: () => ipcRenderer.send(SLA_LYRICS_CONNECT),
-  disconnectLyrics: () => ipcRenderer.send(SLA_LYRICS_DISCONNECT),
-  subscribeOnConnectionChange: listener => {
+contextBridge.exposeInMainWorld('LyricsProcess', {
+  connect: () => ipcRenderer.send(SLA_LYRICS_CONNECT),
+  disconnect: () => ipcRenderer.send(SLA_LYRICS_DISCONNECT),
+  subscribe: listener => {
     ipcRenderer.addListener(SLA_LYRICS_CONNECTION_CHANGED, listener)
 
     return () =>
@@ -28,7 +28,7 @@ contextBridge.exposeInMainWorld('Application', {
 contextBridge.exposeInMainWorld('Auth', {
   signOut: () => ipcRenderer.send(SLA_AUTH_SIGN_OUT),
   signIn: () => ipcRenderer.send(SLA_AUTH_SIGN_IN),
-  subscribeOnAuthStateChange: listener => {
+  subscribe: listener => {
     ipcRenderer.addListener(SLA_AUTH_STATE, listener)
 
     return () => ipcRenderer.removeListener(SLA_AUTH_STATE, listener)

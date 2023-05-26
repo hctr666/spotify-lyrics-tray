@@ -1,0 +1,9 @@
+.page-layout {
+  @apply flex justify-center items-center flex-col gap-4;
+  height: 100vh;
+  background-color: var(--theme-color-gray-dark);
+}
+
+.page-layout .headline {
+  @apply text-gray-400 text-lg;
+}

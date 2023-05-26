@@ -1,18 +1,15 @@
-// @ts-nocheck
 import { PropsWithChildren, useEffect, useState } from 'react'
+
 import { AuthStateContext } from './AuthStateContext'
 
 export const AuthStateProvider = ({ children }: PropsWithChildren) => {
-  const [isAuthenticated, setIsAuthenticated] = useState()
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    const listener = (_event, state) => {
+    const unsubscribe = window.Auth.subscribe((_event, state) => {
       window.Core.log({ ctx: 'app:renderer', state })
-
       setIsAuthenticated(state.isAuthenticated)
-    }
-
-    const unsubscribe = window.Auth.subscribeOnAuthStateChange(listener)
+    })
 
     return () => {
       unsubscribe()
