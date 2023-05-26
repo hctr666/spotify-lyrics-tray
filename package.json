@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "NODE_ENV=development concurrently -k \"yarn renderer:start\" \"yarn main:start\"",
-    "main:start": "wait-on -i 250 -w 250 -d 2500 http://localhost:4014 && electron --trace-warnings src/main/main.js",
+    "main:start": "wait-on -i 250 -w 250 -d 2500 http://localhost:4014 && electron --trace-warnings src/main/bootstrap.js",
     "renderer:start": "PORT=4014 node scripts/renderer-start.js",
     "renderer:build": "node scripts/renderer-build.js",
     "renderer:test": "node scripts/renderer-test.js",

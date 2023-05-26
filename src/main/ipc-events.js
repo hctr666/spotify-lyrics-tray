@@ -13,7 +13,7 @@ const {
   SLA_LYRICS_WEB_LOGIN_INVOKED,
 } = require('./constants/ipc-renderer-channels')
 
-const initIPCEvents = () => {
+const initializeIpcEvents = () => {
   ipcMain.on(SLA_LYRICS_DISCONNECT, () => {
     const spotifyWebWindow = global.spotifyWebWindow.getInstance()
 
@@ -67,4 +67,4 @@ const initIPCEvents = () => {
   })
 }
 
-module.exports = { initIPCEvents }
+module.exports = { initializeIpcEvents }

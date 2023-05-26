@@ -92,6 +92,10 @@ class SpotifyClient {
     this.accessToken = accessToken
   }
 
+  /**
+   * @param {String} code
+   * @returns {{ access_token: String, refresh_token: String }}
+   */
   getAccessToken = async code => {
     const token = await fetchToken({
       body: {
