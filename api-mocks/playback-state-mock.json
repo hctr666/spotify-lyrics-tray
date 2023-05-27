@@ -1,0 +1,86 @@
+[
+  {
+    "device": {
+      "id": "23814c4ec320b47e215016e9b56889f71ed05f09",
+      "is_active": true,
+      "is_private_session": false,
+      "is_restricted": false,
+      "name": "Hector’s MacBook Pro",
+      "type": "Computer",
+      "volume_percent": 62
+    },
+    "shuffle_state": true,
+    "repeat_state": "off",
+    "timestamp": 1685144567057,
+    "context": {
+      "href": "https://api.spotify.com/v1/playlists/6CI6ZwJHX1dAbupHJJR4jw",
+      "type": "playlist",
+      "uri": "spotify:playlist:6CI6ZwJHX1dAbupHJJR4jw"
+    },
+    "progress_ms": 59124,
+    "item": {
+      "disc_number": 1,
+      "duration_ms": 218560,
+      "explicit": false,
+      "external_ids": [],
+      "external_urls": [],
+      "href": "https://api.spotify.com/v1/tracks/6sREV6MpLHTqcOmBK5mvYF",
+      "id": "6sREV6MpLHTqcOmBK5mvYF",
+      "is_local": false,
+      "is_playable": true,
+      "name": "Face to the Floor",
+      "popularity": 64,
+      "preview_url": "https://p.scdn.co/mp3-preview/e029cba42d907459d928c4cd939ad886544b28b3?cid=a92f1695d1dc47059c7397cd93d381ed",
+      "track_number": 1,
+      "type": "track",
+      "uri": "spotify:track:6sREV6MpLHTqcOmBK5mvYF"
+    },
+    "currently_playing_type": "track",
+    "actions": { "disallows": [] },
+    "is_playing": true
+  },
+  {
+    "device": {
+      "id": "23814c4ec320b47e215016e9b56889f71ed05f09",
+      "is_active": true,
+      "is_private_session": false,
+      "is_restricted": false,
+      "name": "Hector’s MacBook Pro",
+      "type": "Computer",
+      "volume_percent": 62
+    },
+    "shuffle_state": true,
+    "repeat_state": "off",
+    "timestamp": 1685144777586,
+    "context": {
+      "external_urls": [],
+      "href": "https://api.spotify.com/v1/playlists/6CI6ZwJHX1dAbupHJJR4jw",
+      "type": "playlist",
+      "uri": "spotify:playlist:6CI6ZwJHX1dAbupHJJR4jw"
+    },
+    "progress_ms": 189088,
+    "item": {
+      "album": [],
+      "artists": [],
+      "disc_number": 1,
+      "duration_ms": 297173,
+      "explicit": true,
+      "external_ids": [],
+      "external_urls": [],
+      "href": "https://api.spotify.com/v1/tracks/7gkoQwKoaiPWUs9bkrAWjq",
+      "id": "7gkoQwKoaiPWUs9bkrAWjq",
+      "is_local": false,
+      "is_playable": true,
+      "linked_from": [],
+      "name": "Love Lost In A Hail Of Gun Fire",
+      "popularity": 42,
+      "preview_url": "https://p.scdn.co/mp3-preview/aa95b29059f05e5c6007aae4061a6e6b49ad7285?cid=a92f1695d1dc47059c7397cd93d381ed",
+      "track_number": 1,
+      "type": "track",
+      "uri": "spotify:track:7gkoQwKoaiPWUs9bkrAWjq"
+    },
+    "currently_playing_type": "track",
+    "actions": { "disallows": [] },
+    "is_playing": true
+  }
+]
