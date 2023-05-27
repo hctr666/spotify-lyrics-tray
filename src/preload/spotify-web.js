@@ -26,4 +26,5 @@ contextBridge.exposeInMainWorld('SpotifyWeb', {
 
     return () => ipcRenderer.removeListener(SLA_PLAYBACK_STATE_CHANGE, listener)
   },
+  fetchLyricsMockAPI: () => require('../../api-mocks/lyrics-mock.json'),
 })
