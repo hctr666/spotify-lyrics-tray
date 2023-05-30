@@ -6,22 +6,36 @@ const {
   SLA_AUTH_SIGN_OUT,
   SLA_AUTH_SIGN_IN,
   SLA_AUTH_STATE,
-} = require('../main/constants/ipc-main-channels')
-
-const {
-  SLA_LYRICS_CONNECTION_CHANGED,
-} = require('../main/constants/ipc-renderer-channels')
+  SLA_LYRICS_CONNECTION_STATUS_REQUEST,
+  SLA_LYRICS_CONNECTION_STATUS_REPLY,
+  SLA_LYRICS_CURRENT_TRACK_REQUEST,
+  SLA_LYRICS_CURRENT_TRACK_REPLY,
+} = require('../main/constants/ipc-channels')
 
 require('./core')
 
-contextBridge.exposeInMainWorld('LyricsProcess', {
+contextBridge.exposeInMainWorld('Lyrics', {
   connect: () => ipcRenderer.send(SLA_LYRICS_CONNECT),
   disconnect: () => ipcRenderer.send(SLA_LYRICS_DISCONNECT),
-  subscribe: listener => {
-    ipcRenderer.addListener(SLA_LYRICS_CONNECTION_CHANGED, listener)
+  requestConnectionStatus: () =>
+    ipcRenderer.send(SLA_LYRICS_CONNECTION_STATUS_REQUEST),
+
+  subscribeOnConnectionStatus: listener => {
+    ipcRenderer.addListener(SLA_LYRICS_CONNECTION_STATUS_REPLY, listener)
 
     return () =>
-      ipcRenderer.removeListener(SLA_LYRICS_CONNECTION_CHANGED, listener)
+      ipcRenderer.removeListener(SLA_LYRICS_CONNECTION_STATUS_REPLY, listener)
+  },
+})
+
+contextBridge.exposeInMainWorld('Track', {
+  requestCurrentTrack: () =>
+    ipcRenderer.invoke(SLA_LYRICS_CURRENT_TRACK_REQUEST),
+  subscribeOnCurrentTrack: listener => {
+    ipcRenderer.addListener(SLA_LYRICS_CURRENT_TRACK_REPLY, listener)
+
+    return () =>
+      ipcRenderer.removeListener(SLA_LYRICS_CURRENT_TRACK_REPLY, listener)
   },
 })
 

@@ -4,8 +4,10 @@ const LOGIN_BUTTON_SELECTOR = '[data-testid="preview-menu-login"]'
 const DATA_LAYER_EVENT = 'webplayer_datalayer_init'
 const SESSION_DATA_SCRIPT_SELECTOR =
   'script[id="session"][type="application/json"]'
+const IMMEDIATELLY_SEND_CONNECTION_STATUS =
+  'immediatelly-send-connection-status'
 
-const ROOT_READ_TIMEOUT = 3000
+const ROOT_WAIT_TIMEOUT = 3500
 
 const getAppData = () => {
   if (!('dataLayer' in window)) {
@@ -34,6 +36,7 @@ const getAccessToken = () => {
       const jsonData = JSON.parse(sessionData.innerHTML)
       return jsonData.accessToken
     } catch (_) {
+      // eslint-disable-next-line no-console
       console.error('Unable to extract access token')
     }
   }
@@ -97,28 +100,34 @@ const init = () =>
       const showAppAfterLogin = getShowAppAfterLogin()
 
       const connectionStatus = isLoggedIn ? 'connected' : 'disconnected'
+      const shouldSendConnectionStatus = localStorage.getItem(
+        IMMEDIATELLY_SEND_CONNECTION_STATUS
+      )
 
       window.Core.log({
         ctx: 'spotify-web:renderer',
         connectionStatus,
+        showAppAfterLogin,
+        shouldSendConnectionStatus,
       })
 
-      window.SpotifyWeb.sendLyricsConnectionStatus(connectionStatus).then(
-        () => {
-          if (showAppAfterLogin) {
-            window.SpotifyWeb.showAppWindow()
-            setShowAppAfterLogin(false)
-          }
+      const handleConnectionStatus = () => {
+        window.SpotifyWeb.sendConnectionStatus(connectionStatus)
 
-          window.Core.log({
-            ctx: 'spotify-web:renderer',
-            message: 'Status sent!',
-            showAppAfterLogin,
-          })
+        if (showAppAfterLogin) {
+          window.SpotifyWeb.showAppWindow()
+          setShowAppAfterLogin(false)
         }
-      )
+      }
 
-      window.SpotifyWeb.subscribeOnLoginInvoked(() => {
+      if (shouldSendConnectionStatus) {
+        handleConnectionStatus()
+        localStorage.removeItem(IMMEDIATELLY_SEND_CONNECTION_STATUS)
+      }
+
+      window.SpotifyWeb.subscribeOnConnectionStatus(handleConnectionStatus)
+
+      window.SpotifyWeb.subscribeOnConnect(() => {
         setShowAppAfterLogin(true)
 
         const menuButton = document.querySelector(MENU_BUTTON_SELECTOR)
@@ -135,23 +144,40 @@ const init = () =>
               ctx: 'spotify-web:renderer',
               message: 'Redirecting to login...',
             })
+            localStorage.setItem(IMMEDIATELLY_SEND_CONNECTION_STATUS, '1')
           }
         }
       })
 
-      window.SpotifyWeb.subscribeOnPlaybackStateChange((_event, state) => {
-        const localTrackId = localStorage.getItem('currentTrackId')
+      window.SpotifyWeb.subscribeOnCurrentTrack((_event, state) => {
+        const localTrackId = localStorage.getItem('current-track-id')
 
-        // Make sure we only extract the lyrics when a different track is playing
-        if (isLoggedIn && state.isPlaying && localTrackId !== state.trackId) {
+        let willExtractLyrics = isLoggedIn && state.isPlaying
+
+        // Make sure we only extract the lyrics when a different track is playing in production
+        if (!window.Core.isDev()) {
+          willExtractLyrics =
+            willExtractLyrics && localTrackId !== state.trackId
+        }
+
+        if (willExtractLyrics) {
           getTrackLyrics(state.trackId).then(data => {
+            const track = {
+              lyrics: {
+                lines: data?.lyrics.lines,
+                isLineSynced: data?.lyrics.syncType === 'LINE_SYNCED',
+              },
+              ...state,
+            }
+
             window.Core.log({
               ctx: 'spotify-web:renderer',
-              lyrics: data?.lyrics.lines,
-              isLineSynced: data?.lyrics.syncType === 'LINE_SYNCED',
+              ...track,
             })
 
-            localStorage.setItem('currentTrackId', state.trackId)
+            window.SpotifyWeb.sendCurrentTrack(track)
+
+            localStorage.setItem('current-track-id', state.trackId)
           })
         }
       })
@@ -205,7 +231,7 @@ const waitForPageReady = () =>
 
           throw new Error(error)
         }
-      }, ROOT_READ_TIMEOUT)
+      }, ROOT_WAIT_TIMEOUT)
     } catch (error) {
       return reject({ ctx: 'preload:spotify-web', error })
     }

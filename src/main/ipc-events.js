@@ -4,14 +4,14 @@ const {
   SLA_LYRICS_CONNECT,
   SLA_AUTH_SIGN_OUT,
   SLA_AUTH_SIGN_IN,
-  SLA_LYRICS_CONNECTION_STATUS,
+  SLA_LYRICS_CONNECTION_STATUS_REPLY,
   SLA_LOG,
   SLA_SHOW_APP_WINDOW,
-} = require('./constants/ipc-main-channels')
-const {
-  SLA_LYRICS_CONNECTION_CHANGED,
-  SLA_LYRICS_WEB_LOGIN_INVOKED,
-} = require('./constants/ipc-renderer-channels')
+  SLA_LYRICS_CONNECT_REQUEST,
+  SLA_LYRICS_CONNECTION_STATUS_REQUEST,
+  SLA_LYRICS_CURRENT_TRACK_REQUEST,
+  SLA_LYRICS_CURRENT_TRACK_REPLY,
+} = require('./constants/ipc-channels')
 
 const initializeIpcEvents = () => {
   ipcMain.on(SLA_LYRICS_DISCONNECT, () => {
@@ -26,7 +26,7 @@ const initializeIpcEvents = () => {
     const spotifyWebWindow = global.spotifyWebWindow.getInstance()
 
     if (spotifyWebWindow) {
-      spotifyWebWindow.webContents.send(SLA_LYRICS_WEB_LOGIN_INVOKED)
+      spotifyWebWindow.webContents.send(SLA_LYRICS_CONNECT_REQUEST)
     }
   })
 
@@ -37,31 +37,57 @@ const initializeIpcEvents = () => {
   })
 
   ipcMain.on(SLA_AUTH_SIGN_OUT, () => {
-    console.log({ ctx: 'ipc-main', message: 'API sign out' })
     global.authService.logout()
   })
 
   ipcMain.on(SLA_AUTH_SIGN_IN, async () => {
-    console.log({ ctx: 'ipc-main', message: 'API sign in' })
     global.authWindow.create()
   })
 
-  ipcMain.handle(SLA_LYRICS_CONNECTION_STATUS, (_, status) => {
-    console.log({ ctx: 'ipc-main', status })
+  ipcMain.on(SLA_LYRICS_CONNECTION_STATUS_REQUEST, () => {
+    /** @type {Electron.BrowserWindow | null} */
+    const spotifyWebWindow = global.spotifyWebWindow.getInstance()
 
+    if (spotifyWebWindow) {
+      spotifyWebWindow.webContents.send(SLA_LYRICS_CONNECTION_STATUS_REQUEST)
+    }
+  })
+
+  ipcMain.on(SLA_LYRICS_CONNECTION_STATUS_REPLY, (_event, status) => {
     /** @type {Electron.BrowserWindow | null} */
     const appWindow = global.appWindow.getInstance()
 
     if (appWindow) {
-      appWindow.webContents.send(SLA_LYRICS_CONNECTION_CHANGED, status)
+      appWindow.webContents.send(SLA_LYRICS_CONNECTION_STATUS_REPLY, status)
+    }
+  })
+
+  ipcMain.handle(SLA_LYRICS_CURRENT_TRACK_REQUEST, async () => {
+    const playbackState = await global.spotifyPlaybackService.getState()
+    const spotifyWebWindow = global.spotifyWebWindow.getInstance()
+
+    spotifyWebWindow.webContents.send(
+      SLA_LYRICS_CURRENT_TRACK_REQUEST,
+      playbackState
+    )
+  })
+
+  ipcMain.on(SLA_LYRICS_CURRENT_TRACK_REPLY, (_event, track) => {
+    /** @type {Electron.BrowserWindow | null} */
+    const appWindow = global.appWindow.getInstance()
+
+    if (appWindow) {
+      appWindow.webContents.send(SLA_LYRICS_CURRENT_TRACK_REPLY, track)
     }
   })
 
   ipcMain.handle(SLA_LOG, (_event, payload, level) => {
     switch (level) {
       case 'error':
+        // eslint-disable-next-line no-console
         return console.error(`[application:main]: ${JSON.stringify(payload)}`)
       default:
+        // eslint-disable-next-line no-console
         return console.info(`[application:main]: ${JSON.stringify(payload)}`)
     }
   })

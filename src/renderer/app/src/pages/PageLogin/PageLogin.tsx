@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom'
 
-import { useAuthState } from '~/contexts/AuthStateProvider'
 import { PageLayout } from '~/components/PageLayout'
+import { useAuthState } from '~/hooks/useAuthState/useAuthState'
 
 export const PageLogin = () => {
   const authState = useAuthState()

@@ -3,7 +3,7 @@ const { BrowserWindow, app } = require('electron')
 
 const BaseWindow = require('./base-window')
 const { isDevelopment } = require('../helpers/environment')
-const { SLA_AUTH_STATE } = require('../constants/ipc-main-channels')
+const { SLA_AUTH_STATE } = require('../constants/ipc-channels')
 
 const isDev = isDevelopment()
 
@@ -16,11 +16,16 @@ class AppWindow extends BaseWindow {
       titleBarStyle: 'hidden',
       fullscreenable: false,
       resizable: false,
+      frame: false,
+      roundedCorners: false,
+      transparent: true,
       webPreferences: {
         preload: path.join(__dirname, '..', '..', 'preload/app.js'),
         devTools: isDev,
       },
     })
+
+    global.APP_WINDOW_ID = this.window.webContents.id
 
     this.window.loadURL('http://localhost:4014')
 
@@ -61,10 +66,9 @@ class AppWindow extends BaseWindow {
       const isAuthenticated = global.authService.isAuthenticated()
 
       try {
-        if (!isAuthenticated) {
-          await global.authService.requestRefreshToken()
-        }
+        await global.authService.requestRefreshToken()
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error(error)
       }
 

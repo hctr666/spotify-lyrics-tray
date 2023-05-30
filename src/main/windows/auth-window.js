@@ -17,6 +17,7 @@ class AuthWindow extends BaseWindow {
     try {
       this.window.loadURL(url)
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error, url)
     }
   }

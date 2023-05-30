@@ -1,10 +1,12 @@
 import { useCallback, useMemo } from 'react'
 
 import { PageLayout } from '~/components/PageLayout'
-import { useLyricsProcess } from '~/hooks/useLyricsProcess'
+import { useLyricsService } from '~/hooks/useLyricsService/useLyricsService'
+import { useTrackService } from '~/hooks/useTrackService/useTrackService'
 
 export const PageHome = () => {
-  const { status: lyricsStatus, connect } = useLyricsProcess()
+  const { isConnected, connect } = useLyricsService()
+  const { currentTrack } = useTrackService()
 
   const handleSignOut = () => {
     window.Auth.signOut()
@@ -15,20 +17,24 @@ export const PageHome = () => {
   }, [connect])
 
   const lyricsStatusContent = useMemo(() => {
-    if (lyricsStatus === 'connected') {
+    if (isConnected) {
       return <span className='text-green-600'>Connected</span>
     }
 
-    if (lyricsStatus === 'disconnected') {
-      return (
-        <button className='button' onClick={handleLyricsConnect}>
-          Connect
-        </button>
-      )
-    }
+    return (
+      <button className='button' onClick={handleLyricsConnect}>
+        Connect
+      </button>
+    )
+  }, [isConnected, handleLyricsConnect])
 
-    return `checking...`
-  }, [lyricsStatus, handleLyricsConnect])
+  const getLyricsWords = useMemo(() => {
+    const words = currentTrack?.lyrics?.lines.map(line => {
+      return line.words
+    })
+
+    return words
+  }, [currentTrack])
 
   return (
     <PageLayout>
@@ -37,6 +43,11 @@ export const PageHome = () => {
         Sign out
       </button>
       <div className='text-gray-300'>Lyrics status: {lyricsStatusContent}</div>
+      <div className='text-white text-center flex flex-col overflow-y-scroll shadow-inner gap-1 w-full'>
+        {getLyricsWords?.map((word, idx) => (
+          <div key={`${idx}_${word}`}>{word}</div>
+        ))}
+      </div>
     </PageLayout>
   )
 }

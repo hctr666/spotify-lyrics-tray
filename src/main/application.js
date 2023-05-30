@@ -12,8 +12,8 @@ const AppTray = require('./tray/app-tray')
 const TrayManager = require('./tray/tray-manager')
 const {
   SLA_AUTH_STATE,
-  SLA_PLAYBACK_STATE_CHANGE,
-} = require('./constants/ipc-main-channels')
+  SLA_LYRICS_CURRENT_TRACK_REQUEST,
+} = require('./constants/ipc-channels')
 
 class Application {
   constructor() {
@@ -37,7 +37,10 @@ class Application {
     this.spotifyPlaybackService.on('state-changed', state => {
       const spotifyWebWindow = this.spotifyWebWindow.getInstance()
 
-      spotifyWebWindow?.webContents.send(SLA_PLAYBACK_STATE_CHANGE, state)
+      spotifyWebWindow?.webContents.send(
+        SLA_LYRICS_CURRENT_TRACK_REQUEST,
+        state
+      )
     })
   }
 

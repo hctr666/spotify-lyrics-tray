@@ -5,14 +5,17 @@ class SpotifyPlaybackService extends Emittable {
   events = ['state-changed']
   retryAfter = 3000
 
-  trackId = null
   isChecking = false
   isPlaying = null
+  trackId = null
 
-  #getState = async () => {
+  getState = async () => {
     const playbackState = await SpotifyClient.getPlaybackState({
       onRateLimitApplied: retryAfter => {
-        console.log(`rate limiting applied, retry after: ${retryAfter} seconds`)
+        // eslint-disable-next-line no-console
+        console.warn(
+          `rate limiting applied, retry after: ${retryAfter} seconds`
+        )
 
         this.retryAfter = retryAfter
       },
@@ -41,7 +44,7 @@ class SpotifyPlaybackService extends Emittable {
         return
       }
 
-      const state = await this.#getState()
+      const state = await this.getState()
 
       if (
         state.isPlaying !== this.isPlaying ||

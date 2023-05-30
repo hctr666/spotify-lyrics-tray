@@ -5,13 +5,13 @@ const MainApplication = require('./application')
 
 const main = new MainApplication()
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   if (!safeStorage.isEncryptionAvailable()) {
     throw new Error('Encryption is not available')
   }
 
+  await main.spotifyWebWindow.create()
   main.appWindow.create()
-  main.spotifyWebWindow.create()
   main.handleAuthServiceEvents()
   main.handleAuthRedirectUriRequest()
   main.handleSpotifyServiceEvents()

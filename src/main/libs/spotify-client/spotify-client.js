@@ -3,6 +3,7 @@ const fetch = require('node-fetch')
 
 const { API_URL } = require('../../constants/spotify')
 const { REDIRECT_URI } = require('../../constants/spotify')
+const { isDevelopment } = require('../../helpers/environment')
 
 const ACCOUNTS_DOMAIN = 'https://accounts.spotify.com'
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID
@@ -19,6 +20,18 @@ const fetchToken = async ({ body, headers }) => {
   const data = await response.json()
 
   return data
+}
+
+const logError = (endpoint, error) => {
+  // eslint-disable-next-line no-console
+  console.error(
+    '[application:main]: ',
+    JSON.stringify({
+      ctx: 'Spotify API',
+      endpoint,
+      error,
+    })
+  )
 }
 
 class SpotifyClient {
@@ -50,16 +63,30 @@ class SpotifyClient {
       if (response.status === TOO_MANY_REQUESTS_STATUS) {
         const retryAfter = response.headers.get('Retry-After')
 
+        logError(endpoint, {
+          status: TOO_MANY_REQUESTS_STATUS,
+          message: 'Too many requests, rate limiting applied',
+        })
+
         return { retryAfter }
+      }
+
+      if (response.status === 500) {
+        throw new Error(
+          JSON.stringify({ status: 500, message: 'Server error' })
+        )
       }
 
       const data = await response.json()
 
+      if (data.error) {
+        throw new Error(JSON.stringify(data.error))
+      }
+
       return { data }
     } catch (error) {
-      return {
-        error: 'Something went wrong with the api request',
-      }
+      logError(endpoint, error.message)
+      return error
     }
   }
 
@@ -111,16 +138,23 @@ class SpotifyClient {
 
   // TODO: keep commented until start with the lyrics view
   getPlaybackState = async ({ onRateLimitApplied } = {}) => {
-    // const { data, retryAfter } = await this.fetchWebApi(
-    //   'v1/me/player?market=ES'
-    // )
+    if (isDevelopment()) {
+      const [
+        mockData,
+      ] = require('../../../../api-mocks/playback-state-mock.json') //FIXME
 
-    // if (retryAfter && onRateLimitApplied) {
-    //   return onRateLimitApplied(Number(retryAfter))
-    // }
+      return mockData
+    }
 
-    // return data
-    return null
+    const { data, retryAfter } = await this.fetchWebApi(
+      'v1/me/player?market=ES'
+    )
+
+    if (retryAfter && onRateLimitApplied) {
+      return onRateLimitApplied(Number(retryAfter))
+    }
+
+    return data
   }
 }
 

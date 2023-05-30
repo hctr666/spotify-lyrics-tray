@@ -1,5 +1,5 @@
 const { contextBridge, ipcRenderer } = require('electron')
-const { SLA_LOG } = require('../main/constants/ipc-main-channels')
+const { SLA_LOG } = require('../main/constants/ipc-channels')
 const { isDevelopment } = require('../main/helpers/environment')
 
 contextBridge.exposeInMainWorld('Core', {

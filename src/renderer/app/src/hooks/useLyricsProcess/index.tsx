@@ -1,1 +1,0 @@
-export { useLyricsProcess } from './useLyricsProcess'
