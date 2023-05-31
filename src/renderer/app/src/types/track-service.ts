@@ -1,12 +1,13 @@
-type Lines = {
+export type LyricsLine = {
+  id?: string
   startTimeMs: string
   words: string
   syllables: string[]
   endTimeMs: string
-}[]
+}
 
 export interface Lyrics {
-  lines: Lines
+  lines: LyricsLine[]
   isLineSynced: boolean
 }
 

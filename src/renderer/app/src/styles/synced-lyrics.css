@@ -1,0 +1,7 @@
+.synced-lyrics-container {
+  @apply my-2;
+}
+
+.synced-lyrics-lines {
+  @apply flex flex-col gap-1 leading-9 text-xl text-center text-gray-500 font-medium;
+}

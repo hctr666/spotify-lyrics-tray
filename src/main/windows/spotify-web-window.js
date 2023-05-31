@@ -29,7 +29,7 @@ const getSpotifyRendererScript = async () => {
 class SpotifyWebWindow extends BaseWindow {
   async create() {
     this.window = new BrowserWindow({
-      show: isDev,
+      show: true,
       width: 750,
       height: 600,
       webPreferences: {

@@ -1,0 +1,1 @@
+export { UnsyncedLyrics } from './UnsyncedLyrics'

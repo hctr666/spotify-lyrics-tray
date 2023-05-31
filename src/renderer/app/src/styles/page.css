@@ -1,0 +1,24 @@
+.page {
+  background-color: var(--theme-color-gray-dark);
+  @apply h-full flex flex-col overflow-y-auto;
+}
+
+.page .headline {
+  @apply text-gray-400 text-lg;
+}
+
+.page-header {
+  height: var(--page-header-height);
+  background-color: rgb(24, 24, 24);
+  @apply items-center px-3 flex gap-3;
+  @apply justify-between text-white font-medium fixed w-full;
+}
+
+.page-content {
+  @apply px-3;
+  padding-top: var(--page-header-height);
+}
+
+.page-content--no-header {
+  @apply h-full pt-0;
+}

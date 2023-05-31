@@ -152,27 +152,39 @@ const init = () =>
       window.SpotifyWeb.subscribeOnCurrentTrack((_event, state) => {
         const localTrackId = localStorage.getItem('current-track-id')
 
-        let willExtractLyrics = isLoggedIn && state.isPlaying
+        let willFetchLyrics = isLoggedIn && state.isPlaying
 
         // Make sure we only extract the lyrics when a different track is playing in production
         if (!window.Core.isDev()) {
-          willExtractLyrics =
-            willExtractLyrics && localTrackId !== state.trackId
+          willFetchLyrics = willFetchLyrics && localTrackId !== state.trackId
         }
 
-        if (willExtractLyrics) {
+        if (willFetchLyrics) {
+          let fetchTime = 0
+          let fetchInterval = setInterval(() => {
+            fetchTime += 1
+          }, 0)
+
           getTrackLyrics(state.trackId).then(data => {
+            clearInterval(fetchInterval)
+            fetchInterval = null
+
             const track = {
               lyrics: {
                 lines: data?.lyrics.lines,
                 isLineSynced: data?.lyrics.syncType === 'LINE_SYNCED',
               },
               ...state,
+              // Making sure to send the most accurate progress to the UI
+              progress: state.progress + fetchTime,
             }
 
             window.Core.log({
               ctx: 'spotify-web:renderer',
               ...track,
+              initialProgress: state.progress,
+              actualProgress: state.progress + fetchTime,
+              fetchTime,
             })
 
             window.SpotifyWeb.sendCurrentTrack(track)

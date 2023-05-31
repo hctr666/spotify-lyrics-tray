@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom'
 
-import { PageLayout } from '~/components/PageLayout'
+import { Page } from '~/components'
 import { useAuthState } from '~/hooks/useAuthState/useAuthState'
 
 export const PageLogin = () => {
@@ -11,15 +11,19 @@ export const PageLogin = () => {
   }
 
   if (authState.isAuthenticated) {
-    return <Navigate to='/' />
+    return <Navigate to='/home' />
   }
 
   return (
-    <PageLayout>
-      <div className='headline'>Please sign in to enjoy the app</div>
-      <button className='button-primary' onClick={handleSignIn}>
-        Sign in
-      </button>
-    </PageLayout>
+    <Page>
+      <Page.Content noHeader>
+        <div className='flex flex-col gap-4 h-full items-center justify-center w-full relative'>
+          <div className='headline'>Please sign in to enjoy the app</div>
+          <button className='button-primary' onClick={handleSignIn}>
+            Sign in
+          </button>
+        </div>
+      </Page.Content>
+    </Page>
   )
 }

@@ -4,7 +4,14 @@
 
 :root {
   --theme-color-gray-dark: #1f1f1f;
+  --page-header-height: 50px;
 }
 
-@import "./layout.css";
 @import "./buttons.css";
+@import "./synced-lyrics.css";
+@import "./page.css";
+
+body, #root {
+  height: 100vh;
+  overflow: hidden;
+}

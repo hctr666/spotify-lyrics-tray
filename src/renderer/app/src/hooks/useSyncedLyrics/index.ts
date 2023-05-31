@@ -1,0 +1,1 @@
+export { useSyncedLyrics } from './useSyncedLyrics'
