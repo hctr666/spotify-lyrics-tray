@@ -1,22 +1,19 @@
+const { isDevelopment } = require('../../helpers/environment')
 const { Emittable } = require('../../libs/emittable/emittable')
 const { SpotifyClient } = require('../../libs/spotify-client')
 
 class SpotifyPlaybackService extends Emittable {
   events = ['state-changed']
-  retryAfter = 3000
+  retryAfter = isDevelopment() ? 6000 : 3000
 
   isChecking = false
   isPlaying = null
   trackId = null
 
   getState = async () => {
+    // TODO: add retryAfter into the client response, remove callback
     const playbackState = await SpotifyClient.getPlaybackState({
       onRateLimitApplied: retryAfter => {
-        // eslint-disable-next-line no-console
-        console.warn(
-          `rate limiting applied, retry after: ${retryAfter} seconds`
-        )
-
         this.retryAfter = retryAfter
       },
     })

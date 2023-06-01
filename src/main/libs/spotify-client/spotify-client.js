@@ -65,7 +65,7 @@ class SpotifyClient {
 
         logError(endpoint, {
           status: TOO_MANY_REQUESTS_STATUS,
-          message: 'Too many requests, rate limiting applied',
+          message: `Too many requests, rate limiting applied, will retry after ${retryAfter} seconds`,
         })
 
         return { retryAfter }
@@ -138,6 +138,7 @@ class SpotifyClient {
 
   // TODO: keep commented until start with the lyrics view
   getPlaybackState = async ({ onRateLimitApplied } = {}) => {
+    // TODO: create a playback api mock
     if (isDevelopment()) {
       const [
         mockData,

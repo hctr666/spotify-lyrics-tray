@@ -37,11 +37,11 @@ class AppWindow extends BaseWindow {
   }
 
   initializeEvents() {
-    // There's a bug where clicking the tray icon doesn't show the window,
-    // after it's been blurred, so we make sure to hide the window on blur event
     this.window.on('blur', () => {
       global.spotifyPlaybackService.stopStateCheck()
 
+      // There's a bug where clicking the tray icon doesn't show the window,
+      // after it's been blurred, so we make sure to hide the window on blur event
       if (!this.window.webContents.isDevToolsOpened()) {
         this.window.hide()
       }
@@ -63,9 +63,7 @@ class AppWindow extends BaseWindow {
       }
     })
 
-    this.window.webContents.on('did-finish-load', async () => {
-      const isAuthenticated = global.authService.isAuthenticated()
-
+    this.window.webContents.once('did-finish-load', async () => {
       try {
         await global.authService.requestRefreshToken()
       } catch (error) {
@@ -74,7 +72,7 @@ class AppWindow extends BaseWindow {
       }
 
       this.window.webContents.send(SLA_AUTH_STATE, {
-        isAuthenticated,
+        isAuthenticated: global.authService.isAuthenticated(),
       })
     })
   }

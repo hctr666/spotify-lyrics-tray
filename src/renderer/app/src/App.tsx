@@ -1,10 +1,4 @@
-import {
-  HashRouter as Router,
-  Route,
-  Routes,
-  Navigate,
-  Outlet,
-} from 'react-router-dom'
+import { HashRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
 
 import { PageLogin } from './pages/PageLogin'
 import { AuthStateProvider } from './contexts/AuthStateProvider'
@@ -13,12 +7,14 @@ import { LyricsServiceProvider } from './contexts/LyricsServiceProvider'
 import { TrackServiceProvider } from './contexts/TrackServiceProvider'
 import { useAuthState } from './hooks/useAuthState/useAuthState'
 import { PageSettings } from './pages/PageSettings'
+import { PlaybackStateProvider } from './contexts/PlaybackStateProvider/PlaybackStateProvider'
 
-const ProtectedPagesRoot = () => {
+// TODO: make this component to behave much like a Route component
+const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const authState = useAuthState()
 
   if (authState.isAuthenticated) {
-    return <Outlet />
+    return children
   }
 
   return <Navigate to='/login' />
@@ -29,15 +25,29 @@ function App() {
     <Router>
       <AuthStateProvider>
         <LyricsServiceProvider>
-          <TrackServiceProvider>
-            <Routes>
-              <Route path='/login' element={<PageLogin />} />
-              <Route path='/' element={<ProtectedPagesRoot />}>
-                <Route path='/settings' element={<PageSettings />} />
-                <Route path='/home' element={<PageHome />} />
-              </Route>
-            </Routes>
-          </TrackServiceProvider>
+          <PlaybackStateProvider>
+            <TrackServiceProvider>
+              <Routes>
+                <Route path='/login' element={<PageLogin />} />
+                <Route
+                  path='/settings'
+                  element={
+                    <ProtectedRoute>
+                      <PageSettings />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path='/'
+                  element={
+                    <ProtectedRoute>
+                      <PageHome />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </TrackServiceProvider>
+          </PlaybackStateProvider>
         </LyricsServiceProvider>
       </AuthStateProvider>
     </Router>

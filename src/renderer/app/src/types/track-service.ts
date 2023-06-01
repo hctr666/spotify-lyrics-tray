@@ -1,3 +1,5 @@
+import { PlaybackState } from './playback-state'
+
 export type LyricsLine = {
   id?: string
   startTimeMs: string
@@ -11,13 +13,7 @@ export interface Lyrics {
   isLineSynced: boolean
 }
 
-export interface Track {
-  trackId: string
-  progress: number
-  lyrics?: Lyrics
-  isPlaying: boolean
-}
-
 export interface TrackServiceState {
-  currentTrack?: Track
+  lyrics?: Lyrics
+  requestLyrics?: (state: PlaybackState) => void
 }

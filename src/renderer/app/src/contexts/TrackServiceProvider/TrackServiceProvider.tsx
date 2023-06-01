@@ -1,42 +1,41 @@
 import { PropsWithChildren, useEffect, useState } from 'react'
 
-import { TrackServiceContext } from './TrackServiceContext'
-import { Track } from '~/types/track-service'
 import { useLyricsService } from '~/hooks/useLyricsService/useLyricsService'
-
-const CURRENT_TRACK_KEY = 'current-track'
-
-const getInitialCurrentTrack = () => {
-  const currentTrack = localStorage.getItem(CURRENT_TRACK_KEY)
-  return currentTrack ? JSON.parse(currentTrack) : null
-}
+import { usePlaybackState } from '~/hooks/usePlaybackState/usePlaybackState'
+import type { Lyrics } from '~/types/track-service'
+import { TrackServiceContext } from './TrackServiceContext'
+import { useTimeElapsed } from '~/hooks/useTimeElapsed/useTimeElapsed'
 
 export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
-  const [currentTrack, setCurrentTrack] = useState<Track>(
-    getInitialCurrentTrack
-  )
-
+  const [lyrics, setLyrics] = useState<Lyrics>()
   const { isConnected } = useLyricsService()
+  const { startElapsing, getTime } = useTimeElapsed()
+
+  const { playbackState, addToProgress } = usePlaybackState()
+  const trackId = playbackState?.trackId
 
   useEffect(() => {
-    if (isConnected) {
-      window.Track.requestCurrentTrack()
+    if (isConnected && trackId) {
+      startElapsing()
+      window.Track.requestLyrics(trackId)
     }
+  }, [isConnected, trackId, startElapsing])
 
-    const unsubscribeCurrentTrack = window.Track.subscribeOnCurrentTrack(
-      (_event, track) => {
-        localStorage.setItem(CURRENT_TRACK_KEY, JSON.stringify(track))
-        setCurrentTrack(track)
+  useEffect(() => {
+    const unsubscribeOnLyrics = window.Track.subscribeOnLyrics(
+      (_event, lyrics) => {
+        addToProgress(getTime())
+        setLyrics(lyrics)
       }
     )
 
     return () => {
-      unsubscribeCurrentTrack()
+      unsubscribeOnLyrics()
     }
-  }, [isConnected])
+  }, [isConnected, getTime, addToProgress])
 
   return (
-    <TrackServiceContext.Provider value={{ currentTrack }}>
+    <TrackServiceContext.Provider value={{ lyrics }}>
       {children}
     </TrackServiceContext.Provider>
   )

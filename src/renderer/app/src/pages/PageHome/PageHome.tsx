@@ -1,12 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 
 import { Page } from '~/components'
-import { SyncedLyrics } from '~/components/SyncedLyrics/SyncedLyrics'
-import { UnsyncedLyrics } from '~/components/UnsyncedLyrics'
-import { useTrackService } from '~/hooks/useTrackService'
+import { LyricsViewer } from '~/components/LyricsViewer'
 
 export const PageHome = () => {
-  const { currentTrack } = useTrackService()
   const navigate = useNavigate()
 
   const handleSettingsClick = () => {
@@ -22,11 +19,7 @@ export const PageHome = () => {
         </button>
       </Page.Header>
       <Page.Content>
-        {currentTrack?.lyrics?.isLineSynced ? (
-          <SyncedLyrics track={currentTrack} />
-        ) : (
-          <UnsyncedLyrics track={currentTrack} />
-        )}
+        <LyricsViewer />
       </Page.Content>
     </Page>
   )

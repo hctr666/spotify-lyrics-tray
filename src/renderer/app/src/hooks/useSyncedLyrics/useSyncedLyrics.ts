@@ -1,9 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { LyricsLine, Track } from '~/types/track-service'
+import { Lyrics, LyricsLine } from '~/types/track-service'
 
-export const useSyncedLyrics = (currentTrack?: Track) => {
-  const initialProgress = currentTrack?.progress || 0
+interface UseSyncedLyricsProps {
+  lyrics?: Lyrics
+  initialProgress?: number
+}
+
+export const useSyncedLyrics = ({
+  lyrics,
+  initialProgress = 0,
+}: UseSyncedLyricsProps) => {
   const [progress, setProgress] = useState(initialProgress)
   const activeLineRef = useRef<HTMLDivElement | null>(null)
 
@@ -12,11 +19,11 @@ export const useSyncedLyrics = (currentTrack?: Track) => {
     let lines: LyricsLine[] = []
     let wait = 0
 
-    if (!currentTrack?.lyrics) {
+    if (!lyrics) {
       return { activeLine, wait, lines }
     }
 
-    lines = currentTrack.lyrics.lines.map((line, idx) => ({
+    lines = lyrics.lines.map((line, idx) => ({
       id: `line-${idx}`,
       ...line,
     }))
@@ -35,7 +42,7 @@ export const useSyncedLyrics = (currentTrack?: Track) => {
     }, {})
 
     return { lines, activeLine, wait }
-  }, [currentTrack, progress])
+  }, [lyrics, progress])
 
   useEffect(() => {
     if (activeLineRef.current) {

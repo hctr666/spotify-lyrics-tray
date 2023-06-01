@@ -7,7 +7,7 @@ const SESSION_DATA_SCRIPT_SELECTOR =
 const IMMEDIATELLY_SEND_CONNECTION_STATUS =
   'immediatelly-send-connection-status'
 
-const ROOT_WAIT_TIMEOUT = 3500
+const ROOT_WAIT_TIMEOUT = 4500
 
 const getAppData = () => {
   if (!('dataLayer' in window)) {
@@ -45,9 +45,12 @@ const getAccessToken = () => {
 }
 
 const getTrackLyrics = async trackId => {
+  // TODO: create a playback api mock
   if (window.Core.isDev()) {
     const mockedApi = window.SpotifyWeb.fetchLyricsMockAPI()
     const [lyrics] = mockedApi.filter(r => r.trackId === trackId)
+
+    await new Promise(res => setTimeout(res, 1500))
 
     return lyrics
   }
@@ -73,6 +76,7 @@ const getTrackLyrics = async trackId => {
 
     return data
   } catch (error) {
+    // TODO: display a message about this error in the app
     window.Core.log(
       {
         ctx: 'spotify-web:renderer',
@@ -149,47 +153,25 @@ const init = () =>
         }
       })
 
-      window.SpotifyWeb.subscribeOnCurrentTrack((_event, state) => {
-        const localTrackId = localStorage.getItem('current-track-id')
-
-        let willFetchLyrics = isLoggedIn && state.isPlaying
-
-        // Make sure we only extract the lyrics when a different track is playing in production
-        if (!window.Core.isDev()) {
-          willFetchLyrics = willFetchLyrics && localTrackId !== state.trackId
-        }
-
-        if (willFetchLyrics) {
-          let fetchTime = 0
-          let fetchInterval = setInterval(() => {
-            fetchTime += 1
-          }, 0)
-
-          getTrackLyrics(state.trackId).then(data => {
-            clearInterval(fetchInterval)
-            fetchInterval = null
-
-            const track = {
-              lyrics: {
-                lines: data?.lyrics.lines,
-                isLineSynced: data?.lyrics.syncType === 'LINE_SYNCED',
-              },
-              ...state,
-              // Making sure to send the most accurate progress to the UI
-              progress: state.progress + fetchTime,
+      window.SpotifyWeb.subscribeOnTrackLyrics((_event, trackId) => {
+        if (isLoggedIn) {
+          getTrackLyrics(trackId).then(data => {
+            const lyrics = {
+              lines: data?.lyrics.lines,
+              isLineSynced: data?.lyrics.syncType === 'LINE_SYNCED',
             }
 
             window.Core.log({
               ctx: 'spotify-web:renderer',
-              ...track,
-              initialProgress: state.progress,
-              actualProgress: state.progress + fetchTime,
-              fetchTime,
+              ...lyrics,
             })
 
-            window.SpotifyWeb.sendCurrentTrack(track)
-
-            localStorage.setItem('current-track-id', state.trackId)
+            window.SpotifyWeb.sendTrackLyrics(lyrics)
+          })
+        } else {
+          window.Core.log({
+            ctx: 'spotify-web:renderer',
+            error: 'Needs to login to get lyrics',
           })
         }
       })

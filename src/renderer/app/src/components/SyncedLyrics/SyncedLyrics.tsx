@@ -1,8 +1,16 @@
 import { useSyncedLyrics } from '~/hooks/useSyncedLyrics'
-import { Track } from '~/types/track-service'
+import { Lyrics } from '~/types/track-service'
 
-export const SyncedLyrics = ({ track }: { track?: Track }) => {
-  const { activeLine, activeLineRef, lines } = useSyncedLyrics(track)
+interface SyncedLyricsProps {
+  lyrics?: Lyrics
+  progress?: number
+}
+
+export const SyncedLyrics = ({ progress, lyrics }: SyncedLyricsProps) => {
+  const { activeLine, activeLineRef, lines } = useSyncedLyrics({
+    lyrics,
+    initialProgress: progress,
+  })
 
   return (
     <div className='synced-lyrics-container'>

@@ -1,28 +1,34 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
 import { LyricsServiceContext } from './LyricsServiceContext'
+import { useAuthState } from '~/hooks/useAuthState/useAuthState'
 
 const CONNECTED_FLAG_KEY = 'lyrics-connected'
 
 export const LyricsServiceProvider = ({ children }: PropsWithChildren) => {
+  const { isAuthenticated } = useAuthState()
   const [isConnected, setIsConnected] = useState<boolean>(() => {
     const _isConnected = localStorage.getItem(CONNECTED_FLAG_KEY)
 
-    if (_isConnected) return true
+    if (isAuthenticated && _isConnected) return true
 
     return false
   })
 
   const connect = useCallback(() => {
-    window.Lyrics.connect()
+    window.LyricsService.connect()
   }, [])
 
   useEffect(() => {
-    window.Lyrics.requestConnectionStatus()
+    if (!isAuthenticated) {
+      return
+    }
+
+    window.LyricsService.requestConnectionStatus()
 
     const unsubscribeOnConnectionStatus =
-      window.Lyrics.subscribeOnConnectionStatus((_event, status) => {
-        const _isConnected = status === 'connected'
+      window.LyricsService.subscribeOnConnectionStatus((_event, status) => {
+        const _isConnected = isAuthenticated && status === 'connected'
 
         if (_isConnected) {
           localStorage.setItem(CONNECTED_FLAG_KEY, '1')
@@ -37,7 +43,7 @@ export const LyricsServiceProvider = ({ children }: PropsWithChildren) => {
     return () => {
       unsubscribeOnConnectionStatus()
     }
-  }, [])
+  }, [isAuthenticated])
 
   return (
     <LyricsServiceContext.Provider value={{ isConnected, connect }}>

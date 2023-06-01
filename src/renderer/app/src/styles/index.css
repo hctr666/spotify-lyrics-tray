@@ -8,8 +8,9 @@
 }
 
 @import "./buttons.css";
-@import "./synced-lyrics.css";
 @import "./page.css";
+@import "./synced-lyrics.css";
+@import "./unsynced-lyrics.css";
 
 body, #root {
   height: 100vh;

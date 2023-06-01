@@ -1,0 +1,7 @@
+.unsynced-lyrics-container {
+  @apply flex flex-col gap-4 my-3 px-3;
+}
+
+.unsynced-lyrics-lines {
+  @apply flex flex-col gap-1 leading-7 text-lg text-left text-gray-500 font-medium;
+}

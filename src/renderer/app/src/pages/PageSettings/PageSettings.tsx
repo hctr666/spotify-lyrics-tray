@@ -17,7 +17,7 @@ export const PageSettings = () => {
   }, [connect])
 
   const handleCloseClick = () => {
-    navigate('/home')
+    navigate('/')
   }
 
   const lyricsStatusContent = useMemo(() => {
