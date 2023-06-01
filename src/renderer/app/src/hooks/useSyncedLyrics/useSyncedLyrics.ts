@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { Lyrics, LyricsLine } from '~/types/track-service'
+import { Lyrics } from '~/types/track-service'
 
-interface UseSyncedLyricsProps {
+export interface UseSyncedLyricsProps {
   lyrics?: Lyrics
   initialProgress?: number
 }
@@ -15,31 +15,36 @@ export const useSyncedLyrics = ({
   const activeLineRef = useRef<HTMLDivElement | null>(null)
 
   const { activeLine, wait, lines } = useMemo(() => {
-    let activeLine: Partial<LyricsLine> | null = null
-    let lines: LyricsLine[] = []
     let wait = 0
 
-    if (!lyrics) {
-      return { activeLine, wait, lines }
+    if (!lyrics || !lyrics.lines) {
+      return { activeLine: null, wait, lines: [] }
     }
 
-    lines = lyrics.lines.map((line, idx) => ({
+    const lines = lyrics.lines.map((line, idx) => ({
       id: `line-${idx}`,
       ...line,
     }))
 
-    activeLine = lines.reduce((prevLine, currentLine, idx, lines) => {
-      if (Number(currentLine.startTimeMs) <= progress) {
-        const nextLine = lines[idx + 1]
+    const [firstLine] = lines
 
-        if (nextLine) {
-          wait = Number(nextLine.startTimeMs) - progress
+    const activeLine = [...lines].reduce(
+      (prevLine, currentLine, idx, _lines) => {
+        if (Number(currentLine.startTimeMs) <= progress) {
+          const nextLine = _lines[idx + 1]
+
+          wait = nextLine ? Number(nextLine.startTimeMs) - progress : 0
+
+          return currentLine
         }
+        _lines.splice(1) // break the loop
 
-        return currentLine
-      }
-      return prevLine
-    }, {})
+        wait = Number(currentLine.startTimeMs) - progress
+
+        return prevLine
+      },
+      firstLine
+    )
 
     return { lines, activeLine, wait }
   }, [lyrics, progress])
@@ -61,5 +66,5 @@ export const useSyncedLyrics = ({
     }
   }, [activeLine, progress, wait])
 
-  return { activeLine, activeLineRef, lines }
+  return { activeLine, activeLineRef, lines, wait }
 }
