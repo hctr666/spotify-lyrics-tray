@@ -16,6 +16,7 @@ export const PlaybackStateContext = createContext<PlaybackStateContextValue>({
   getPlaybackState: () =>
     Promise.resolve({
       isPlaying: false,
+      isInactive: true,
       progress: 0,
       trackId: '',
     }),

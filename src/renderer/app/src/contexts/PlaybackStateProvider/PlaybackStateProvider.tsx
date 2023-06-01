@@ -3,6 +3,7 @@ import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 import { PlaybackState } from '~/types/playback-state'
 import { PlaybackStateContext } from './PlaybackStateContext'
 
+// TODO: remove this object
 const LocalPlaybackState = {
   getValue: () => {
     const value = localStorage.getItem('playback-state')
@@ -12,9 +13,6 @@ const LocalPlaybackState = {
     }
 
     return JSON.parse(value) as PlaybackState
-  },
-  setValue: (value: PlaybackState) => {
-    localStorage.setItem('playback-state', JSON.stringify(value))
   },
 }
 

@@ -4,16 +4,27 @@ import { SyncedLyrics } from '../SyncedLyrics'
 import { UnsyncedLyrics } from '../UnsyncedLyrics'
 
 export const LyricsViewer = () => {
-  const { lyrics } = useTrackService()
+  const { lyrics, isLoading } = useTrackService()
   const { playbackState } = usePlaybackState()
 
-  if (!lyrics) {
+  if (playbackState?.isInactive) {
+    return (
+      <div className='text-gray-400 text-sm p-3 block'>
+        <span className='block'>
+          Playback inactive or in private session, please open your Spotify app,
+          make sure private session is not enabled and play a song!
+        </span>
+      </div>
+    )
+  }
+
+  if (isLoading || !lyrics) {
     return <span className='text-white'>Loading...</span>
   }
 
   return (
     <>
-      {lyrics.isLineSynced ? (
+      {lyrics?.isLineSynced ? (
         <SyncedLyrics progress={playbackState?.progress} lyrics={lyrics} />
       ) : (
         <UnsyncedLyrics lyrics={lyrics} />

@@ -18,17 +18,18 @@ class SpotifyPlaybackService extends Emittable {
       },
     })
 
-    if (
-      !playbackState ||
-      playbackState?.currently_playing_type !== 'track' ||
-      playbackState?.device?.is_private_session
-    ) {
+    const isInactive =
+      !playbackState || playbackState?.device?.is_private_session
+
+    if (isInactive || playbackState?.currently_playing_type !== 'track') {
       return {
+        isInactive,
         isPlaying: false,
       }
     }
 
     return {
+      isInactive,
       isPlaying: playbackState.is_playing,
       trackId: playbackState.item?.id,
       progress: playbackState.progress_ms,
@@ -45,9 +46,12 @@ class SpotifyPlaybackService extends Emittable {
 
       if (
         state.isPlaying !== this.isPlaying ||
+        state.isInactive !== this.isInactive ||
         state.trackId !== this.trackId
       ) {
         this.emit('state-changed', state)
+
+        this.isInactive = state.isInactive
         this.isPlaying = state.isPlaying
         this.trackId = state.trackId
       }
