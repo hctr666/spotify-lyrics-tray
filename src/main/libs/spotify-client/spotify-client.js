@@ -9,6 +9,8 @@ const ACCOUNTS_DOMAIN = 'https://accounts.spotify.com'
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID
 const CLIENT_SECRET = process.env.SPOTIFY_SECRET
 const TOO_MANY_REQUESTS_STATUS = 429
+const SERVER_ERROR_STATUS = 500
+const NO_CONTENT_STATUS = 204
 
 const fetchToken = async ({ body, headers }) => {
   const response = await fetch(`${ACCOUNTS_DOMAIN}/api/token`, {
@@ -71,10 +73,17 @@ class SpotifyClient {
         return { retryAfter }
       }
 
-      if (response.status === 500) {
+      if (response.status === SERVER_ERROR_STATUS) {
         throw new Error(
-          JSON.stringify({ status: 500, message: 'Server error' })
+          JSON.stringify({
+            status: SERVER_ERROR_STATUS,
+            message: 'Server error',
+          })
         )
+      }
+
+      if (response.status === NO_CONTENT_STATUS) {
+        return { data: null }
       }
 
       const data = await response.json()
