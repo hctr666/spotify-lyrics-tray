@@ -8,6 +8,7 @@ import { useTimeElapsed } from '~/hooks/useTimeElapsed/useTimeElapsed'
 
 export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
   const [lyrics, setLyrics] = useState<Lyrics>()
+  const [isLoading, setIsLoading] = useState(true)
   const { isConnected } = useLyricsService()
   const { startElapsing, getTime } = useTimeElapsed()
 
@@ -17,6 +18,7 @@ export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (isConnected && trackId) {
       startElapsing()
+      setIsLoading(true)
       window.Track.requestLyrics(trackId)
     }
   }, [isConnected, trackId, startElapsing])
@@ -26,6 +28,7 @@ export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
       (_event, lyrics) => {
         addToProgress(getTime())
         setLyrics(lyrics)
+        setIsLoading(false)
       }
     )
 
@@ -35,7 +38,7 @@ export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
   }, [isConnected, getTime, addToProgress])
 
   return (
-    <TrackServiceContext.Provider value={{ lyrics }}>
+    <TrackServiceContext.Provider value={{ lyrics, isLoading }}>
       {children}
     </TrackServiceContext.Provider>
   )

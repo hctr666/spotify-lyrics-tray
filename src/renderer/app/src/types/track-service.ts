@@ -1,5 +1,3 @@
-import { PlaybackState } from './playback-state'
-
 export type LyricsLine = {
   id?: string
   startTimeMs: string
@@ -15,5 +13,5 @@ export interface Lyrics {
 
 export interface TrackServiceState {
   lyrics?: Lyrics
-  requestLyrics?: (state: PlaybackState) => void
+  isLoading?: boolean
 }
