@@ -28,6 +28,7 @@ class AppWindow extends BaseWindow {
 
     global.APP_WINDOW_ID = this.window.webContents.id
 
+    // TODO: implement secure url
     this.window.loadURL('http://localhost:4014')
 
     this.initializeEvents()

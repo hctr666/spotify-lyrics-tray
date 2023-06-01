@@ -3,9 +3,10 @@ import { useMemo } from 'react'
 import type { Lyrics } from '~/types/track-service'
 
 interface UnsyncedLyricsProps {
-  lyrics: Lyrics
+  lyrics?: Lyrics
 }
 
+// TODO: reset scroll once lyrics change from synced to unsynced
 export const UnsyncedLyrics = ({ lyrics }: UnsyncedLyricsProps) => {
   const lines = useMemo(() => {
     return lyrics?.lines?.map((line, idx) => {
