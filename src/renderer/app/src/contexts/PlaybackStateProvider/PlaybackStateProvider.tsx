@@ -3,66 +3,66 @@ import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 import { PlaybackState } from '~/types/playback-state'
 import { PlaybackStateContext } from './PlaybackStateContext'
 
-// TODO: remove this object
-const LocalPlaybackState = {
-  getValue: () => {
-    const value = localStorage.getItem('playback-state')
-
-    if (!value) {
-      return null
-    }
-
-    return JSON.parse(value) as PlaybackState
-  },
-}
-
 export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
-  const [playbackState, setPlaybackState] = useState<PlaybackState | null>(() =>
-    LocalPlaybackState.getValue()
+  const [playbackState, setPlaybackState] = useState<PlaybackState | null>(
+    () => {
+      const value = localStorage.getItem('playback-state')
+
+      if (!value) {
+        return null
+      }
+
+      return JSON.parse(value) as PlaybackState
+    }
   )
+  const [hasNewTrack, setHasNewTrack] = useState(false)
+  const trackId = playbackState?.trackId
+  const progress = playbackState?.progress
 
   const getPlaybackState = useCallback(async () => {
     return await window.PlaybackState.getState()
   }, [])
 
-  const addToProgress = useCallback(
-    (time: number) => {
+  const updateProgress = useCallback(
+    (_progress: number) => {
       setPlaybackState(
-        state =>
-          ({
-            ...state,
-            progress:
-              typeof state?.progress === 'number'
-                ? state?.progress + time
-                : state?.progress,
-          } as PlaybackState)
+        state => ({ ...state, progress: _progress } as PlaybackState)
       )
     },
     [setPlaybackState]
   )
 
   useEffect(() => {
-    window.PlaybackState.getState().then(state => {
+    const handleStateResponse = (state: PlaybackState) => {
       setPlaybackState(state)
-    })
+      setHasNewTrack(state.trackId !== trackId)
+
+      // Making sure the progress keeps in sync,
+      // it handles the case when player progress is changed mannually
+      if (progress !== state.progress) {
+        updateProgress(state.progress)
+      }
+    }
+
+    window.PlaybackState.getState().then(handleStateResponse)
 
     const unsubscribe = window.PlaybackState.subscribeOnState(
       (_event, state) => {
-        setPlaybackState(state)
+        handleStateResponse(state)
       }
     )
 
     return () => {
       unsubscribe()
     }
-  }, [])
+  }, [trackId, progress, updateProgress])
 
   return (
     <PlaybackStateContext.Provider
       value={{
-        hasNewTrack: false,
+        hasNewTrack,
         playbackState,
-        addToProgress,
+        updateProgress,
         getPlaybackState,
       }}
     >

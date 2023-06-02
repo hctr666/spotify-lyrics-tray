@@ -5,14 +5,14 @@ import { PlaybackState } from '~/types/playback-state'
 interface PlaybackStateContextValue {
   hasNewTrack: boolean
   playbackState: PlaybackState | null
-  addToProgress: (time: number) => void
+  updateProgress: (time: number) => void
   getPlaybackState: () => Promise<PlaybackState>
 }
 
 export const PlaybackStateContext = createContext<PlaybackStateContextValue>({
+  hasNewTrack: false,
   playbackState: null,
-  hasNewTrack: true,
-  addToProgress: () => {},
+  updateProgress: () => {},
   getPlaybackState: () =>
     Promise.resolve({
       isPlaying: false,

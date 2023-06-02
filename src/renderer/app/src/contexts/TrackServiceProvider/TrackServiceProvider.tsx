@@ -12,21 +12,28 @@ export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
   const { isConnected } = useLyricsService()
   const { startElapsing, getTime } = useTimeElapsed()
 
-  const { playbackState, addToProgress } = usePlaybackState()
+  const { hasNewTrack, playbackState, updateProgress } = usePlaybackState()
   const trackId = playbackState?.trackId
+  const progress = playbackState?.progress
 
   useEffect(() => {
-    if (isConnected && trackId) {
+    if (isConnected && trackId && hasNewTrack) {
       startElapsing()
       setIsLoading(true)
       window.Track.requestLyrics(trackId)
     }
-  }, [isConnected, trackId, startElapsing])
+  }, [isConnected, trackId, hasNewTrack, startElapsing])
 
   useEffect(() => {
     const unsubscribeOnLyrics = window.Track.subscribeOnLyrics(
       (_event, lyrics) => {
-        addToProgress(getTime())
+        if (typeof progress === 'number') {
+          // eslint-disable-next-line no-console
+          console.info('Lyrics fetch response time: ', getTime())
+
+          // Add lyrics response time to align current progress
+          updateProgress(progress + getTime())
+        }
         setLyrics(lyrics)
         setIsLoading(false)
       }
@@ -35,7 +42,7 @@ export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
     return () => {
       unsubscribeOnLyrics()
     }
-  }, [isConnected, getTime, addToProgress])
+  }, [isConnected, progress, getTime, updateProgress])
 
   return (
     <TrackServiceContext.Provider value={{ lyrics, isLoading }}>
