@@ -52,13 +52,14 @@ const expectedLines = lyricsMock.lines.map((line, idx) => ({
   ...line,
 }))
 
-const renderUseSyncedLyrics = ({
-  initialProgress,
-}: Partial<UseSyncedLyricsProps>) => {
+const mockedUpdateProgress = jest.fn()
+
+const renderUseSyncedLyrics = ({ progress }: Partial<UseSyncedLyricsProps>) => {
   return renderHook(() =>
     useSyncedLyrics({
-      initialProgress,
+      progress,
       lyrics: lyricsMock,
+      updateProgress: mockedUpdateProgress,
     })
   )
 }
@@ -71,7 +72,7 @@ const advanceTimer = (_wait: number) => {
 
 describe('useSyncedLyrics', () => {
   it('returns the correct line when progress is in the middle of the song', () => {
-    const { result } = renderUseSyncedLyrics({ initialProgress: 5000 })
+    const { result } = renderUseSyncedLyrics({ progress: 5000 })
 
     expect(result.current).toEqual({
       activeLine: expectedLines[2],
@@ -81,11 +82,11 @@ describe('useSyncedLyrics', () => {
     })
   })
 
-  it('returns the first line when progress is less than the minimun start time', () => {
-    const { result } = renderUseSyncedLyrics({ initialProgress: 240 })
+  it('does not return a line when progress is less than the first start time', () => {
+    const { result } = renderUseSyncedLyrics({ progress: 240 })
 
     expect(result.current).toEqual({
-      activeLine: expectedLines[0],
+      activeLine: null,
       activeLineRef: { current: null },
       lines: expectedLines,
       wait: 80,
@@ -93,7 +94,7 @@ describe('useSyncedLyrics', () => {
   })
 
   it('returns the last line when progress is greater than the maximum start time', () => {
-    const { result } = renderUseSyncedLyrics({ initialProgress: 16700 })
+    const { result } = renderUseSyncedLyrics({ progress: 16700 })
 
     expect(result.current).toEqual({
       activeLine: expectedLines[5],
@@ -103,9 +104,9 @@ describe('useSyncedLyrics', () => {
     })
   })
 
-  it('returns subsequent lines after wait time', () => {
+  it('updates progress after wait time', () => {
     const { result } = renderUseSyncedLyrics({
-      initialProgress: 3400,
+      progress: 3400,
     })
 
     expect(result.current).toEqual({
@@ -117,20 +118,6 @@ describe('useSyncedLyrics', () => {
 
     advanceTimer(989)
 
-    expect(result.current).toEqual(
-      expect.objectContaining({
-        activeLine: expectedLines[2],
-        wait: 1392,
-      })
-    )
-
-    advanceTimer(1392)
-
-    expect(result.current).toEqual(
-      expect.objectContaining({
-        activeLine: expectedLines[3],
-        wait: 2943,
-      })
-    )
+    expect(mockedUpdateProgress).toHaveBeenCalledWith(4389)
   })
 })

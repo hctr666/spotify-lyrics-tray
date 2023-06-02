@@ -1,17 +1,18 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { Lyrics } from '~/types/track-service'
 
 export interface UseSyncedLyricsProps {
   lyrics?: Lyrics
-  initialProgress?: number
+  progress?: number
+  updateProgress: (progress: number) => void
 }
 
 export const useSyncedLyrics = ({
   lyrics,
-  initialProgress = 0,
+  progress = 0,
+  updateProgress,
 }: UseSyncedLyricsProps) => {
-  const [progress, setProgress] = useState(initialProgress)
   const activeLineRef = useRef<HTMLDivElement | null>(null)
 
   const { activeLine, wait, lines } = useMemo(() => {
@@ -28,6 +29,14 @@ export const useSyncedLyrics = ({
 
     const [firstLine] = lines
 
+    if (progress < Number(firstLine.startTimeMs)) {
+      return {
+        activeLine: null,
+        wait: Number(firstLine.startTimeMs) - progress,
+        lines,
+      }
+    }
+
     const activeLine = [...lines].reduce(
       (prevLine, currentLine, idx, _lines) => {
         if (Number(currentLine.startTimeMs) <= progress) {
@@ -39,8 +48,6 @@ export const useSyncedLyrics = ({
         }
         _lines.splice(1) // break the loop
 
-        wait = Number(currentLine.startTimeMs) - progress
-
         return prevLine
       },
       firstLine
@@ -50,21 +57,23 @@ export const useSyncedLyrics = ({
   }, [lyrics, progress])
 
   useEffect(() => {
+    const timeout = setTimeout(() => {
+      updateProgress(progress + wait)
+    }, wait)
+
+    return () => {
+      clearTimeout(timeout)
+    }
+  }, [activeLine, updateProgress, progress, wait])
+
+  useEffect(() => {
     if (activeLineRef.current) {
       activeLineRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'center',
       })
     }
-
-    const timeout = setTimeout(() => {
-      setProgress(progress + wait)
-    }, wait)
-
-    return () => {
-      clearTimeout(timeout)
-    }
-  }, [activeLine, progress, wait])
+  }, [progress])
 
   return { activeLine, activeLineRef, lines, wait }
 }
