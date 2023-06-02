@@ -2,13 +2,22 @@ const { isDevelopment } = require('../../helpers/environment')
 const { Emittable } = require('../../libs/emittable/emittable')
 const { SpotifyClient } = require('../../libs/spotify-client')
 
+const areObjectsEqual = (obj1, obj2) => {
+  return JSON.stringify(obj1) === JSON.stringify(obj2)
+}
+
 class SpotifyPlaybackService extends Emittable {
   events = ['state-changed']
   retryAfter = isDevelopment() ? 6000 : 3000
 
   isChecking = false
-  isPlaying = null
-  trackId = null
+
+  state = {
+    isPlaying: false,
+    isInactive: false,
+    trackId: '',
+    progress: 0,
+  }
 
   getState = async () => {
     // TODO: add retryAfter into the client response, remove callback
@@ -18,21 +27,22 @@ class SpotifyPlaybackService extends Emittable {
       },
     })
 
+    // Note: private session flag returns false even when is switched off,
+    // until a playback action is triggered such play/pause next/prev...
+    // TODO: consider to add a reload button in the UI
     const isInactive =
       !playbackState || playbackState?.device?.is_private_session
 
-    if (isInactive || playbackState?.currently_playing_type !== 'track') {
-      return {
-        isInactive,
-        isPlaying: false,
-      }
-    }
+    const isTrack = playbackState?.currently_playing_type === 'track'
+    const isPlaying = isInactive ? false : playbackState.is_playing
+    const trackId = isInactive || !isTrack ? '' : playbackState.item?.id
+    const progress = isInactive || !isTrack ? 0 : playbackState.progress_ms
 
     return {
       isInactive,
-      isPlaying: playbackState.is_playing,
-      trackId: playbackState.item?.id,
-      progress: playbackState.progress_ms,
+      isPlaying,
+      trackId,
+      progress,
     }
   }
 
@@ -43,17 +53,11 @@ class SpotifyPlaybackService extends Emittable {
       }
 
       const state = await this.getState()
+      const hasStateChanged = !areObjectsEqual(this.state, state)
 
-      if (
-        state.isPlaying !== this.isPlaying ||
-        state.isInactive !== this.isInactive ||
-        state.trackId !== this.trackId
-      ) {
+      if (hasStateChanged) {
         this.emit('state-changed', state)
-
-        this.isInactive = state.isInactive
-        this.isPlaying = state.isPlaying
-        this.trackId = state.trackId
+        this.state = state
       }
     }
 
