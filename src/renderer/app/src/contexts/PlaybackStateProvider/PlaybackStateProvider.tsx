@@ -32,8 +32,8 @@ export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
     [setPlaybackState]
   )
 
-  useEffect(() => {
-    const handleStateResponse = (state: PlaybackState) => {
+  const handleStateResponse = useCallback(
+    (state: PlaybackState) => {
       setPlaybackState(state)
       setHasNewTrack(state.trackId !== trackId)
 
@@ -42,9 +42,14 @@ export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
       if (progress !== state.progress) {
         updateProgress(state.progress)
       }
-    }
+    },
+    [trackId, progress, updateProgress]
+  )
 
-    window.PlaybackState.getState().then(handleStateResponse)
+  useEffect(() => {
+    window.PlaybackState.getState().then(state => {
+      handleStateResponse(state)
+    })
 
     const unsubscribe = window.PlaybackState.subscribeOnState(
       (_event, state) => {
@@ -55,7 +60,8 @@ export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
     return () => {
       unsubscribe()
     }
-  }, [trackId, progress, updateProgress])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <PlaybackStateContext.Provider
