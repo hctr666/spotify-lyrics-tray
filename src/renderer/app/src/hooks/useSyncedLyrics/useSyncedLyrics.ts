@@ -57,9 +57,12 @@ export const useSyncedLyrics = ({
   }, [lyrics, progress])
 
   useEffect(() => {
+    // TODO: use this delay for scroll animation (css)
+    // add a delay relative to wait time to avoid words moving too fast
+    const delay = Math.ceil(wait * 0.25)
     const timeout = setTimeout(() => {
       updateProgress(progress + wait)
-    }, wait)
+    }, wait + delay)
 
     return () => {
       clearTimeout(timeout)

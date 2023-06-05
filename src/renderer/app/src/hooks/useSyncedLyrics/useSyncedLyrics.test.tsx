@@ -116,7 +116,7 @@ describe('useSyncedLyrics', () => {
       wait: 989,
     })
 
-    advanceTimer(989)
+    advanceTimer(989 + Math.ceil(989 * 0.25))
 
     expect(mockedUpdateProgress).toHaveBeenCalledWith(4389)
   })
