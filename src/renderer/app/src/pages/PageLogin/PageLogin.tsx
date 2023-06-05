@@ -11,7 +11,7 @@ export const PageLogin = () => {
   }
 
   if (authState.isAuthenticated) {
-    return <Navigate to='/home' />
+    return <Navigate to='/' />
   }
 
   return (
