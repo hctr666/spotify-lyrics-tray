@@ -82,6 +82,8 @@ class SpotifyWebWindow extends BaseWindow {
     // TODO: research other ways to inject the renderer into this window
     await this.window.webContents.executeJavaScript(rendererScript)
   }
+
+  // TODO: error handling (url load, 401 token expired, ...)
 }
 
 module.exports = SpotifyWebWindow

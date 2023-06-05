@@ -8,7 +8,7 @@ const areObjectsEqual = (obj1, obj2) => {
 
 class SpotifyPlaybackService extends Emittable {
   events = ['state-changed']
-  retryAfter = isDevelopment() ? 6000 : 3000
+  retryAfter = isDevelopment() ? 4500 : 3000
 
   isChecking = false
 

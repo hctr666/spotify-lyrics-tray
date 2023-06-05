@@ -23,17 +23,14 @@ export const UnsyncedLyrics = ({ lyrics }: UnsyncedLyricsProps) => {
         This lyrics aren't synced to song yet
       </div>
       <div className='unsynced-lyrics-lines'>
-        {lines && lines.length ? (
+        {lines &&
           lines?.map(line => {
             return (
               <div key={line.id} className='text-white'>
                 {line.words}
               </div>
             )
-          })
-        ) : (
-          <span className='text-white'>No lyrics found for this track</span>
-        )}
+          })}
       </div>
     </div>
   )

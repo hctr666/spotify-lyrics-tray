@@ -22,6 +22,14 @@ export const LyricsViewer = () => {
     return <span className='text-white'>Loading...</span>
   }
 
+  if (!lyrics.lines) {
+    return (
+      <span className='text-white block mt-4'>
+        Could'n find lyrics for this track
+      </span>
+    )
+  }
+
   return (
     <>
       {lyrics?.isLineSynced ? (
