@@ -45,7 +45,7 @@ const getAccessToken = () => {
 }
 
 const getTrackLyrics = async trackId => {
-  // TODO: create a playback api mock
+  // TODO: create a mocked lyrics api
   if (window.Core.isDev()) {
     const mockedApi = window.SpotifyWeb.fetchLyricsMockAPI()
     const [lyrics] = mockedApi.filter(r => r.trackId === trackId)
@@ -76,18 +76,8 @@ const getTrackLyrics = async trackId => {
 
     return data
   } catch (error) {
-    // TODO: display a message about this error in the app
-    window.Core.log(
-      {
-        ctx: 'spotify-web:renderer',
-        message: 'Unable to get lyrics',
-        error,
-      },
-      'error'
-    )
+    throw new Error(error)
   }
-
-  return null
 }
 
 const getShowAppAfterLogin = () =>
@@ -155,19 +145,32 @@ const init = () =>
 
       window.SpotifyWeb.subscribeOnTrackLyrics((_event, trackId) => {
         if (isLoggedIn) {
-          getTrackLyrics(trackId).then(data => {
-            const lyrics = {
-              lines: data?.lyrics.lines,
-              isLineSynced: data?.lyrics.syncType === 'LINE_SYNCED',
-            }
+          getTrackLyrics(trackId)
+            .then(data => {
+              const lyrics = {
+                lines: data?.lyrics.lines,
+                isLineSynced: data?.lyrics.syncType === 'LINE_SYNCED',
+              }
 
-            window.Core.log({
-              ctx: 'spotify-web:renderer',
-              ...lyrics,
+              window.Core.log({
+                ctx: 'spotify-web:renderer',
+                message: 'Lyrics found, sending...',
+              })
+
+              window.SpotifyWeb.sendTrackLyrics(lyrics)
             })
-
-            window.SpotifyWeb.sendTrackLyrics(lyrics)
-          })
+            .catch(error => {
+              // TODO: Error handling
+              // -> handle "401 token expired" error, force app to re-connect
+              window.Core.log(
+                {
+                  ctx: 'spotify-web:renderer',
+                  message: 'Unable to get lyrics',
+                  error,
+                },
+                'error'
+              )
+            })
         } else {
           window.Core.log({
             ctx: 'spotify-web:renderer',
