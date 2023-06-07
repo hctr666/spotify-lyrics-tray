@@ -80,6 +80,10 @@ class Application {
     const window = this.appWindow.getInstance()
     const trayManager = new TrayManager(tray, window)
 
+    window.on('ready-to-show', () => {
+      trayManager.showWindow()
+    })
+
     global.trayManager = trayManager
   }
 }
