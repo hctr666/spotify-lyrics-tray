@@ -8,16 +8,17 @@ import { TrackServiceProvider } from './contexts/TrackServiceProvider'
 import { useAuthState } from './hooks/useAuthState/useAuthState'
 import { PageSettings } from './pages/PageSettings'
 import { PlaybackStateProvider } from './contexts/PlaybackStateProvider/PlaybackStateProvider'
+import { NotificationContainer } from './components/NotificationContainer'
 
 // TODO: make this component to behave much like a Route component
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const authState = useAuthState()
 
-  if (authState.isAuthenticated) {
-    return children
+  if (!authState.isAuthenticated) {
+    return <Navigate to='/login' />
   }
 
-  return <Navigate to='/login' />
+  return children
 }
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
           </PlaybackStateProvider>
         </LyricsServiceProvider>
       </AuthStateProvider>
+      <NotificationContainer />
     </Router>
   )
 }
