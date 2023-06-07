@@ -19,6 +19,7 @@ class AppWindow extends BaseWindow {
       frame: false,
       roundedCorners: false,
       transparent: true,
+      // alwaysOnTop: true,
       webPreferences: {
         preload: path.join(__dirname, '..', '..', 'preload/app.js'),
         devTools: isDev,

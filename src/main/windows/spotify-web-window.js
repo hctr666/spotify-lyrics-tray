@@ -40,15 +40,29 @@ class SpotifyWebWindow extends BaseWindow {
 
     try {
       await this.window.loadURL(SPOTIFY_WEB_URL)
-      this.#handleWindowDidFinishLoad(SPOTIFY_WEB_URL)
+      await this.#handleWindowDidFinishLoad(SPOTIFY_WEB_URL)
     } catch (error) {
-      throw new Error(error)
+      // TODO: logging handling
+      // eslint-disable-next-line no-console
+      console.error({ error })
     }
 
     this.window.webContents.on(
       'did-finish-load',
       async event =>
         await this.#handleWindowDidFinishLoad(event.sender.getURL())
+    )
+
+    this.window.webContents.on(
+      'did-fail-load',
+      (_event, error, errorDescription) => {
+        // TODO: logging handling
+        // eslint-disable-next-line no-console
+        console.error({
+          error,
+          errorDescription,
+        })
+      }
     )
 
     this.initDevtools()
@@ -82,8 +96,6 @@ class SpotifyWebWindow extends BaseWindow {
     // TODO: research other ways to inject the renderer into this window
     await this.window.webContents.executeJavaScript(rendererScript)
   }
-
-  // TODO: error handling (url load, 401 token expired, ...)
 }
 
 module.exports = SpotifyWebWindow

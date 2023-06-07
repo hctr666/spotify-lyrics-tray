@@ -4,8 +4,9 @@ import { SyncedLyrics } from '../SyncedLyrics'
 import { UnsyncedLyrics } from '../UnsyncedLyrics'
 
 export const LyricsViewer = () => {
-  const { lyrics, isLoading } = useTrackService()
+  const { lyrics, error, isLoading } = useTrackService()
   const { playbackState } = usePlaybackState()
+  const lyricsNotFound = !lyrics || !lyrics.lines
 
   if (playbackState?.isInactive) {
     return (
@@ -18,11 +19,15 @@ export const LyricsViewer = () => {
     )
   }
 
-  if (isLoading || !lyrics) {
+  if (error) {
+    return <span className='text-red-500'>{error}</span>
+  }
+
+  if (isLoading) {
     return <span className='text-white'>Loading...</span>
   }
 
-  if (!lyrics.lines) {
+  if (lyricsNotFound) {
     return (
       <span className='text-white block mt-4'>
         Could'n find lyrics for this track

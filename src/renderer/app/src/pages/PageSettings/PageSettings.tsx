@@ -35,12 +35,14 @@ export const PageSettings = () => {
   return (
     <Page>
       <div className='flex flex-col gap-4 h-full items-center justify-center w-full relative'>
-        <button
-          onClick={handleCloseClick}
-          className='text-purple-400 text-2xl absolute top-1 right-4 font-extralight'
-        >
-          x
-        </button>
+        {isConnected && (
+          <button
+            onClick={handleCloseClick}
+            className='text-purple-400 text-2xl absolute top-1 right-4 font-extralight'
+          >
+            x
+          </button>
+        )}
         <button onClick={handleSignOut} className='button-primary'>
           Sign out
         </button>

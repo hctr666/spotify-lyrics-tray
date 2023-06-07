@@ -1,52 +1,55 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
 import { LyricsServiceContext } from './LyricsServiceContext'
-import { useAuthState } from '~/hooks/useAuthState/useAuthState'
-
-const CONNECTED_FLAG_KEY = 'lyrics-connected'
+import { useToastError } from '~/hooks/useToastError'
+import { useNavigate } from 'react-router-dom'
+import { LyricsServiceStatus } from '~/types/lyrics-service'
 
 export const LyricsServiceProvider = ({ children }: PropsWithChildren) => {
-  const { isAuthenticated } = useAuthState()
-  const [isConnected, setIsConnected] = useState<boolean>(() => {
-    const _isConnected = localStorage.getItem(CONNECTED_FLAG_KEY)
+  const [error, setError] = useState('')
+  const [status, setStatus] = useState<LyricsServiceStatus>('loading')
 
-    if (isAuthenticated && _isConnected) return true
-
-    return false
-  })
+  const navigate = useNavigate()
+  const toastError = useToastError()
 
   const connect = useCallback(() => {
     window.LyricsService.connect()
   }, [])
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      return
-    }
+    window.LyricsService.requestServiceState()
 
-    window.LyricsService.requestConnectionStatus()
+    const unsubscribeOnServiceState =
+      window.LyricsService.subscribeOnServiceState((_event, state) => {
+        setStatus(state.status)
 
-    const unsubscribeOnConnectionStatus =
-      window.LyricsService.subscribeOnConnectionStatus((_event, status) => {
-        const _isConnected = isAuthenticated && status === 'connected'
-
-        if (_isConnected) {
-          localStorage.setItem(CONNECTED_FLAG_KEY, '1')
+        if (state.error) {
+          setError(state.error)
+          toastError('state-error-toast', state.error)
         } else {
-          localStorage.removeItem(CONNECTED_FLAG_KEY)
+          setError('')
         }
 
-        setIsConnected(_isConnected)
-        window.Core.log({ ctx: 'app:renderer', connectionStatus: status })
+        navigate(
+          ['disconnected', 'error'].includes(state.status) ? '/settings' : '/'
+        )
       })
 
     return () => {
-      unsubscribeOnConnectionStatus()
+      unsubscribeOnServiceState()
     }
-  }, [isAuthenticated])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const state = {
+    isConnected: status === 'connected',
+    isLoading: status === 'loading',
+    error,
+    connect,
+  }
 
   return (
-    <LyricsServiceContext.Provider value={{ isConnected, connect }}>
+    <LyricsServiceContext.Provider value={state}>
       {children}
     </LyricsServiceContext.Provider>
   )

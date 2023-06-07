@@ -6,10 +6,11 @@ const areObjectsEqual = (obj1, obj2) => {
   return JSON.stringify(obj1) === JSON.stringify(obj2)
 }
 
+const RETRY_AFTER = isDevelopment() ? 4500 : 3000
+
 class SpotifyPlaybackService extends Emittable {
   events = ['state-changed']
-  retryAfter = isDevelopment() ? 4500 : 3000
-
+  retryAfter = RETRY_AFTER
   isChecking = false
 
   state = {

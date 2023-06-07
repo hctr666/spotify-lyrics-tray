@@ -1,40 +1,26 @@
 const { ipcMain } = require('electron')
 const {
-  SLA_LYRICS_DISCONNECT,
   SLA_LYRICS_CONNECT,
   SLA_AUTH_SIGN_OUT,
   SLA_AUTH_SIGN_IN,
-  SLA_LYRICS_CONNECTION_STATUS_REPLY,
+  SLA_LYRICS_SERVICE_STATE_REPLY,
   SLA_LOG,
-  SLA_SHOW_APP_WINDOW,
   SLA_LYRICS_CONNECT_REQUEST,
-  SLA_LYRICS_CONNECTION_STATUS_REQUEST,
+  SLA_LYRICS_SERVICE_STATE_REQUEST,
   SLA_TRACK_LYRICS_REQUEST,
   SLA_TRACK_LYRICS_REPLY,
   SLA_GET_PLAYBACK_STATE,
 } = require('./constants/ipc-channels')
 
+// TODO: create a "send-to-window" reusable helper function
+
 const initializeIpcEvents = () => {
-  ipcMain.on(SLA_LYRICS_DISCONNECT, () => {
-    const spotifyWebWindow = global.spotifyWebWindow.getInstance()
-
-    if (spotifyWebWindow) {
-      spotifyWebWindow.webContents.session.clearStorageData()
-    }
-  })
-
   ipcMain.on(SLA_LYRICS_CONNECT, async () => {
     const spotifyWebWindow = global.spotifyWebWindow.getInstance()
 
     if (spotifyWebWindow) {
       spotifyWebWindow.webContents.send(SLA_LYRICS_CONNECT_REQUEST)
     }
-  })
-
-  ipcMain.on(SLA_SHOW_APP_WINDOW, async () => {
-    const appWindow = global.appWindow.getInstance()
-
-    appWindow.show()
   })
 
   ipcMain.on(SLA_AUTH_SIGN_OUT, () => {
@@ -45,21 +31,21 @@ const initializeIpcEvents = () => {
     global.authWindow.create()
   })
 
-  ipcMain.on(SLA_LYRICS_CONNECTION_STATUS_REQUEST, () => {
+  ipcMain.on(SLA_LYRICS_SERVICE_STATE_REQUEST, () => {
     /** @type {Electron.BrowserWindow | null} */
     const spotifyWebWindow = global.spotifyWebWindow.getInstance()
 
     if (spotifyWebWindow) {
-      spotifyWebWindow.webContents.send(SLA_LYRICS_CONNECTION_STATUS_REQUEST)
+      spotifyWebWindow.webContents.send(SLA_LYRICS_SERVICE_STATE_REQUEST)
     }
   })
 
-  ipcMain.on(SLA_LYRICS_CONNECTION_STATUS_REPLY, (_event, status) => {
+  ipcMain.on(SLA_LYRICS_SERVICE_STATE_REPLY, (_event, status) => {
     /** @type {Electron.BrowserWindow | null} */
     const appWindow = global.appWindow.getInstance()
 
     if (appWindow) {
-      appWindow.webContents.send(SLA_LYRICS_CONNECTION_STATUS_REPLY, status)
+      appWindow.webContents.send(SLA_LYRICS_SERVICE_STATE_REPLY, status)
     }
   })
 
@@ -68,12 +54,12 @@ const initializeIpcEvents = () => {
     spotifyWebWindow.webContents.send(SLA_TRACK_LYRICS_REQUEST, trackId)
   })
 
-  ipcMain.on(SLA_TRACK_LYRICS_REPLY, (_event, track) => {
+  ipcMain.on(SLA_TRACK_LYRICS_REPLY, (_event, lyrics, error) => {
     /** @type {Electron.BrowserWindow | null} */
     const appWindow = global.appWindow.getInstance()
 
     if (appWindow) {
-      appWindow.webContents.send(SLA_TRACK_LYRICS_REPLY, track)
+      appWindow.webContents.send(SLA_TRACK_LYRICS_REPLY, lyrics, error)
     }
   })
 

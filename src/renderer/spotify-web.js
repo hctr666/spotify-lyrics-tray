@@ -1,17 +1,86 @@
-const ROOT_SELECTOR = 'main'
-const MENU_BUTTON_SELECTOR = '[data-testid="preview-menu-button"]'
-const LOGIN_BUTTON_SELECTOR = '[data-testid="preview-menu-login"]'
+// TODO: create spotify-web renderer ts app
 const DATA_LAYER_EVENT = 'webplayer_datalayer_init'
+const ELEMENT_WAIT_TIMEOUT = 4500
+const GEARS_BUTTON_SELECTOR = '[data-testid="gears-button"]'
+const IMMEDIATELLY_SEND_SERVICE_STATE = 'immediatelly-send-service-state'
+const LOGIN_BUTTON_SELECTOR = '[data-testid="preview-menu-login"]'
+const LOGOUT_BUTTON_SELECTOR = '[data-testid="settings-menu-logout"]'
+const MENU_BUTTON_SELECTOR = '[data-testid="preview-menu-button"]'
+const NOT_FOUND_STATUS = 404
+const ROOT_SELECTOR = '#main'
 const SESSION_DATA_SCRIPT_SELECTOR =
   'script[id="session"][type="application/json"]'
-const IMMEDIATELLY_SEND_CONNECTION_STATUS =
-  'immediatelly-send-connection-status'
 
-const ROOT_WAIT_TIMEOUT = 4500
+const UNAUTHORIZED_STATUS = 401
+
+const errors = {
+  INVALID_TOKEN: 'Invalid token',
+  LYRICS_FETCH_FAILED:
+    'An error occurred when getting the lyrics, please try again later',
+  NO_WEBPLAYER_DATA: 'Unable to get WebPlayer data',
+  NO_ACCESS_TOKEN: 'Unable to extract access token',
+  ELEMENT_NOT_FOUND: 'Element was not found',
+  SERVICE_LOAD_ERROR: 'Fatal error on lyrics service, please restart the app',
+  SERVICE_CONNECT_FAILED:
+    'Connection to service failed, tray again later or restart the app',
+}
+
+const waitForElement = selector => {
+  return new Promise((resolve, reject) => {
+    let element = document.querySelector(selector)
+
+    // immediatelly resolves element when it's found early
+    if (element) {
+      return resolve(element)
+    }
+
+    let interval, timeout, observer
+
+    const flush = () => {
+      clearTimeout(timeout)
+      clearInterval(interval)
+      observer.disconnect()
+      timeout = null
+      interval = null
+    }
+
+    observer = new MutationObserver(() => {
+      element = document.querySelector(selector)
+
+      if (element) {
+        flush()
+        resolve(element)
+      }
+    })
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    })
+
+    interval = setInterval(() => {
+      if (element) {
+        flush()
+        resolve(element)
+      }
+    }, 500)
+
+    // Rejects when not found after timeout
+    timeout = setTimeout(() => {
+      if (!element) {
+        flush()
+
+        const error = `${errors.ELEMENT_NOT_FOUND}: ${selector}`
+
+        reject({ message: error })
+      }
+    }, ELEMENT_WAIT_TIMEOUT)
+  })
+}
 
 const getAppData = () => {
   if (!('dataLayer' in window)) {
-    throw new Error('Unable to get WebPlayer data')
+    throw new Error(errors.NO_WEBPLAYER_DATA)
   }
 
   return window?.dataLayer
@@ -36,8 +105,7 @@ const getAccessToken = () => {
       const jsonData = JSON.parse(sessionData.innerHTML)
       return jsonData.accessToken
     } catch (_) {
-      // eslint-disable-next-line no-console
-      console.error('Unable to extract access token')
+      throw new Error(errors.NO_ACCESS_TOKEN)
     }
   }
 
@@ -55,15 +123,10 @@ const getTrackLyrics = async trackId => {
     return lyrics
   }
 
-  window.Core.log({
-    ctx: 'spotify-web:renderer',
-    message: 'starting lyrics extraction...',
-  })
-
-  const url = getLyricsApiUrl(trackId)
-  const accessToken = getAccessToken()
-
   try {
+    const url = getLyricsApiUrl(trackId)
+    const accessToken = getAccessToken()
+
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -71,6 +134,14 @@ const getTrackLyrics = async trackId => {
         'app-platform': 'WebPlayer',
       },
     })
+
+    if (response.status === NOT_FOUND_STATUS) {
+      return null
+    }
+
+    if (response.status === UNAUTHORIZED_STATUS) {
+      throw new Error(errors.INVALID_TOKEN)
+    }
 
     const data = await response.json()
 
@@ -80,162 +151,126 @@ const getTrackLyrics = async trackId => {
   }
 }
 
-const getShowAppAfterLogin = () =>
-  localStorage.getItem('showAppAfterLogin') === 'true'
+const logout = async () => {
+  try {
+    const gearButton = await waitForElement(GEARS_BUTTON_SELECTOR)
+    gearButton.click()
 
-const setShowAppAfterLogin = value => {
-  localStorage.setItem('showAppAfterLogin', value)
+    const logoutButton = await waitForElement(LOGOUT_BUTTON_SELECTOR)
+
+    localStorage.setItem(IMMEDIATELLY_SEND_SERVICE_STATE, '1')
+    logoutButton.click()
+
+    window.SpotifyWeb.logInfo('logging out...')
+  } catch (error) {
+    throw new Error(error.message)
+  }
 }
 
-const init = () =>
-  new Promise((_resolve, reject) => {
-    try {
-      const { isLoggedIn } = getAppData()
-      const showAppAfterLogin = getShowAppAfterLogin()
+const login = async () => {
+  try {
+    const menuButton = await waitForElement(MENU_BUTTON_SELECTOR)
+    menuButton.click()
 
-      const connectionStatus = isLoggedIn ? 'connected' : 'disconnected'
-      const shouldSendConnectionStatus = localStorage.getItem(
-        IMMEDIATELLY_SEND_CONNECTION_STATUS
-      )
+    const loginButton = await waitForElement(LOGIN_BUTTON_SELECTOR)
 
-      window.Core.log({
-        ctx: 'spotify-web:renderer',
-        connectionStatus,
-        showAppAfterLogin,
-        shouldSendConnectionStatus,
+    localStorage.setItem(IMMEDIATELLY_SEND_SERVICE_STATE, '1')
+    loginButton.click()
+
+    window.SpotifyWeb.logInfo('Redirecting to login page...')
+  } catch (error) {
+    throw new Error(error.message)
+  }
+}
+
+const initMain = async () => {
+  /**
+   * @type {{
+   *   status: 'loading' | 'connected' | 'disconnected' | 'error',
+   *   error: null | string
+   * }}
+   */
+  const state = {
+    status: 'loading',
+    error: null,
+  }
+
+  window.SpotifyWeb.subscribeOnStateRequest(() => {
+    window.SpotifyWeb.sendServiceState(state)
+  })
+
+  try {
+    await waitForElement(ROOT_SELECTOR)
+
+    const { isLoggedIn } = getAppData()
+    state.status = isLoggedIn ? 'connected' : 'disconnected'
+
+    const shouldSendServiceState = localStorage.getItem(
+      IMMEDIATELLY_SEND_SERVICE_STATE
+    )
+
+    window.SpotifyWeb.logInfo(
+      JSON.stringify({
+        state: JSON.stringify(state),
+        shouldSendServiceState,
       })
+    )
 
-      const handleConnectionStatus = () => {
-        window.SpotifyWeb.sendConnectionStatus(connectionStatus)
-
-        if (showAppAfterLogin) {
-          window.SpotifyWeb.showAppWindow()
-          setShowAppAfterLogin(false)
-        }
+    if (shouldSendServiceState) {
+      if (state.status === 'connected') {
+        window.SpotifyWeb.sendServiceState(state)
+      } else {
+        window.SpotifyWeb.sendServiceState({
+          ...state,
+          error: errors.SERVICE_CONNECT_FAILED,
+        })
       }
+      localStorage.removeItem(IMMEDIATELLY_SEND_SERVICE_STATE)
+    }
 
-      if (shouldSendConnectionStatus) {
-        handleConnectionStatus()
-        localStorage.removeItem(IMMEDIATELLY_SEND_CONNECTION_STATUS)
-      }
-
-      window.SpotifyWeb.subscribeOnConnectionStatus(handleConnectionStatus)
-
-      window.SpotifyWeb.subscribeOnConnect(() => {
-        setShowAppAfterLogin(true)
-
-        const menuButton = document.querySelector(MENU_BUTTON_SELECTOR)
-
-        if (!isLoggedIn && menuButton) {
-          menuButton.click()
-
-          const loginButton = document.querySelector(LOGIN_BUTTON_SELECTOR)
-
-          if (loginButton) {
-            loginButton.click()
-
-            window.Core.log({
-              ctx: 'spotify-web:renderer',
-              message: 'Redirecting to login...',
-            })
-            localStorage.setItem(IMMEDIATELLY_SEND_CONNECTION_STATUS, '1')
-          }
-        }
+    window.SpotifyWeb.subscribeOnConnect(() => {
+      login().catch(error => {
+        window.SpotifyWeb.logError(error.message)
+        window.SpotifyWeb.sendServiceState({
+          status: 'error',
+          error: errors.SERVICE_CONNECT_FAILED,
+        })
       })
+    })
 
-      window.SpotifyWeb.subscribeOnTrackLyrics((_event, trackId) => {
-        if (isLoggedIn) {
-          getTrackLyrics(trackId)
-            .then(data => {
-              const lyrics = {
+    window.SpotifyWeb.subscribeOnTrackLyrics((_event, trackId) => {
+      getTrackLyrics(trackId)
+        .then(data => {
+          const lyrics = data
+            ? {
                 lines: data?.lyrics.lines,
+                // TODO: send sync type value instead of boolean
                 isLineSynced: data?.lyrics.syncType === 'LINE_SYNCED',
               }
+            : null
 
-              window.Core.log({
-                ctx: 'spotify-web:renderer',
-                message: 'Lyrics found, sending...',
-              })
+          window.SpotifyWeb.sendTrackLyrics(lyrics)
+        })
+        .catch(error => {
+          window.SpotifyWeb.logError(error.message)
+          window.SpotifyWeb.sendTrackLyrics(null, errors.LYRICS_FETCH_FAILED)
 
-              window.SpotifyWeb.sendTrackLyrics(lyrics)
+          // Logout when token sent is invalid
+          if (error.message === errors.INVALID_TOKEN) {
+            logout().catch(error => {
+              window.SpotifyWeb.logError(error.message)
             })
-            .catch(error => {
-              // TODO: Error handling
-              // -> handle "401 token expired" error, force app to re-connect
-              window.Core.log(
-                {
-                  ctx: 'spotify-web:renderer',
-                  message: 'Unable to get lyrics',
-                  error,
-                },
-                'error'
-              )
-            })
-        } else {
-          window.Core.log({
-            ctx: 'spotify-web:renderer',
-            error: 'Needs to login to get lyrics',
-          })
-        }
-      })
-    } catch (error) {
-      reject(error)
-    }
-  })
+          }
+        })
+    })
+  } catch (error) {
+    state.error = errors.SERVICE_LOAD_ERROR
+    state.status = 'error'
 
-const waitForPageReady = () =>
-  new Promise((resolve, reject) => {
-    let root = document.getElementById('ROOT_SELECTOR')
+    window.SpotifyWeb.logError(error.message)
+  }
+}
 
-    try {
-      const observer = new MutationObserver(() => {
-        // Taking the #main element as root reference
-        // it's working well at the time this implementation was added.
-        // however this is subject to breaking changes coming from Spotify side
-        root = document.getElementById(ROOT_SELECTOR)
-
-        if (root) {
-          return resolve()
-        }
-      })
-
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-      })
-
-      let interval, timeout
-
-      const flushTimers = () => {
-        observer.disconnect()
-        clearTimeout(timeout)
-        clearInterval(interval)
-        timeout = null
-        interval = null
-      }
-
-      interval = setInterval(() => {
-        if (root) flushTimers()
-      }, 500)
-
-      timeout = setTimeout(() => {
-        if (!root) {
-          flushTimers()
-
-          const error = 'root element was not found'
-
-          reject({ ctx: 'preload:spotify-web', error })
-
-          throw new Error(error)
-        }
-      }, ROOT_WAIT_TIMEOUT)
-    } catch (error) {
-      return reject({ ctx: 'preload:spotify-web', error })
-    }
-  })
-
-waitForPageReady()
-  .then(init)
-  .catch(payload => {
-    window.Core.log(payload, 'error')
-  })
+;(async function () {
+  await initMain()
+})()

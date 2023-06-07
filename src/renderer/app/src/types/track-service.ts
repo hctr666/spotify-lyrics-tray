@@ -14,4 +14,5 @@ export interface Lyrics {
 export interface TrackServiceState {
   lyrics?: Lyrics
   isLoading?: boolean
+  error?: string
 }

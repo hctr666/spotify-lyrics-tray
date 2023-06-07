@@ -1,8 +1,8 @@
 import type { IpcRendererEvent } from 'electron'
 import type { AuthState } from '../contexts/AuthStateProvider/AuthStateContext'
-import type { LyricsConnectionStatus } from '~/hooks/useLyricsService/types'
 import type { Lyrics } from './track-service'
-import { PlaybackState } from './playback-state'
+import type { PlaybackState } from './playback-state'
+import type { LyricsServiceState } from './lyrics-service'
 
 declare global {
   type ElectronRendererListener<T> = (event: IpcRendererEvent, value: T) => void
@@ -14,9 +14,14 @@ declare global {
   }
 
   type AuthStateListener = ElectronRendererListener<AuthState>
-  type LyricsServiceConnectionListener =
-    ElectronRendererListener<LyricsConnectionStatus>
-  type TrackLyricsRequestListener = ElectronRendererListener<Lyrics>
+  type LyricsServiceStateListener = ElectronRendererListener<LyricsServiceState>
+
+  type TrackLyricsRequestListener = (
+    event: IpcRendererEvent,
+    value: Lyrics,
+    error: string
+  ) => void
+
   type PlaybackStateListener = ElectronRendererListener<PlaybackState>
 
   interface Window {
@@ -31,9 +36,9 @@ declare global {
     }
     LyricsService: {
       connect: () => void
-      requestConnectionStatus: () => void
-      subscribeOnConnectionStatus: (
-        listener: LyricsServiceConnectionListener
+      requestServiceState: () => void
+      subscribeOnServiceState: (
+        listener: LyricsServiceStateListener
       ) => UnsubscribeFunction
     }
     Track: {

@@ -1,13 +1,12 @@
 const { contextBridge, ipcRenderer } = require('electron')
 
 const {
-  SLA_LYRICS_DISCONNECT,
   SLA_LYRICS_CONNECT,
   SLA_AUTH_SIGN_OUT,
   SLA_AUTH_SIGN_IN,
   SLA_AUTH_STATE,
-  SLA_LYRICS_CONNECTION_STATUS_REQUEST,
-  SLA_LYRICS_CONNECTION_STATUS_REPLY,
+  SLA_LYRICS_SERVICE_STATE_REQUEST,
+  SLA_LYRICS_SERVICE_STATE_REPLY,
   SLA_TRACK_LYRICS_REQUEST,
   SLA_TRACK_LYRICS_REPLY,
   SLA_GET_PLAYBACK_STATE: SLA_REQUEST_PLAYBACK_STATE,
@@ -18,15 +17,12 @@ require('./core')
 
 contextBridge.exposeInMainWorld('LyricsService', {
   connect: () => ipcRenderer.send(SLA_LYRICS_CONNECT),
-  disconnect: () => ipcRenderer.send(SLA_LYRICS_DISCONNECT),
-  requestConnectionStatus: () =>
-    ipcRenderer.send(SLA_LYRICS_CONNECTION_STATUS_REQUEST),
-
-  subscribeOnConnectionStatus: listener => {
-    ipcRenderer.addListener(SLA_LYRICS_CONNECTION_STATUS_REPLY, listener)
+  requestServiceState: () => ipcRenderer.send(SLA_LYRICS_SERVICE_STATE_REQUEST),
+  subscribeOnServiceState: listener => {
+    ipcRenderer.addListener(SLA_LYRICS_SERVICE_STATE_REPLY, listener)
 
     return () =>
-      ipcRenderer.removeListener(SLA_LYRICS_CONNECTION_STATUS_REPLY, listener)
+      ipcRenderer.removeListener(SLA_LYRICS_SERVICE_STATE_REPLY, listener)
   },
 })
 
