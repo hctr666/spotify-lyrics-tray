@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { BrowserWindow } = require('electron')
 const { isDevelopment } = require('../helpers/environment')
+const Logger = require('../libs/logger')
 
 class BaseWindow {
   constructor() {
@@ -28,6 +29,20 @@ class BaseWindow {
         activate: false,
       })
     }
+  }
+
+  handleWebContentsLoadFailed() {
+    this.window.webContents.on(
+      'did-fail-load',
+      (_event, errorCode, errorDescription) => {
+        Logger.logError(
+          JSON.stringify({
+            errorCode,
+            errorDescription,
+          })
+        )
+      }
+    )
   }
 }
 

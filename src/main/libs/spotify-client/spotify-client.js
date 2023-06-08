@@ -4,6 +4,7 @@ const fetch = require('node-fetch')
 const { API_URL } = require('../../constants/spotify')
 const { REDIRECT_URI } = require('../../constants/spotify')
 const { isDevelopment } = require('../../helpers/environment')
+const Logger = require('../logger')
 
 const ACCOUNTS_DOMAIN = 'https://accounts.spotify.com'
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID
@@ -13,27 +14,27 @@ const SERVER_ERROR_STATUS = 500
 const NO_CONTENT_STATUS = 204
 
 const fetchToken = async ({ body, headers }) => {
-  const response = await fetch(`${ACCOUNTS_DOMAIN}/api/token`, {
-    method: 'POST',
-    body: new URLSearchParams(body).toString(),
-    headers,
-  })
+  try {
+    const response = await fetch(`${ACCOUNTS_DOMAIN}/api/token`, {
+      method: 'POST',
+      body: new URLSearchParams(body).toString(),
+      headers,
+    })
 
-  const data = await response.json()
+    const data = await response.json()
 
-  return data
+    return data
+  } catch (error) {
+    throw new Error(error)
+  }
 }
 
-const logError = (endpoint, error) => {
-  // eslint-disable-next-line no-console
-  console.error(
-    '[application:main]: ',
-    JSON.stringify({
-      ctx: 'Spotify API',
-      endpoint,
-      error,
-    })
-  )
+const createApiError = (endpoint, error) => {
+  return JSON.stringify({
+    context: 'Spotify API',
+    endpoint,
+    error,
+  })
 }
 
 class SpotifyClient {
@@ -65,18 +66,20 @@ class SpotifyClient {
       if (response.status === TOO_MANY_REQUESTS_STATUS) {
         const retryAfter = response.headers.get('Retry-After')
 
-        logError(endpoint, {
-          status: TOO_MANY_REQUESTS_STATUS,
-          message: `Too many requests, rate limiting applied, will retry after ${retryAfter} seconds`,
-        })
+        Logger.logError(
+          createApiError({
+            endpoint,
+            message: `Too many requests, rate limiting applied, will retry after ${retryAfter} seconds`,
+          })
+        )
 
-        return { retryAfter }
+        return { retryAfter: Number(retryAfter) }
       }
 
       if (response.status === SERVER_ERROR_STATUS) {
         throw new Error(
-          JSON.stringify({
-            status: SERVER_ERROR_STATUS,
+          createApiError({
+            endpoint,
             message: 'Server error',
           })
         )
@@ -94,7 +97,7 @@ class SpotifyClient {
 
       return { data }
     } catch (error) {
-      logError(endpoint, error.message)
+      Logger.logError(createApiError(endpoint, error.message))
       return error
     }
   }
@@ -145,25 +148,21 @@ class SpotifyClient {
     return token
   }
 
-  getPlaybackState = async ({ onRateLimitApplied } = {}) => {
+  getPlaybackState = async () => {
     // TODO: create a playback api mock
     if (isDevelopment()) {
       const [
         mockData,
       ] = require('../../../../api-mocks/playback-state-mock.json') //FIXME
 
-      return mockData
+      return { data: mockData }
     }
 
     const { data, retryAfter } = await this.fetchWebApi(
       'v1/me/player?market=ES'
     )
 
-    if (retryAfter && onRateLimitApplied) {
-      return onRateLimitApplied(Number(retryAfter))
-    }
-
-    return data
+    return { data, retryAfter }
   }
 }
 

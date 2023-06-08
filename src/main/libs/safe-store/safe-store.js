@@ -12,22 +12,34 @@ class SafeStore {
   }
 
   getPassword = key => {
-    const buffer = this.store.get(key)
+    try {
+      const buffer = this.store.get(key)
 
-    if (!buffer) {
-      return null
+      if (!buffer) {
+        return null
+      }
+
+      return safeStorage.decryptString(Buffer.from(buffer, DEFAULT_ENCODING))
+    } catch (error) {
+      throw new Error(error)
     }
-
-    return safeStorage.decryptString(Buffer.from(buffer, DEFAULT_ENCODING))
   }
 
   setPassword = (key, password) => {
-    const buffer = safeStorage.encryptString(password)
-    this.store.set(key, buffer.toString(DEFAULT_ENCODING))
+    try {
+      const buffer = safeStorage.encryptString(password)
+      this.store.set(key, buffer.toString(DEFAULT_ENCODING))
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 
   deletePassword = key => {
-    this.store.delete(key)
+    try {
+      this.store.delete(key)
+    } catch (error) {
+      throw new Error(error)
+    }
   }
 }
 

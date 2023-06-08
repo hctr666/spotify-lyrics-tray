@@ -14,12 +14,9 @@ class AuthWindow extends BaseWindow {
 
     const url = global.authService.getAuthUrl()
 
-    try {
-      this.window.loadURL(url)
-    } catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error, url)
-    }
+    // This url is not expected to finish load...
+    // so there's no need to wait for its resolution
+    this.window.loadURL(url)
   }
 }
 

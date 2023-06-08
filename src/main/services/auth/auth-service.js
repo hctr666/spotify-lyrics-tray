@@ -3,6 +3,7 @@ const { BaseService } = require('../base')
 const SafeStore = require('../../libs/safe-store')
 const { SpotifyClient } = require('../../libs/spotify-client/')
 const { getUrlSearchParams } = require('../../helpers/getUrlSearchParams')
+const Logger = require('../../libs/logger')
 
 const AUTH_TOKEN_ID = 'sla:auth-token'
 
@@ -33,26 +34,30 @@ class AuthService extends BaseService {
   }
 
   logout = () => {
-    this.safeStore.deletePassword(AUTH_TOKEN_ID)
-    this.refreshToken = null
+    try {
+      this.safeStore.deletePassword(AUTH_TOKEN_ID)
+      this.refreshToken = null
 
-    SpotifyClient.setAccessToken(null)
+      SpotifyClient.setAccessToken(null)
 
-    this.emit('logout')
+      this.emit('logout')
+    } catch (error) {
+      Logger.logError(error)
+    }
   }
 
   requestRefreshToken = async () => {
-    const authToken = this.safeStore.getPassword(AUTH_TOKEN_ID)
+    try {
+      const authToken = this.safeStore.getPassword(AUTH_TOKEN_ID)
 
-    if (authToken) {
-      try {
+      if (authToken) {
         const token = await SpotifyClient.getRefreshToken(authToken)
 
         SpotifyClient.setAccessToken(token.access_token)
-      } catch (error) {
-        this.logout()
-        throw new Error(error)
       }
+    } catch (error) {
+      Logger.logError(error)
+      this.logout()
     }
   }
 
@@ -71,8 +76,8 @@ class AuthService extends BaseService {
         this.safeStore.setPassword(AUTH_TOKEN_ID, this.refreshToken)
       }
     } catch (error) {
+      Logger.logError(error)
       this.logout()
-      throw new Error(error)
     }
   }
 }

@@ -64,17 +64,14 @@ class AppWindow extends BaseWindow {
     })
 
     this.window.webContents.once('did-finish-load', async () => {
-      try {
-        await global.authService.requestRefreshToken()
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error)
-      }
+      await global.authService.requestRefreshToken()
 
       this.window.webContents.send(SLA_AUTH_STATE, {
         isAuthenticated: global.authService.isAuthenticated(),
       })
     })
+
+    this.handleWebContentsLoadFailed()
   }
 }
 

@@ -7,6 +7,7 @@ const { getIsSpotifyAccountsUrl } = require('../helpers/isSpotifyAccountsUrl')
 const { SPOTIFY_WEB_URL } = require('../constants/spotify')
 const BaseWindow = require('./base-window')
 const { isDevelopment } = require('../helpers/environment')
+const Logger = require('../libs/logger')
 
 const isDev = isDevelopment()
 
@@ -42,9 +43,7 @@ class SpotifyWebWindow extends BaseWindow {
       await this.window.loadURL(SPOTIFY_WEB_URL)
       await this.#handleWindowDidFinishLoad(SPOTIFY_WEB_URL)
     } catch (error) {
-      // TODO: logging handling
-      // eslint-disable-next-line no-console
-      console.error({ error })
+      Logger.logError(error)
     }
 
     this.window.webContents.on(
@@ -53,18 +52,7 @@ class SpotifyWebWindow extends BaseWindow {
         await this.#handleWindowDidFinishLoad(event.sender.getURL())
     )
 
-    this.window.webContents.on(
-      'did-fail-load',
-      (_event, error, errorDescription) => {
-        // TODO: logging handling
-        // eslint-disable-next-line no-console
-        console.error({
-          error,
-          errorDescription,
-        })
-      }
-    )
-
+    this.handleWebContentsLoadFailed()
     this.initDevtools()
 
     return this.window
@@ -90,11 +78,15 @@ class SpotifyWebWindow extends BaseWindow {
       this.window.hide()
     }
 
-    const rendererScript = await getSpotifyRendererScript()
+    try {
+      const rendererScript = await getSpotifyRendererScript()
 
-    // Injecting renderer script this way as we're loading and external web
-    // TODO: research other ways to inject the renderer into this window
-    await this.window.webContents.executeJavaScript(rendererScript)
+      // Injecting renderer script this way as we're loading and external web
+      // TODO: research other ways to inject the renderer into this window
+      await this.window.webContents.executeJavaScript(rendererScript)
+    } catch (error) {
+      Logger.logError(error)
+    }
   }
 }
 

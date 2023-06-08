@@ -6,7 +6,7 @@ class Emittable {
 
   on = (event, fn) => {
     if (!this.eventEmitter) {
-      console.error('Event emitter instance not found')
+      throw new Error('Event emitter instance not found')
     }
 
     if (this.events.includes(event)) {
@@ -18,7 +18,7 @@ class Emittable {
 
   emit = (event, ...args) => {
     if (!this.events.includes(event)) {
-      throw new Error('Invalid event')
+      throw new Error(`Event [${event}] is invalid`)
     }
 
     return this.eventEmitter.emit(event, ...args)
