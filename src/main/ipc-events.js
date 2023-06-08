@@ -14,7 +14,7 @@ const {
 
 const sendToSpotifyWebWindow = (channel, ...args) => {
   /** @type {Electron.BrowserWindow | null} */
-  const spotifyWebWindow = global.spotifyWebWindow.getInstance()
+  const spotifyWebWindow = global.spotifyWebWindow.getWindow()
 
   if (spotifyWebWindow) {
     spotifyWebWindow.webContents.send(channel, ...args)
@@ -23,7 +23,7 @@ const sendToSpotifyWebWindow = (channel, ...args) => {
 
 const sendToAppWindow = (channel, value) => {
   /** @type {Electron.BrowserWindow | null} */
-  const appWindow = global.appWindow.getInstance()
+  const appWindow = global.appWindow.getWindow()
 
   if (appWindow) {
     appWindow.webContents.send(channel, value)

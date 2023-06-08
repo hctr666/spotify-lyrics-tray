@@ -35,14 +35,14 @@ class Application {
 
   handleSpotifyServiceEvents = () => {
     this.spotifyPlaybackService.on('state-changed', state => {
-      const appWindow = this.appWindow.getInstance()
+      const appWindow = this.appWindow.getWindow()
       appWindow?.webContents.send(SLA_ON_PLAYBACK_STATE, state)
     })
   }
 
   handleAuthServiceEvents = () => {
     this.authService.on('logout', () => {
-      const appWindow = this.appWindow.getInstance()
+      const appWindow = this.appWindow.getWindow()
 
       appWindow?.webContents.send(SLA_AUTH_STATE, {
         isAuthenticated: false,
@@ -60,7 +60,7 @@ class Application {
     session.defaultSession.webRequest.onBeforeRequest(filter, async details => {
       await this.authService.requestAccessToken(details.url)
 
-      const appWindow = this.appWindow.getInstance()
+      const appWindow = this.appWindow.getWindow()
 
       if (appWindow) {
         appWindow.webContents.send(SLA_AUTH_STATE, {
@@ -76,8 +76,8 @@ class Application {
   initializeTrayApp = () => {
     this.appTray.create()
 
-    const tray = this.appTray.getInstance()
-    const window = this.appWindow.getInstance()
+    const tray = this.appTray.getTray()
+    const window = this.appWindow.getWindow()
     const trayManager = new TrayManager(tray, window)
 
     window.on('ready-to-show', () => {

@@ -17,8 +17,7 @@ class BaseWindow {
     this.window = null
   }
 
-  // TODO: change method name
-  getInstance() {
+  getWindow() {
     return this.window && !this.window.isDestroyed() ? this.window : null
   }
 

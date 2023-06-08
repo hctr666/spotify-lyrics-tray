@@ -19,7 +19,7 @@ app.whenReady().then(async () => {
 })
 
 app.on('activate', () => {
-  const appWindow = main.appWindow.getInstance()
+  const appWindow = main.appWindow.getWindow()
   appWindow?.show()
 })
 

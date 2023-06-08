@@ -13,7 +13,7 @@ class AppTray {
     this.tray = tray
   }
 
-  getInstance() {
+  getTray() {
     return this.tray
   }
 }
