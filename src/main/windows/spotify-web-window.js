@@ -7,7 +7,7 @@ const { getIsSpotifyAccountsUrl } = require('../helpers/isSpotifyAccountsUrl')
 const { SPOTIFY_WEB_URL } = require('../constants/spotify')
 const BaseWindow = require('./base-window')
 const { isDevelopment } = require('../helpers/environment')
-const Logger = require('../libs/logger')
+const { Logger } = require('../libs/logger')
 
 const isDev = isDevelopment()
 

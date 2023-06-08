@@ -1,28 +1,37 @@
-const log = require('electron-log')
+const Logger = require('electron-log')
+
 const { isDevelopment } = require('../../helpers/environment')
 
-const infoLogger = log.create({ logId: 'info-log' })
-const errorLogger = log.create({ logId: 'error-log' })
+const configLogger = () => {
+  Logger.initialize({
+    preload: true,
+  })
 
-class Logger {
-  constructor(options) {
-    log.initialize(options)
+  if (isDevelopment()) {
+    Logger.transports.file.level = false
+  }
 
+  Logger.hooks.push(message => {
     if (!isDevelopment()) {
-      infoLogger.transports.file.fileName = 'info.log'
-      errorLogger.transports.file.fileName = 'error.log'
-    } else {
-      log.transports.file.level = false
+      return message
     }
-  }
 
-  logInfo = message => {
-    infoLogger.info(message)
-  }
+    if (message.level === 'info') {
+      Logger.transports.file.fileName = 'info.log'
+    }
 
-  logError = error => {
-    errorLogger.error(error)
-  }
+    if (message.level === 'error') {
+      Logger.transports.file.fileName = 'error.log'
+    }
+
+    return message
+  })
 }
 
-module.exports = new Logger({ preload: true })
+module.exports = {
+  configLogger,
+  Logger: Object.assign(Logger, {
+    logInfo: Logger.info,
+    logError: Logger.error,
+  }),
+}

@@ -4,7 +4,7 @@ const fetch = require('node-fetch')
 const { API_URL } = require('../../constants/spotify')
 const { REDIRECT_URI } = require('../../constants/spotify')
 const { isDevelopment } = require('../../helpers/environment')
-const Logger = require('../logger')
+const { Logger } = require('../logger')
 
 const ACCOUNTS_DOMAIN = 'https://accounts.spotify.com'
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID

@@ -10,7 +10,6 @@ module.exports = {
   SLA_LYRICS_ERROR_NOTIFY: 'sla:lyrics:error-notify',
   SLA_TRACK_LYRICS_REQUEST: 'sla:track-lyrics-request',
   SLA_TRACK_LYRICS_REPLY: 'sla:track-lyrics-reply',
-  SLA_LOG: 'sla:core:log',
   SLA_GET_PLAYBACK_STATE: 'sla:get-playback-state',
   SLA_ON_PLAYBACK_STATE: 'sla:on-playback-state',
   SLA_ON_ERROR: 'sla:on-error',

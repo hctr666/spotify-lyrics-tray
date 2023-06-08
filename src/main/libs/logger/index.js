@@ -1,3 +1,1 @@
-const Logger = require('./Logger')
-
-module.exports = Logger
+module.exports = require('./logger')

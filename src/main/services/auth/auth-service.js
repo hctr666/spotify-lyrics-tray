@@ -3,7 +3,7 @@ const { BaseService } = require('../base')
 const SafeStore = require('../../libs/safe-store')
 const { SpotifyClient } = require('../../libs/spotify-client/')
 const { getUrlSearchParams } = require('../../helpers/getUrlSearchParams')
-const Logger = require('../../libs/logger')
+const { Logger } = require('../../libs/logger')
 
 const AUTH_TOKEN_ID = 'sla:auth-token'
 

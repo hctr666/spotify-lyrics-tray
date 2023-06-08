@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 const { BrowserWindow } = require('electron')
 const { isDevelopment } = require('../helpers/environment')
-const Logger = require('../libs/logger')
+const { Logger } = require('../libs/logger')
 
 class BaseWindow {
   constructor() {

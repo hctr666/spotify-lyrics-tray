@@ -2,6 +2,9 @@ const { app, safeStorage } = require('electron')
 
 const { initializeIpcEvents } = require('./ipc-events')
 const MainApplication = require('./application')
+const { configLogger } = require('./libs/logger')
+
+configLogger()
 
 const main = new MainApplication()
 
