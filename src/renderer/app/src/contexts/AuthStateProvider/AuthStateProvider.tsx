@@ -10,7 +10,7 @@ export const AuthStateProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const unsubscribe = window.Auth.subscribe((_event, state) => {
-      window.Core.log({ ctx: 'app:renderer', state })
+      window.Core.log(JSON.stringify({ source: 'renderer/app', state }), 'info')
 
       if (state.isAuthenticated) {
         localStorage.setItem('authenticated', '1')

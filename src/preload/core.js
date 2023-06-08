@@ -1,8 +1,12 @@
 const { contextBridge, ipcRenderer } = require('electron')
-const { SLA_LOG } = require('../main/constants/ipc-channels')
+
 const { isDevelopment } = require('../main/helpers/environment')
 
 contextBridge.exposeInMainWorld('Core', {
-  log: (payload, level) => ipcRenderer.invoke(SLA_LOG, payload, level),
+  log: (payload, level) =>
+    ipcRenderer.send('__ELECTRON_LOG__', {
+      data: [payload],
+      level,
+    }),
   isDev: () => isDevelopment(),
 })

@@ -6,7 +6,6 @@ const {
   SLA_TRACK_LYRICS_REQUEST,
   SLA_TRACK_LYRICS_REPLY,
   SLA_LYRICS_CONNECT_REQUEST,
-  SLA_LOG,
 } = require('../main/constants/ipc-channels')
 
 require('./core')
@@ -35,18 +34,4 @@ contextBridge.exposeInMainWorld('SpotifyWeb', {
 
     return () => ipcRenderer.removeListener(SLA_TRACK_LYRICS_REQUEST, listener)
   },
-  logError: message =>
-    ipcRenderer.invoke(
-      SLA_LOG,
-      {
-        source: 'renderer/spotify-web',
-        message,
-      },
-      'error'
-    ),
-  logInfo: message =>
-    ipcRenderer.invoke(SLA_LOG, {
-      source: 'renderer/spotify-web',
-      message,
-    }),
 })

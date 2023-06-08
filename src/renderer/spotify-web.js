@@ -25,6 +25,26 @@ const errors = {
     'Connection to service failed, tray again later or restart the app',
 }
 
+const logError = message => {
+  window.Core.log(
+    JSON.stringify({
+      source: 'renderer/spotify-web',
+      message,
+    }),
+    'error'
+  )
+}
+
+const logInfo = message => {
+  window.Core.log(
+    JSON.stringify({
+      source: 'renderer/spotify-web',
+      message,
+    }),
+    'info'
+  )
+}
+
 const waitForElement = selector => {
   return new Promise((resolve, reject) => {
     let element = document.querySelector(selector)
@@ -161,7 +181,7 @@ const logout = async () => {
     localStorage.setItem(IMMEDIATELLY_SEND_SERVICE_STATE, '1')
     logoutButton.click()
 
-    window.SpotifyWeb.logInfo('logging out...')
+    logInfo('logging out...')
   } catch (error) {
     throw new Error(error.message)
   }
@@ -177,7 +197,7 @@ const login = async () => {
     localStorage.setItem(IMMEDIATELLY_SEND_SERVICE_STATE, '1')
     loginButton.click()
 
-    window.SpotifyWeb.logInfo('Redirecting to login page...')
+    logInfo('Redirecting to login page...')
   } catch (error) {
     throw new Error(error.message)
   }
@@ -209,7 +229,7 @@ const initMain = async () => {
       IMMEDIATELLY_SEND_SERVICE_STATE
     )
 
-    window.SpotifyWeb.logInfo(
+    logInfo(
       JSON.stringify({
         state: JSON.stringify(state),
         shouldSendServiceState,
@@ -230,7 +250,7 @@ const initMain = async () => {
 
     window.SpotifyWeb.subscribeOnConnect(() => {
       login().catch(error => {
-        window.SpotifyWeb.logError(error.message)
+        logError(error.message)
         window.SpotifyWeb.sendServiceState({
           status: 'error',
           error: errors.SERVICE_CONNECT_FAILED,
@@ -252,13 +272,13 @@ const initMain = async () => {
           window.SpotifyWeb.sendTrackLyrics(lyrics)
         })
         .catch(error => {
-          window.SpotifyWeb.logError(error.message)
+          logError(error.message)
           window.SpotifyWeb.sendTrackLyrics(null, errors.LYRICS_FETCH_FAILED)
 
           // Logout when token sent is invalid
           if (error.message === errors.INVALID_TOKEN) {
             logout().catch(error => {
-              window.SpotifyWeb.logError(error.message)
+              logError(error.message)
             })
           }
         })
@@ -267,7 +287,7 @@ const initMain = async () => {
     state.error = errors.SERVICE_LOAD_ERROR
     state.status = 'error'
 
-    window.SpotifyWeb.logError(error.message)
+    logError(error.message)
   }
 }
 

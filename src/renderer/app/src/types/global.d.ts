@@ -7,12 +7,7 @@ import type { LyricsServiceState } from './lyrics-service'
 declare global {
   type ElectronRendererListener<T> = (event: IpcRendererEvent, value: T) => void
   type UnsubscribeFunction = () => void
-
-  type LogPayload = {
-    ctx: unknown
-    [key: string]: unknown
-  }
-
+  type LogPayload = string | Record<string, string>
   type AuthStateListener = ElectronRendererListener<AuthState>
   type LyricsServiceStateListener = ElectronRendererListener<LyricsServiceState>
 
@@ -31,7 +26,7 @@ declare global {
       subscribe: (listener: AuthStateListener) => UnsubscribeFunction
     }
     Core: {
-      log: (payload: LogPayload) => void
+      log: (payload: LogPayload, level: 'info' | 'error') => void
       isDev: () => boolean
     }
     LyricsService: {
