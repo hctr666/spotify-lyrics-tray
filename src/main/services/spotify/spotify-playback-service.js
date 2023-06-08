@@ -22,11 +22,15 @@ class SpotifyPlaybackService extends Emittable {
 
   getState = async () => {
     // TODO: add retryAfter into the client response, remove callback
-    const playbackState = await SpotifyClient.getPlaybackState({
-      onRateLimitApplied: retryAfter => {
-        this.retryAfter = retryAfter
-      },
-    })
+    const { playbackState, retryAfter } = await SpotifyClient.getPlaybackState()
+
+    // When rate limiting has been applied,
+    // reset state check interval and use returned retryAfter value
+    if (retryAfter && retryAfter !== this.retryAfter) {
+      this.retryAfter = retryAfter
+      this.abortStateCheck()
+      this.initStateCheck()
+    }
 
     // Note: private session flag returns false even when is switched off,
     // until a playback action is triggered such play/pause next/prev...

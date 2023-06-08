@@ -155,14 +155,14 @@ class SpotifyClient {
         mockData,
       ] = require('../../../../api-mocks/playback-state-mock.json') //FIXME
 
-      return { data: mockData }
+      return { playbackState: mockData }
     }
 
     const { data, retryAfter } = await this.fetchWebApi(
       'v1/me/player?market=ES'
     )
 
-    return { data, retryAfter }
+    return { playbackState: data, retryAfter }
   }
 }
 
