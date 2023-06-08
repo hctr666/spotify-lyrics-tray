@@ -4160,6 +4160,11 @@ ejs@^3.1.6:
   dependencies:
     jake "^10.8.5"
 
+electron-log@^5.0.0-beta.24:
+  version "5.0.0-beta.24"
+  resolved "https://registry.yarnpkg.com/electron-log/-/electron-log-5.0.0-beta.24.tgz#740b73c5703e0e45c87277508ff36cfe9e1ea9fe"
+  integrity sha512-wDrxfCtRJLWL/xKXkRHtSTGoMaJPGbfIuwoo7ssDlgd8TTEBhRncjejzluswCewXJJqZph5PPNn8Y2McwUP29g==
+
 electron-store@^8.0.2:
   version "8.1.0"
   resolved "https://registry.yarnpkg.com/electron-store/-/electron-store-8.1.0.tgz#46a398f2bd9aa83c4a9daaae28380e2b3b9c7597"
