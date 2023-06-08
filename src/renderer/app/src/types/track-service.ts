@@ -8,7 +8,7 @@ export type LyricsLine = {
 
 export interface Lyrics {
   lines: LyricsLine[]
-  isLineSynced: boolean
+  syncType: 'LINE_SYNCED' | 'UNSYNCED'
 }
 
 export interface TrackServiceState {

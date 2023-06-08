@@ -145,7 +145,6 @@ class SpotifyClient {
     return token
   }
 
-  // TODO: keep commented until start with the lyrics view
   getPlaybackState = async ({ onRateLimitApplied } = {}) => {
     // TODO: create a playback api mock
     if (isDevelopment()) {

@@ -44,7 +44,7 @@ const lyricsMock: Lyrics = {
       words: 'line word 6',
     },
   ],
-  isLineSynced: true,
+  syncType: 'LINE_SYNCED',
 }
 
 const expectedLines = lyricsMock.lines.map((line, idx) => ({

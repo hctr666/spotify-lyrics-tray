@@ -37,7 +37,7 @@ export const LyricsViewer = () => {
 
   return (
     <>
-      {lyrics?.isLineSynced ? (
+      {lyrics?.syncType === 'LINE_SYNCED' ? (
         <SyncedLyrics progress={playbackState?.progress} lyrics={lyrics} />
       ) : (
         <UnsyncedLyrics lyrics={lyrics} />

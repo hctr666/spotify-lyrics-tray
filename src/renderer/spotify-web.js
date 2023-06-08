@@ -244,8 +244,8 @@ const initMain = async () => {
           const lyrics = data
             ? {
                 lines: data?.lyrics.lines,
-                // TODO: send sync type value instead of boolean
-                isLineSynced: data?.lyrics.syncType === 'LINE_SYNCED',
+                syncType: data?.lyrics.syncType,
+                // TODO: send color values
               }
             : null
 

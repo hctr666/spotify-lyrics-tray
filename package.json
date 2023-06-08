@@ -98,7 +98,8 @@
   "lint-staged": {
     "src/**/*.js": [
       "prettier --check --ignore-unknown --write",
-      "yarn lint"
+      "yarn lint",
+      "yarn typecheck"
     ]
   },
   "browserslist": {
