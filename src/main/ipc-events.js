@@ -12,55 +12,51 @@ const {
   SLA_GET_PLAYBACK_STATE,
 } = require('./constants/ipc-channels')
 
-// TODO: create a "send-to-window" reusable helper function
+const sendToSpotifyWebWindow = (channel, ...args) => {
+  /** @type {Electron.BrowserWindow | null} */
+  const spotifyWebWindow = global.spotifyWebWindow.getInstance()
+
+  if (spotifyWebWindow) {
+    spotifyWebWindow.webContents.send(channel, ...args)
+  }
+}
+
+const sendToAppWindow = (channel, value) => {
+  /** @type {Electron.BrowserWindow | null} */
+  const appWindow = global.appWindow.getInstance()
+
+  if (appWindow) {
+    appWindow.webContents.send(channel, value)
+  }
+}
 
 const initializeIpcEvents = () => {
-  ipcMain.on(SLA_LYRICS_CONNECT, async () => {
-    const spotifyWebWindow = global.spotifyWebWindow.getInstance()
-
-    if (spotifyWebWindow) {
-      spotifyWebWindow.webContents.send(SLA_LYRICS_CONNECT_REQUEST)
-    }
+  ipcMain.on(SLA_LYRICS_CONNECT, () => {
+    sendToSpotifyWebWindow(SLA_LYRICS_CONNECT_REQUEST)
   })
 
   ipcMain.on(SLA_AUTH_SIGN_OUT, () => {
     global.authService.logout()
   })
 
-  ipcMain.on(SLA_AUTH_SIGN_IN, async () => {
+  ipcMain.on(SLA_AUTH_SIGN_IN, () => {
     global.authWindow.create()
   })
 
   ipcMain.on(SLA_LYRICS_SERVICE_STATE_REQUEST, () => {
-    /** @type {Electron.BrowserWindow | null} */
-    const spotifyWebWindow = global.spotifyWebWindow.getInstance()
-
-    if (spotifyWebWindow) {
-      spotifyWebWindow.webContents.send(SLA_LYRICS_SERVICE_STATE_REQUEST)
-    }
+    sendToSpotifyWebWindow(SLA_LYRICS_SERVICE_STATE_REQUEST)
   })
 
   ipcMain.on(SLA_LYRICS_SERVICE_STATE_REPLY, (_event, status) => {
-    /** @type {Electron.BrowserWindow | null} */
-    const appWindow = global.appWindow.getInstance()
-
-    if (appWindow) {
-      appWindow.webContents.send(SLA_LYRICS_SERVICE_STATE_REPLY, status)
-    }
+    sendToAppWindow(SLA_LYRICS_SERVICE_STATE_REPLY, status)
   })
 
-  ipcMain.handle(SLA_TRACK_LYRICS_REQUEST, async (_event, trackId) => {
-    const spotifyWebWindow = global.spotifyWebWindow.getInstance()
-    spotifyWebWindow.webContents.send(SLA_TRACK_LYRICS_REQUEST, trackId)
+  ipcMain.handle(SLA_TRACK_LYRICS_REQUEST, (_event, trackId) => {
+    sendToSpotifyWebWindow(SLA_TRACK_LYRICS_REQUEST, trackId)
   })
 
   ipcMain.on(SLA_TRACK_LYRICS_REPLY, (_event, lyrics, error) => {
-    /** @type {Electron.BrowserWindow | null} */
-    const appWindow = global.appWindow.getInstance()
-
-    if (appWindow) {
-      appWindow.webContents.send(SLA_TRACK_LYRICS_REPLY, lyrics, error)
-    }
+    sendToAppWindow(SLA_TRACK_LYRICS_REPLY, lyrics, error)
   })
 
   ipcMain.handle(SLA_GET_PLAYBACK_STATE, async () => {
