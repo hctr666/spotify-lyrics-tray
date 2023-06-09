@@ -1,0 +1,1 @@
+export { ProtectedRouteElement } from './ProtectedRouteElement'

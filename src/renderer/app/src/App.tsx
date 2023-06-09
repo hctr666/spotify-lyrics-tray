@@ -1,25 +1,14 @@
-import { HashRouter as Router, Route, Routes, Navigate } from 'react-router-dom'
+import { HashRouter as Router, Route, Routes } from 'react-router-dom'
 
 import { PageLogin } from './pages/PageLogin'
 import { AuthStateProvider } from './contexts/AuthStateProvider'
 import { PageHome } from './pages/PageHome/PageHome'
 import { LyricsServiceProvider } from './contexts/LyricsServiceProvider'
 import { TrackServiceProvider } from './contexts/TrackServiceProvider'
-import { useAuthState } from './hooks/useAuthState/useAuthState'
 import { PageSettings } from './pages/PageSettings'
 import { PlaybackStateProvider } from './contexts/PlaybackStateProvider/PlaybackStateProvider'
 import { NotificationContainer } from './components/NotificationContainer'
-
-// TODO: make this component to behave much like a Route component
-const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
-  const authState = useAuthState()
-
-  if (!authState.isAuthenticated) {
-    return <Navigate to='/login' />
-  }
-
-  return children
-}
+import { ProtectedRouteElement } from './components/ProtectedRouteElement'
 
 function App() {
   return (
@@ -32,19 +21,11 @@ function App() {
                 <Route path='/login' element={<PageLogin />} />
                 <Route
                   path='/settings'
-                  element={
-                    <ProtectedRoute>
-                      <PageSettings />
-                    </ProtectedRoute>
-                  }
+                  element={<ProtectedRouteElement element={<PageSettings />} />}
                 />
                 <Route
                   path='/'
-                  element={
-                    <ProtectedRoute>
-                      <PageHome />
-                    </ProtectedRoute>
-                  }
+                  element={<ProtectedRouteElement element={<PageHome />} />}
                 />
               </Routes>
             </TrackServiceProvider>
