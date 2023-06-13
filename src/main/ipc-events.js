@@ -50,8 +50,8 @@ const initializeIpcEvents = () => {
     sendToAppWindow(SLA_LYRICS_SERVICE_STATE_REPLY, status)
   })
 
-  ipcMain.handle(SLA_TRACK_LYRICS_REQUEST, (_event, trackId) => {
-    sendToSpotifyWebWindow(SLA_TRACK_LYRICS_REQUEST, trackId)
+  ipcMain.handle(SLA_TRACK_LYRICS_REQUEST, (_event, trackId, imageUrl) => {
+    sendToSpotifyWebWindow(SLA_TRACK_LYRICS_REQUEST, trackId, imageUrl)
   })
 
   ipcMain.on(SLA_TRACK_LYRICS_REPLY, (_event, lyrics, error) => {

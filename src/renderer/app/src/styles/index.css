@@ -5,9 +5,13 @@
 :root {
   --theme-color-gray-dark: #1f1f1f;
   --page-header-height: 50px;
+  --lyrics-color-background: transparent;
+  --lyrics-color-highlight: #fff;
+  --lyrics-color-text: #fff;
 }
 
 @import "./buttons.css";
+@import "./lyrics-viewer.css";
 @import "./page.css";
 @import "./synced-lyrics.css";
 @import "./unsynced-lyrics.css";

@@ -45,6 +45,15 @@ const logInfo = message => {
   )
 }
 
+const getComputedRGB = value => {
+  const rgb = {
+    r: (value >> 16) & 255,
+    g: (value >> 8) & 255,
+    b: 255 & value,
+  }
+  return rgb
+}
+
 const waitForElement = selector => {
   return new Promise((resolve, reject) => {
     let element = document.querySelector(selector)
@@ -111,10 +120,11 @@ const getAppData = () => {
     }))?.[0]
 }
 
-const getLyricsApiUrl = trackId => {
+const getColorLyricsAPIUrl = (trackId, imageUrl) => {
   return `
-    https://spclient.wg.spotify.com/color-lyrics/v2/track/${trackId}/image/https%3A%2F%2Fi.scdn.co%2Fimage%2Fab67616d0000b273fb1cb900d28642e668d77b12
-    ?format=json&vocalRemoval=false&market=from_token`
+    https://spclient.wg.spotify.com/color-lyrics/v2/track/${trackId}/image/${encodeURIComponent(
+    imageUrl
+  )}?format=json&vocalRemoval=false&market=from_token`
 }
 
 const getAccessToken = () => {
@@ -132,7 +142,7 @@ const getAccessToken = () => {
   return null
 }
 
-const getTrackLyrics = async trackId => {
+const getTrackLyrics = async (trackId, imageUrl) => {
   // TODO: create a mocked lyrics api
   if (window.Core.isDev()) {
     const mockedApi = window.SpotifyWeb.fetchLyricsMockAPI()
@@ -144,7 +154,7 @@ const getTrackLyrics = async trackId => {
   }
 
   try {
-    const url = getLyricsApiUrl(trackId)
+    const url = getColorLyricsAPIUrl(trackId, imageUrl)
     const accessToken = getAccessToken()
 
     const response = await fetch(url, {
@@ -258,22 +268,28 @@ const initMain = async () => {
       })
     })
 
-    window.SpotifyWeb.subscribeOnTrackLyrics((_event, trackId) => {
-      getTrackLyrics(trackId)
-        .then(data => {
-          const lyrics = data
+    window.SpotifyWeb.subscribeOnTrackLyrics((_event, trackId, imageUrl) => {
+      getTrackLyrics(trackId, imageUrl)
+        .then(_data => {
+          const data = _data
             ? {
-                lines: data?.lyrics.lines,
-                syncType: data?.lyrics.syncType,
-                // TODO: send color values
+                lyrics: {
+                  lines: _data?.lyrics.lines,
+                  syncType: _data?.lyrics.syncType,
+                },
+                colors: {
+                  text: getComputedRGB(_data.colors.text),
+                  activeText: getComputedRGB(_data.colors.highlightText),
+                  background: getComputedRGB(_data.colors.background),
+                },
               }
-            : null
+            : {}
 
-          window.SpotifyWeb.sendTrackLyrics(lyrics)
+          window.SpotifyWeb.sendTrackLyrics(data)
         })
         .catch(error => {
           logError(error.message)
-          window.SpotifyWeb.sendTrackLyrics(null, errors.LYRICS_FETCH_FAILED)
+          window.SpotifyWeb.sendTrackLyrics({}, errors.LYRICS_FETCH_FAILED)
 
           // Logout when token sent is invalid
           if (error.message === errors.INVALID_TOKEN) {

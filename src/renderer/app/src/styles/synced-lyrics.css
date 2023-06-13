@@ -1,7 +1,15 @@
 .synced-lyrics-container {
-  @apply my-2;
+  @apply px-8 py-5;
 }
 
 .synced-lyrics-lines {
-  @apply flex flex-col gap-1 leading-9 text-xl text-gray-500 font-medium;
+  @apply flex flex-col gap-1 leading-8 text-xl text-gray-500 font-medium;
+}
+
+.synced-lyrics-line {
+  color: var(--lyrics-color-text);
+}
+
+.synced-lyrics-line--active {
+  color: var(--lyrics-color-highlight);
 }

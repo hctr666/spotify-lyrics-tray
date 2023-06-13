@@ -1,6 +1,6 @@
 import type { IpcRendererEvent } from 'electron'
 import type { AuthState } from '../contexts/AuthStateProvider/AuthStateContext'
-import type { Lyrics } from './track-service'
+import type { Lyrics, LyricsColors } from './track-service'
 import type { PlaybackState } from './playback-state'
 import type { LyricsServiceState } from './lyrics-service'
 
@@ -10,10 +10,18 @@ declare global {
   type LogPayload = string | Record<string, string>
   type AuthStateListener = ElectronRendererListener<AuthState>
   type LyricsServiceStateListener = ElectronRendererListener<LyricsServiceState>
+  type RGBObject = {
+    r: string
+    g: string
+    b: string
+  }
 
   type TrackLyricsRequestListener = (
     event: IpcRendererEvent,
-    value: Lyrics,
+    value: {
+      lyrics: Lyrics
+      colors: LyricsColors
+    },
     error: string
   ) => void
 
@@ -37,7 +45,7 @@ declare global {
       ) => UnsubscribeFunction
     }
     Track: {
-      requestLyrics: (trackId) => void
+      requestLyrics: (trackId: string, imageUrl: string) => void
       subscribeOnLyrics: (
         listener: TrackLyricsRequestListener
       ) => UnsubscribeFunction

@@ -2,12 +2,13 @@ import { PropsWithChildren, useEffect, useState } from 'react'
 
 import { useLyricsService } from '~/hooks/useLyricsService/useLyricsService'
 import { usePlaybackState } from '~/hooks/usePlaybackState/usePlaybackState'
-import type { Lyrics } from '~/types/track-service'
+import type { Lyrics, LyricsColors } from '~/types/track-service'
 import { TrackServiceContext } from './TrackServiceContext'
 import { useTimeElapsed } from '~/hooks/useTimeElapsed/useTimeElapsed'
 
 export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
   const [lyrics, setLyrics] = useState<Lyrics>()
+  const [colors, setColors] = useState<LyricsColors>()
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
 
@@ -17,6 +18,7 @@ export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
 
   const trackId = playbackState?.trackId
   const progress = playbackState?.progress
+  const imageUrl = playbackState?.imageUrl
 
   const isLyricsServiceConnected = lyricsService.isConnected
   const lyricsServiceError = lyricsService.error
@@ -28,14 +30,18 @@ export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
       return
     }
 
-    if (isLyricsServiceConnected && trackId && hasNewTrack) {
+    const shouldRequestLyrics =
+      isLyricsServiceConnected && trackId && imageUrl && hasNewTrack
+
+    if (shouldRequestLyrics) {
       startElapsing()
       setIsLoading(true)
-      window.Track.requestLyrics(trackId)
+      window.Track.requestLyrics(trackId, imageUrl)
     }
   }, [
     isLyricsServiceConnected,
     trackId,
+    imageUrl,
     hasNewTrack,
     lyricsServiceError,
     startElapsing,
@@ -43,10 +49,11 @@ export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const unsubscribeOnLyrics = window.Track.subscribeOnLyrics(
-      (_event, lyrics, _error) => {
+      (_event, { lyrics, colors }, _error) => {
         if (_error) {
           setError(_error)
           setLyrics(undefined)
+          setColors(undefined)
         } else {
           if (typeof progress === 'number') {
             // eslint-disable-next-line no-console
@@ -58,6 +65,7 @@ export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
 
           setError('')
           setLyrics(lyrics)
+          setColors(colors)
         }
         setIsLoading(false)
       }
@@ -72,6 +80,7 @@ export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
     error,
     isLoading,
     lyrics,
+    colors,
   }
 
   return (

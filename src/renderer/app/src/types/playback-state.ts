@@ -1,6 +1,7 @@
 export interface PlaybackState {
-  trackId: string
-  progress: number
+  imageUrl: string
   isPlaying: boolean
   isInactive: boolean
+  progress: number
+  trackId: string
 }

@@ -1,12 +1,55 @@
+import { useEffect, useMemo } from 'react'
+
 import { useTrackService } from '~/hooks/useTrackService'
 import { usePlaybackState } from '~/hooks/usePlaybackState'
 import { SyncedLyrics } from '../SyncedLyrics'
 import { UnsyncedLyrics } from '../UnsyncedLyrics'
+import { rgbToCSS } from '~/helpers/colors'
 
 export const LyricsViewer = () => {
-  const { lyrics, error, isLoading } = useTrackService()
+  const { lyrics, error, isLoading, colors } = useTrackService()
   const { playbackState } = usePlaybackState()
   const lyricsNotFound = !lyrics || !lyrics.lines
+
+  const { textColor, backgroundColor, highlightColor } = useMemo(() => {
+    const highlightColor = colors?.highlightText
+      ? rgbToCSS(colors.highlightText)
+      : ''
+    const textColor = colors?.text ? rgbToCSS(colors.text) : ''
+    const backgroundColor = colors?.background
+      ? rgbToCSS(colors.background)
+      : ''
+
+    return {
+      textColor,
+      backgroundColor,
+      highlightColor,
+    }
+  }, [colors])
+
+  // TODO: optimize property updates
+  useEffect(() => {
+    if (textColor) {
+      document.documentElement.style.setProperty(
+        '--lyrics-color-text',
+        textColor
+      )
+    }
+
+    if (backgroundColor) {
+      document.documentElement.style.setProperty(
+        '--lyrics-color-background',
+        backgroundColor
+      )
+    }
+
+    if (highlightColor) {
+      document.documentElement.style.setProperty(
+        '--lyrics-color-highlight',
+        highlightColor
+      )
+    }
+  }, [textColor, backgroundColor, highlightColor])
 
   if (playbackState?.isInactive) {
     return (
@@ -36,12 +79,12 @@ export const LyricsViewer = () => {
   }
 
   return (
-    <>
+    <div className='lyrics-viewer-container'>
       {lyrics?.syncType === 'LINE_SYNCED' ? (
         <SyncedLyrics progress={playbackState?.progress} lyrics={lyrics} />
       ) : (
         <UnsyncedLyrics lyrics={lyrics} />
       )}
-    </>
+    </div>
   )
 }

@@ -27,8 +27,8 @@ contextBridge.exposeInMainWorld('LyricsService', {
 })
 
 contextBridge.exposeInMainWorld('Track', {
-  requestLyrics: trackId =>
-    ipcRenderer.invoke(SLA_TRACK_LYRICS_REQUEST, trackId),
+  requestLyrics: (trackId, imageUrl) =>
+    ipcRenderer.invoke(SLA_TRACK_LYRICS_REQUEST, trackId, imageUrl),
   subscribeOnLyrics: listener => {
     ipcRenderer.addListener(SLA_TRACK_LYRICS_REPLY, listener)
 
