@@ -19,5 +19,6 @@ export const PlaybackStateContext = createContext<PlaybackStateContextValue>({
       isInactive: true,
       progress: 0,
       trackId: '',
+      imageUrl: '',
     }),
 })

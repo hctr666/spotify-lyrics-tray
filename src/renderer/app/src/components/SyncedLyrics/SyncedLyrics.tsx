@@ -23,13 +23,21 @@ export const SyncedLyrics = ({ progress, lyrics }: SyncedLyricsProps) => {
         {lines?.map(line => {
           if (activeLine?.id === line.id) {
             return (
-              <div ref={activeLineRef} className='text-white' key={line.id}>
+              <div
+                ref={activeLineRef}
+                className='synced-lyrics-line--active'
+                key={line.id}
+              >
                 {line.words}
               </div>
             )
           }
 
-          return <div key={line.id}>{line.words}</div>
+          return (
+            <div className='synced-lyrics-line' key={line.id}>
+              {line.words}
+            </div>
+          )
         })}
       </div>
     </div>

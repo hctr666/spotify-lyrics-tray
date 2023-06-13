@@ -21,7 +21,6 @@ class SpotifyPlaybackService extends Emittable {
   }
 
   getState = async () => {
-    // TODO: add retryAfter into the client response, remove callback
     const { playbackState, retryAfter } = await SpotifyClient.getPlaybackState()
 
     // When rate limiting has been applied,
@@ -42,12 +41,14 @@ class SpotifyPlaybackService extends Emittable {
     const isPlaying = isInactive ? false : playbackState.is_playing
     const trackId = isInactive || !isTrack ? '' : playbackState.item?.id
     const progress = isInactive || !isTrack ? 0 : playbackState.progress_ms
+    const imageUrl = playbackState?.item?.album?.images?.[0].url
 
     return {
       isInactive,
       isPlaying,
       trackId,
       progress,
+      imageUrl,
     }
   }
 

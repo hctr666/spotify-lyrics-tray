@@ -245,6 +245,11 @@
         }
       ],
       "syncType": "LINE_SYNCED"
+    },
+    "colors": {
+      "background": -8161715,
+      "highlightText": -1,
+      "text": -16777216
     }
   },
   {
@@ -565,6 +570,11 @@
         }
       ],
       "syncType": "UNSYNCED"
+    },
+    "colors": {
+      "background": -11238618,
+      "highlightText": -1,
+      "text": -16777216
     }
   }
 ]

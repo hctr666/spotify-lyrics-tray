@@ -18,7 +18,7 @@ export const PageHome = () => {
           ⚙
         </button>
       </Page.Header>
-      <Page.Content>
+      <Page.Content noPaddingX>
         <LyricsViewer />
       </Page.Content>
     </Page>
