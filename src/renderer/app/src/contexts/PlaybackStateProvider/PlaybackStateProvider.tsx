@@ -2,19 +2,11 @@ import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
 import { PlaybackState } from '~/types/playback-state'
 import { PlaybackStateContext } from './PlaybackStateContext'
+import { useAuthState } from '~/hooks/useAuthState/useAuthState'
 
 export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
-  const [playbackState, setPlaybackState] = useState<PlaybackState | null>(
-    () => {
-      const value = localStorage.getItem('playback-state')
-
-      if (!value) {
-        return null
-      }
-
-      return JSON.parse(value) as PlaybackState
-    }
-  )
+  const [playbackState, setPlaybackState] = useState<PlaybackState | null>(null)
+  const { isAuthenticated } = useAuthState()
   const [hasNewTrack, setHasNewTrack] = useState(false)
   const trackId = playbackState?.trackId
   const progress = playbackState?.progress
@@ -47,9 +39,11 @@ export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
   )
 
   useEffect(() => {
-    window.PlaybackState.getState().then(state => {
-      handleStateResponse(state)
-    })
+    if (isAuthenticated) {
+      window.PlaybackState.getState().then(state => {
+        handleStateResponse(state)
+      })
+    }
 
     const unsubscribe = window.PlaybackState.subscribeOnState(
       (_event, state) => {
@@ -61,7 +55,7 @@ export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
       unsubscribe()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isAuthenticated])
 
   return (
     <PlaybackStateContext.Provider

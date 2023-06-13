@@ -57,17 +57,17 @@ class AppWindow extends BaseWindow {
       this.window.hide()
     })
 
-    this.window.on('focus', () => {
-      if (global.authService.isAuthenticated()) {
-        global.spotifyPlaybackService.initStateCheck()
-      }
-    })
-
-    this.window.webContents.once('did-finish-load', async () => {
+    this.window.webContents.on('did-finish-load', async () => {
       await global.authService.requestRefreshToken()
 
       this.window.webContents.send(SLA_AUTH_STATE, {
         isAuthenticated: global.authService.isAuthenticated(),
+      })
+
+      this.window.on('focus', () => {
+        if (global.authService.isAuthenticated()) {
+          global.spotifyPlaybackService.initStateCheck()
+        }
       })
     })
 
