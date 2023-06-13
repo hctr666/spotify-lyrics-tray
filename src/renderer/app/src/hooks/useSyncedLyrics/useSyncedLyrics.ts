@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 
-import { Lyrics } from '~/types/track-service'
+import { Lyrics } from '~/types/track-lyrics'
 
 export interface UseSyncedLyricsProps {
   lyrics?: Lyrics

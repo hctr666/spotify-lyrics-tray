@@ -2,11 +2,11 @@ import { PropsWithChildren, useEffect, useState } from 'react'
 
 import { useLyricsService } from '~/hooks/useLyricsService/useLyricsService'
 import { usePlaybackState } from '~/hooks/usePlaybackState/usePlaybackState'
-import type { Lyrics, LyricsColors } from '~/types/track-service'
-import { TrackServiceContext } from './TrackServiceContext'
+import type { Lyrics, LyricsColors } from '~/types/track-lyrics'
+import { TrackLyricsContext } from './TrackLyricsContext'
 import { useTimeElapsed } from '~/hooks/useTimeElapsed/useTimeElapsed'
 
-export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
+export const TrackLyricsProvider = ({ children }: PropsWithChildren) => {
   const [lyrics, setLyrics] = useState<Lyrics>()
   const [colors, setColors] = useState<LyricsColors>()
   const [error, setError] = useState('')
@@ -84,8 +84,8 @@ export const TrackServiceProvider = ({ children }: PropsWithChildren) => {
   }
 
   return (
-    <TrackServiceContext.Provider value={state}>
+    <TrackLyricsContext.Provider value={state}>
       {children}
-    </TrackServiceContext.Provider>
+    </TrackLyricsContext.Provider>
   )
 }

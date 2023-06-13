@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import type { Lyrics } from '~/types/track-service'
+import type { Lyrics } from '~/types/track-lyrics'
 
 interface UnsyncedLyricsProps {
   lyrics?: Lyrics

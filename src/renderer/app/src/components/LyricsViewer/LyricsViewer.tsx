@@ -1,13 +1,13 @@
 import { useEffect, useMemo } from 'react'
 
-import { useTrackService } from '~/hooks/useTrackService'
+import { useTrackLyrics } from '~/hooks/useTrackLyrics'
 import { usePlaybackState } from '~/hooks/usePlaybackState'
 import { SyncedLyrics } from '../SyncedLyrics'
 import { UnsyncedLyrics } from '../UnsyncedLyrics'
 import { rgbToCSS } from '~/helpers/colors'
 
 export const LyricsViewer = () => {
-  const { lyrics, error, isLoading, colors } = useTrackService()
+  const { lyrics, error, isLoading, colors } = useTrackLyrics()
   const { playbackState } = usePlaybackState()
   const lyricsNotFound = !lyrics || !lyrics.lines
 

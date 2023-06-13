@@ -1,6 +1,6 @@
 import { usePlaybackState } from '~/hooks/usePlaybackState'
 import { useSyncedLyrics } from '~/hooks/useSyncedLyrics'
-import { Lyrics } from '~/types/track-service'
+import { Lyrics } from '~/types/track-lyrics'
 
 interface SyncedLyricsProps {
   lyrics?: Lyrics

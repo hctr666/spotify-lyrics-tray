@@ -1,0 +1,1 @@
+export { TrackLyricsProvider } from './TrackLyricsProvider'
