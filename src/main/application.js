@@ -1,4 +1,5 @@
-const { session } = require('electron')
+const { session, protocol } = require('electron')
+const path = require('path')
 
 const { REDIRECT_URI } = require('./constants/spotify')
 const { AuthService } = require('./services/auth')
@@ -31,6 +32,30 @@ class Application {
     global.spotifyWebWindow = this.spotifyWebWindow
     global.appTray = this.appTray
     global.isAppQuitting = false
+  }
+
+  handleProtocolIntercept = () => {
+    protocol.interceptFileProtocol('file', (request, callback) => {
+      if (request.url.startsWith('file:///static')) {
+        return callback(
+          path.resolve(
+            __dirname,
+            '..',
+            'renderer/app/build',
+            request.url.substring(8)
+          )
+        )
+      }
+
+      // Making sure to strip react routes out from the index url to prevent reload issues
+      if (request.url.match(/\/build\/index.html#\/?((\w+-?\/?)+)?/g)) {
+        return callback(
+          path.resolve(__dirname, '..', 'renderer/app/build', 'index.html')
+        )
+      }
+
+      return callback(request.url.substring(8))
+    })
   }
 
   handleSpotifyServiceEvents = () => {
