@@ -1,14 +1,20 @@
 const { app, safeStorage } = require('electron')
 
-const { initializeIpcEvents } = require('./ipc-events')
-const MainApplication = require('./application')
+require('./helpers/configDotEnv')()
+
+const { isDevelopment } = require('./helpers/environment')
 const { configLogger } = require('./libs/logger')
 
-configLogger()
+configLogger({ logToFile: !isDevelopment() })
+
+const { initializeIpcEvents } = require('./ipc-events')
+const MainApplication = require('./application')
 
 const main = new MainApplication()
 
 app.whenReady().then(async () => {
+  main.handleProtocolIntercept()
+
   if (!safeStorage.isEncryptionAvailable()) {
     throw new Error('Encryption is not available')
   }

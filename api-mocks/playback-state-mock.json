@@ -33,7 +33,14 @@
       "preview_url": "https://p.scdn.co/mp3-preview/e029cba42d907459d928c4cd939ad886544b28b3?cid=a92f1695d1dc47059c7397cd93d381ed",
       "track_number": 1,
       "type": "track",
-      "uri": "spotify:track:6sREV6MpLHTqcOmBK5mvYF"
+      "uri": "spotify:track:6sREV6MpLHTqcOmBK5mvYF",
+      "album": {
+        "images": [
+          {
+            "url": "album-image"
+          }
+        ]
+      }
     },
     "currently_playing_type": "track",
     "actions": { "disallows": [] },
@@ -60,7 +67,6 @@
     },
     "progress_ms": 189088,
     "item": {
-      "album": [],
       "artists": [],
       "disc_number": 1,
       "duration_ms": 297173,
@@ -77,7 +83,14 @@
       "preview_url": "https://p.scdn.co/mp3-preview/aa95b29059f05e5c6007aae4061a6e6b49ad7285?cid=a92f1695d1dc47059c7397cd93d381ed",
       "track_number": 1,
       "type": "track",
-      "uri": "spotify:track:7gkoQwKoaiPWUs9bkrAWjq"
+      "uri": "spotify:track:7gkoQwKoaiPWUs9bkrAWjq",
+      "album": {
+        "images": [
+          {
+            "url": "album-image"
+          }
+        ]
+      }
     },
     "currently_playing_type": "track",
     "actions": { "disallows": [] },

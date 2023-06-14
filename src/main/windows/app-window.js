@@ -4,6 +4,7 @@ const { BrowserWindow, app } = require('electron')
 const BaseWindow = require('./base-window')
 const { isDevelopment } = require('../helpers/environment')
 const { SLA_AUTH_STATE } = require('../constants/ipc-channels')
+const { Logger } = require('../libs/logger')
 
 const isDev = isDevelopment()
 
@@ -27,8 +28,16 @@ class AppWindow extends BaseWindow {
 
     global.APP_WINDOW_ID = this.window.webContents.id
 
-    // TODO: implement secure url
-    this.window.loadURL('http://localhost:4014')
+    if (isDev) {
+      // TODO: implement secure url
+      this.window.loadURL('http://localhost:4014')
+    } else {
+      this.window
+        .loadFile(
+          path.resolve(__dirname, '..', '..', 'renderer/app/build/index.html')
+        )
+        .catch(Logger.logError)
+    }
 
     this.initializeEvents()
     this.initDevtools()

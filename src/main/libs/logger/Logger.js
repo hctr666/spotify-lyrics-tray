@@ -1,18 +1,16 @@
 const Logger = require('electron-log')
 
-const { isDevelopment } = require('../../helpers/environment')
-
-const configLogger = () => {
+const configLogger = ({ logToFile } = { logToFile: false }) => {
   Logger.initialize({
     preload: true,
   })
 
-  if (isDevelopment()) {
+  if (!logToFile) {
     Logger.transports.file.level = false
   }
 
   Logger.hooks.push(message => {
-    if (!isDevelopment()) {
+    if (!logToFile) {
       return message
     }
 
