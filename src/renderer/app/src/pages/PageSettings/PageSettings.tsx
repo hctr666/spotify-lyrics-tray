@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { HiX } from 'react-icons/hi'
 
 import { Page } from '~/components'
 import { useLyricsService } from '~/hooks/useLyricsService/useLyricsService'
@@ -38,16 +39,16 @@ export const PageSettings = () => {
         {isConnected && (
           <button
             onClick={handleCloseClick}
-            className='text-purple-400 text-2xl absolute top-1 right-4 font-extralight'
+            className='text-gray-300 text-2xl absolute top-3 right-2 font-extralight'
           >
-            x
+            <HiX />
           </button>
         )}
         <button onClick={handleSignOut} className='button-primary'>
           Sign out
         </button>
         <div className='text-gray-300'>
-          Lyrics status: {lyricsStatusContent}
+          Lyrics service status: {lyricsStatusContent}
         </div>
       </div>
     </Page>

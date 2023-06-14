@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { HiCog } from 'react-icons/hi'
 
 import { Page } from '~/components'
 import { LyricsViewer } from '~/components/LyricsViewer'
@@ -15,7 +16,7 @@ export const PageHome = () => {
       <Page.Header>
         <span>Track</span>
         <button onClick={handleSettingsClick} className='text-xl'>
-          ⚙
+          <HiCog />
         </button>
       </Page.Header>
       <Page.Content noPaddingX>
