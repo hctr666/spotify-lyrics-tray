@@ -1,0 +1,27 @@
+:root {
+  --playback-controls-width: 100px;
+}
+
+.playback-container {
+  @apply flex fixed bottom-0 left-0 right-0 px-3 gap-2;
+  background-color: var(--theme-color-gray-darker);
+  height: var(--playback-height);
+}
+
+.playback-track {
+  width: calc(100% - var(--playback-controls-width));
+  @apply text-white text-xs flex items-center gap-2 h-full;
+}
+
+.playback-track-artist {
+  @apply text-gray-400 font-light truncate;
+}
+
+.playback-track-name {
+  @apply font-semibold text-gray-200 truncate;
+}
+
+.playback-controls {
+  width: var(--playback-controls-width);
+  @apply flex justify-center flex-shrink-0 h-full;
+}

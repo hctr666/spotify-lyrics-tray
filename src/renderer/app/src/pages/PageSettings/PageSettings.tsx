@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { HiX } from 'react-icons/hi'
+import { HiOutlineX } from 'react-icons/hi'
 
 import { Page } from '~/components'
 import { useLyricsService } from '~/hooks/useLyricsService/useLyricsService'
@@ -41,7 +41,7 @@ export const PageSettings = () => {
             onClick={handleCloseClick}
             className='text-gray-300 text-2xl absolute top-3 right-2 font-extralight'
           >
-            <HiX />
+            <HiOutlineX />
           </button>
         )}
         <button onClick={handleSignOut} className='button-primary'>

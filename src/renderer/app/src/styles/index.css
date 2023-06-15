@@ -4,7 +4,9 @@
 
 :root {
   --theme-color-gray-dark: #1f1f1f;
+  --theme-color-gray-darker: rgb(24, 24, 24);
   --page-header-height: 50px;
+  --playback-height: 52px;
   --lyrics-color-background: transparent;
   --lyrics-color-highlight: #fff;
   --lyrics-color-text: #fff;
@@ -13,6 +15,7 @@
 @import "./buttons.css";
 @import "./lyrics-viewer.css";
 @import "./page.css";
+@import "./playback.css";
 @import "./synced-lyrics.css";
 @import "./unsynced-lyrics.css";
 

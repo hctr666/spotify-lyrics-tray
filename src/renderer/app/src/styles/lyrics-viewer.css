@@ -1,3 +1,4 @@
 .lyrics-viewer-container {
+  margin-bottom: var(--playback-height);
   background-color: var(--lyrics-color-background);
 }

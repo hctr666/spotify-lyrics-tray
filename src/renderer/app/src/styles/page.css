@@ -9,7 +9,6 @@
 
 .page-header {
   height: var(--page-header-height);
-  background-color: rgb(24, 24, 24);
   @apply items-center px-3 flex gap-3;
   @apply justify-between text-white font-medium fixed w-full;
 }
