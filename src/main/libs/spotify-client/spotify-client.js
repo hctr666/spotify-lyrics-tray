@@ -151,11 +151,10 @@ class SpotifyClient {
   getPlaybackState = async () => {
     // TODO: create a playback api mock
     if (isDevelopment()) {
-      const [
-        mockData,
-      ] = require('../../../../api-mocks/playback-state-mock.json') //FIXME
-
-      return { playbackState: mockData }
+      // const [
+      //   mockData,
+      // ] = require('../../../../api-mocks/playback-state-mock.json') //FIXME
+      // return { playbackState: mockData }
     }
 
     const { data, retryAfter } = await this.fetchWebApi(
@@ -163,6 +162,16 @@ class SpotifyClient {
     )
 
     return { playbackState: data, retryAfter }
+  }
+
+  startOrResumePlayback = async (deviceId, positionMS) => {
+    await this.fetchWebApi(`v1/me/player/play?device_id=${deviceId}`, 'PUT', {
+      position_ms: positionMS,
+    })
+  }
+
+  pausePlayback = async deviceId => {
+    await this.fetchWebApi(`v1/me/player/pause?device_id=${deviceId}`, 'PUT')
   }
 }
 

@@ -1,11 +1,16 @@
 import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 
 import { PlaybackState } from '~/types/playback-state'
-import { PlaybackStateContext } from './PlaybackStateContext'
+import {
+  PlaybackStateContext,
+  initialPlaybackState,
+} from './PlaybackStateContext'
 import { useAuthState } from '~/hooks/useAuthState/useAuthState'
 
+// TODO: rename to PlaybackProvider
 export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
-  const [playbackState, setPlaybackState] = useState<PlaybackState | null>(null)
+  const [playbackState, setPlaybackState] =
+    useState<PlaybackState>(initialPlaybackState)
   const { isAuthenticated } = useAuthState()
   const [hasNewTrack, setHasNewTrack] = useState(false)
   const trackId = playbackState?.trackId
@@ -20,6 +25,13 @@ export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
       setPlaybackState(
         state => ({ ...state, progress: _progress } as PlaybackState)
       )
+    },
+    [setPlaybackState]
+  )
+
+  const updatePlaybackState = useCallback(
+    (newState: PlaybackState) => {
+      setPlaybackState(state => ({ ...state, ...newState } as PlaybackState))
     },
     [setPlaybackState]
   )
@@ -55,7 +67,7 @@ export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
       unsubscribe()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated])
+  }, [isAuthenticated, trackId])
 
   return (
     <PlaybackStateContext.Provider
@@ -63,6 +75,7 @@ export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
         hasNewTrack,
         playbackState,
         updateProgress,
+        updatePlaybackState,
         getPlaybackState,
       }}
     >

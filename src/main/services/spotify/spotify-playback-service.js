@@ -1,3 +1,4 @@
+// TODO: rename this class to something more specific such checking, polling... service
 const { isDevelopment } = require('../../helpers/environment')
 const { Emittable } = require('../../libs/emittable/emittable')
 const { SpotifyClient } = require('../../libs/spotify-client')
@@ -42,6 +43,7 @@ class SpotifyPlaybackService extends Emittable {
     const trackId = isInactive || !isTrack ? '' : playbackState.item?.id
     const progress = isInactive || !isTrack ? 0 : playbackState.progress_ms
     const imageUrl = playbackState?.item?.album?.images?.[0].url
+    const deviceId = playbackState?.device?.id
 
     return {
       isInactive,
@@ -49,6 +51,7 @@ class SpotifyPlaybackService extends Emittable {
       trackId,
       progress,
       imageUrl,
+      deviceId,
     }
   }
 

@@ -4,4 +4,5 @@ export interface PlaybackState {
   isInactive: boolean
   progress: number
   trackId: string
+  deviceId: string
 }

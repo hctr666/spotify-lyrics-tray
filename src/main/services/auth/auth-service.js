@@ -17,7 +17,9 @@ class AuthService extends BaseService {
   refreshToken = null
 
   getAuthUrl = () => {
-    return SpotifyClient.getAuthorizeUrl('user-read-playback-state')
+    return SpotifyClient.getAuthorizeUrl(
+      'user-read-playback-state user-modify-playback-state'
+    )
   }
 
   isAuthenticated = () => {

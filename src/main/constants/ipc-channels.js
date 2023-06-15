@@ -11,6 +11,8 @@ module.exports = {
   SLA_TRACK_LYRICS_REQUEST: 'sla:track-lyrics-request',
   SLA_TRACK_LYRICS_REPLY: 'sla:track-lyrics-reply',
   SLA_GET_PLAYBACK_STATE: 'sla:get-playback-state',
+  SLA_START_OR_RESUME_PLAYBACK: 'sla:start-or-resume-playback',
+  SLA_PAUSE_PLAYBACK: 'sla:pause-playback',
   SLA_ON_PLAYBACK_STATE: 'sla:on-playback-state',
   SLA_ON_ERROR: 'sla:on-error',
   SLA_APP_WINDOW_DID_FINISH_LOAD: 'sla:on-app-window-did-finish-load',

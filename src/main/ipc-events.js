@@ -9,7 +9,10 @@ const {
   SLA_TRACK_LYRICS_REQUEST,
   SLA_TRACK_LYRICS_REPLY,
   SLA_GET_PLAYBACK_STATE,
+  SLA_START_OR_RESUME_PLAYBACK,
+  SLA_PAUSE_PLAYBACK,
 } = require('./constants/ipc-channels')
+const { SpotifyClient } = require('./libs/spotify-client')
 
 const sendToSpotifyWebWindow = (channel, ...args) => {
   /** @type {Electron.BrowserWindow | null} */
@@ -61,6 +64,17 @@ const initializeIpcEvents = () => {
   ipcMain.handle(SLA_GET_PLAYBACK_STATE, async () => {
     const playbackState = await global.spotifyPlaybackService.getState()
     return playbackState
+  })
+
+  ipcMain.handle(
+    SLA_START_OR_RESUME_PLAYBACK,
+    async (_event, deviceId, positionMS) => {
+      await SpotifyClient.startOrResumePlayback(deviceId, positionMS)
+    }
+  )
+
+  ipcMain.handle(SLA_PAUSE_PLAYBACK, async (_event, deviceId) => {
+    await SpotifyClient.pausePlayback(deviceId)
   })
 }
 

@@ -145,12 +145,10 @@ const getAccessToken = () => {
 const getTrackLyrics = async (trackId, imageUrl) => {
   // TODO: create a mocked lyrics api
   if (window.Core.isDev()) {
-    const mockedApi = window.SpotifyWeb.fetchLyricsMockAPI()
-    const [lyrics] = mockedApi.filter(r => r.trackId === trackId)
-
-    await new Promise(res => setTimeout(res, 1500))
-
-    return lyrics
+    // const mockedApi = window.SpotifyWeb.fetchLyricsMockAPI()
+    // const [lyrics] = mockedApi.filter(r => r.trackId === trackId)
+    // await new Promise(res => setTimeout(res, 1500))
+    // return lyrics
   }
 
   try {

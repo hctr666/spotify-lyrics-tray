@@ -11,6 +11,8 @@ const {
   SLA_TRACK_LYRICS_REPLY,
   SLA_GET_PLAYBACK_STATE: SLA_REQUEST_PLAYBACK_STATE,
   SLA_ON_PLAYBACK_STATE,
+  SLA_START_OR_RESUME_PLAYBACK,
+  SLA_PAUSE_PLAYBACK,
 } = require('../main/constants/ipc-channels')
 
 require('./core')
@@ -46,7 +48,11 @@ contextBridge.exposeInMainWorld('Auth', {
   },
 })
 
+// TODO: rename to Playback
 contextBridge.exposeInMainWorld('PlaybackState', {
+  play: (deviceId, positionMS) =>
+    ipcRenderer.invoke(SLA_START_OR_RESUME_PLAYBACK, deviceId, positionMS),
+  pause: deviceId => ipcRenderer.invoke(SLA_PAUSE_PLAYBACK, deviceId),
   getState: () => ipcRenderer.invoke(SLA_REQUEST_PLAYBACK_STATE),
   subscribeOnState: listener => {
     ipcRenderer.addListener(SLA_ON_PLAYBACK_STATE, listener)

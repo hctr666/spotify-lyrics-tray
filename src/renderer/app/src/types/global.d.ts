@@ -45,12 +45,16 @@ declare global {
       ) => UnsubscribeFunction
     }
     Track: {
+      getTrack: () => void
       requestLyrics: (trackId: string, imageUrl: string) => void
       subscribeOnLyrics: (
         listener: TrackLyricsRequestListener
       ) => UnsubscribeFunction
     }
+    // TODO: rename to Playback
     PlaybackState: {
+      play: (deviceId: string, positionMS: number) => Promise<void>
+      pause: (deviceId: string) => Promise<void>
       getState: () => Promise<PlaybackState>
       subscribeOnState: (listener: PlaybackStateListener) => UnsubscribeFunction
     }
