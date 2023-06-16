@@ -11,6 +11,9 @@ const {
   SLA_GET_PLAYBACK_STATE,
   SLA_START_OR_RESUME_PLAYBACK,
   SLA_PAUSE_PLAYBACK,
+  SLA_SKIP_TO_NEXT_TRACK,
+  SLA_SKIP_TO_PREVIOUS_TRACK,
+  SLA_GET_TRACK,
 } = require('./constants/ipc-channels')
 const { SpotifyClient } = require('./libs/spotify-client')
 
@@ -75,6 +78,19 @@ const initializeIpcEvents = () => {
 
   ipcMain.handle(SLA_PAUSE_PLAYBACK, async (_event, deviceId) => {
     await SpotifyClient.pausePlayback(deviceId)
+  })
+
+  ipcMain.handle(SLA_SKIP_TO_NEXT_TRACK, async (_event, deviceId) => {
+    await SpotifyClient.skipToNextTrack(deviceId)
+  })
+
+  ipcMain.handle(SLA_SKIP_TO_PREVIOUS_TRACK, async (_event, deviceId) => {
+    await SpotifyClient.skipToPreviousTrack(deviceId)
+  })
+
+  ipcMain.handle(SLA_GET_TRACK, async (_event, trackId) => {
+    const track = await SpotifyClient.getTrack(trackId)
+    return track
   })
 }
 

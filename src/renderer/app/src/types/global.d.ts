@@ -3,6 +3,7 @@ import type { AuthState } from '../contexts/AuthStateProvider/AuthStateContext'
 import type { Lyrics, LyricsColors } from './track-lyrics'
 import type { PlaybackState } from './playback-state'
 import type { LyricsServiceState } from './lyrics-service'
+import { Track } from './track'
 
 declare global {
   type ElectronRendererListener<T> = (event: IpcRendererEvent, value: T) => void
@@ -45,7 +46,7 @@ declare global {
       ) => UnsubscribeFunction
     }
     Track: {
-      getTrack: () => void
+      getTrack: (trackId: string) => Promise<Track>
       requestLyrics: (trackId: string, imageUrl: string) => void
       subscribeOnLyrics: (
         listener: TrackLyricsRequestListener
@@ -55,6 +56,8 @@ declare global {
     PlaybackState: {
       play: (deviceId: string, positionMS: number) => Promise<void>
       pause: (deviceId: string) => Promise<void>
+      skipToNext: (deviceId: string) => Promise<void>
+      skipToPrevious: (deviceId: string) => Promise<void>
       getState: () => Promise<PlaybackState>
       subscribeOnState: (listener: PlaybackStateListener) => UnsubscribeFunction
     }

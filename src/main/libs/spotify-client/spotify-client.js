@@ -12,6 +12,7 @@ const CLIENT_SECRET = process.env.SPOTIFY_SECRET
 const TOO_MANY_REQUESTS_STATUS = 429
 const SERVER_ERROR_STATUS = 500
 const NO_CONTENT_STATUS = 204
+const DEFAULT_MARKET = 'ES'
 
 const fetchToken = async ({ body, headers }) => {
   try {
@@ -158,7 +159,7 @@ class SpotifyClient {
     }
 
     const { data, retryAfter } = await this.fetchWebApi(
-      'v1/me/player?market=ES'
+      `v1/me/player?market=${DEFAULT_MARKET}`
     )
 
     return { playbackState: data, retryAfter }
@@ -172,6 +173,25 @@ class SpotifyClient {
 
   pausePlayback = async deviceId => {
     await this.fetchWebApi(`v1/me/player/pause?device_id=${deviceId}`, 'PUT')
+  }
+
+  skipToNextTrack = async deviceId => {
+    await this.fetchWebApi(`v1/me/player/next?device_id=${deviceId}`, 'POST')
+  }
+
+  skipToPreviousTrack = async deviceId => {
+    await this.fetchWebApi(
+      `v1/me/player/previous?device_id=${deviceId}`,
+      'POST'
+    )
+  }
+
+  getTrack = async trackId => {
+    const { data } = await this.fetchWebApi(
+      `v1/tracks/${trackId}?market=${DEFAULT_MARKET}`
+    )
+
+    return data
   }
 }
 

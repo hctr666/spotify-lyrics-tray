@@ -13,6 +13,9 @@ const {
   SLA_ON_PLAYBACK_STATE,
   SLA_START_OR_RESUME_PLAYBACK,
   SLA_PAUSE_PLAYBACK,
+  SLA_SKIP_TO_NEXT_TRACK,
+  SLA_SKIP_TO_PREVIOUS_TRACK,
+  SLA_GET_TRACK,
 } = require('../main/constants/ipc-channels')
 
 require('./core')
@@ -29,6 +32,7 @@ contextBridge.exposeInMainWorld('LyricsService', {
 })
 
 contextBridge.exposeInMainWorld('Track', {
+  getTrack: trackId => ipcRenderer.invoke(SLA_GET_TRACK, trackId),
   requestLyrics: (trackId, imageUrl) =>
     ipcRenderer.invoke(SLA_TRACK_LYRICS_REQUEST, trackId, imageUrl),
   subscribeOnLyrics: listener => {
@@ -53,6 +57,9 @@ contextBridge.exposeInMainWorld('PlaybackState', {
   play: (deviceId, positionMS) =>
     ipcRenderer.invoke(SLA_START_OR_RESUME_PLAYBACK, deviceId, positionMS),
   pause: deviceId => ipcRenderer.invoke(SLA_PAUSE_PLAYBACK, deviceId),
+  skipToNext: deviceId => ipcRenderer.invoke(SLA_SKIP_TO_NEXT_TRACK, deviceId),
+  skipToPrevious: deviceId =>
+    ipcRenderer.invoke(SLA_SKIP_TO_PREVIOUS_TRACK, deviceId),
   getState: () => ipcRenderer.invoke(SLA_REQUEST_PLAYBACK_STATE),
   subscribeOnState: listener => {
     ipcRenderer.addListener(SLA_ON_PLAYBACK_STATE, listener)
