@@ -1,12 +1,12 @@
 import { Navigate } from 'react-router-dom'
-import { useAuthState } from '~/hooks/useAuthState/useAuthState'
+import { useAuth } from '~/hooks/useAuth/useAuth'
 
 export const ProtectedRouteElement = ({
   element,
 }: {
   element: JSX.Element
 }) => {
-  const { isAuthenticated } = useAuthState()
+  const { isAuthenticated } = useAuth()
   const fallbackElement = <Navigate to='/login' />
 
   if (!isAuthenticated) {

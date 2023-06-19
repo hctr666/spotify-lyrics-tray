@@ -3,10 +3,10 @@ import { PropsWithChildren, useEffect, useState } from 'react'
 import { useLyricsService } from '~/hooks/useLyricsService/useLyricsService'
 import { usePlaybackState } from '~/hooks/usePlaybackState/usePlaybackState'
 import type { Lyrics, LyricsColors } from '~/types/track-lyrics'
-import { TrackLyricsContext } from './TrackLyricsContext'
+import { TrackContext } from './TrackContext'
 import { useTimeElapsed } from '~/hooks/useTimeElapsed/useTimeElapsed'
 
-export const TrackLyricsProvider = ({ children }: PropsWithChildren) => {
+export const TrackProvider = ({ children }: PropsWithChildren) => {
   const [lyrics, setLyrics] = useState<Lyrics>()
   const [colors, setColors] = useState<LyricsColors>()
   const [error, setError] = useState('')
@@ -83,9 +83,5 @@ export const TrackLyricsProvider = ({ children }: PropsWithChildren) => {
     colors,
   }
 
-  return (
-    <TrackLyricsContext.Provider value={state}>
-      {children}
-    </TrackLyricsContext.Provider>
-  )
+  return <TrackContext.Provider value={state}>{children}</TrackContext.Provider>
 }

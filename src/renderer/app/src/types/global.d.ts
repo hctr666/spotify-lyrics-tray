@@ -1,5 +1,5 @@
 import type { IpcRendererEvent } from 'electron'
-import type { AuthState } from '../contexts/AuthStateProvider/AuthStateContext'
+import type { AuthState } from '../contexts/AuthProvider/AuthContext'
 import type { Lyrics, LyricsColors } from './track-lyrics'
 import type { PlaybackState } from './playback-state'
 import type { LyricsServiceState } from './lyrics-service'

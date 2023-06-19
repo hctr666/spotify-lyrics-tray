@@ -1,16 +1,16 @@
 import { Navigate } from 'react-router-dom'
 
 import { Page } from '~/components'
-import { useAuthState } from '~/hooks/useAuthState/useAuthState'
+import { useAuth } from '~/hooks/useAuth/useAuth'
 
 export const PageLogin = () => {
-  const authState = useAuthState()
+  const { isAuthenticated } = useAuth()
 
   const handleSignIn = () => {
     window.Auth.signIn()
   }
 
-  if (authState.isAuthenticated) {
+  if (isAuthenticated) {
     return <Navigate to='/' />
   }
 

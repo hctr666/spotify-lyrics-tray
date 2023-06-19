@@ -1,8 +1,8 @@
 import { PropsWithChildren, useEffect, useState } from 'react'
 
-import { AuthStateContext } from './AuthStateContext'
+import { AuthContext } from './AuthContext'
 
-export const AuthStateProvider = ({ children }: PropsWithChildren) => {
+export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
@@ -18,8 +18,8 @@ export const AuthStateProvider = ({ children }: PropsWithChildren) => {
   }, [setIsAuthenticated])
 
   return (
-    <AuthStateContext.Provider value={{ isAuthenticated }}>
+    <AuthContext.Provider value={{ isAuthenticated }}>
       {children}
-    </AuthStateContext.Provider>
+    </AuthContext.Provider>
   )
 }

@@ -4,6 +4,6 @@ export interface AuthState {
   isAuthenticated: boolean
 }
 
-export const AuthStateContext = createContext<AuthState>({
+export const AuthContext = createContext<AuthState>({
   isAuthenticated: false,
 })

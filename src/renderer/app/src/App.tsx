@@ -1,10 +1,10 @@
 import { HashRouter as Router, Route, Routes } from 'react-router-dom'
 
 import { PageLogin } from './pages/PageLogin'
-import { AuthStateProvider } from './contexts/AuthStateProvider'
+import { AuthProvider } from './contexts/AuthProvider'
 import { PageHome } from './pages/PageHome/PageHome'
 import { LyricsServiceProvider } from './contexts/LyricsServiceProvider'
-import { TrackLyricsProvider } from './contexts/TrackLyricsProvider'
+import { TrackProvider } from './contexts/TrackProvider'
 import { PageSettings } from './pages/PageSettings'
 import { PlaybackStateProvider } from './contexts/PlaybackStateProvider/PlaybackStateProvider'
 import { NotificationContainer } from './components/NotificationContainer'
@@ -13,10 +13,10 @@ import { ProtectedRouteElement } from './components/ProtectedRouteElement'
 function App() {
   return (
     <Router>
-      <AuthStateProvider>
+      <AuthProvider>
         <LyricsServiceProvider>
           <PlaybackStateProvider>
-            <TrackLyricsProvider>
+            <TrackProvider>
               <Routes>
                 <Route path='/login' element={<PageLogin />} />
                 <Route
@@ -28,10 +28,10 @@ function App() {
                   element={<ProtectedRouteElement element={<PageHome />} />}
                 />
               </Routes>
-            </TrackLyricsProvider>
+            </TrackProvider>
           </PlaybackStateProvider>
         </LyricsServiceProvider>
-      </AuthStateProvider>
+      </AuthProvider>
       <NotificationContainer />
     </Router>
   )

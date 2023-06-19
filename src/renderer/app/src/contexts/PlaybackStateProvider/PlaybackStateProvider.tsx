@@ -5,13 +5,13 @@ import {
   PlaybackStateContext,
   initialPlaybackState,
 } from './PlaybackStateContext'
-import { useAuthState } from '~/hooks/useAuthState/useAuthState'
+import { useAuth } from '~/hooks/useAuth/useAuth'
 
 // TODO: rename to PlaybackProvider
 export const PlaybackStateProvider = ({ children }: PropsWithChildren) => {
   const [playbackState, setPlaybackState] =
     useState<PlaybackState>(initialPlaybackState)
-  const { isAuthenticated } = useAuthState()
+  const { isAuthenticated } = useAuth()
   const [hasNewTrack, setHasNewTrack] = useState(false)
   const trackId = playbackState?.trackId
   const progress = playbackState?.progress

@@ -1,5 +1,5 @@
 import { useContext } from 'react'
 
-import { TrackLyricsContext } from '~/contexts/TrackLyricsProvider/TrackLyricsContext'
+import { TrackContext } from '~/contexts/TrackProvider/TrackContext'
 
-export const useTrackLyrics = () => useContext(TrackLyricsContext)
+export const useTrackLyrics = () => useContext(TrackContext)
