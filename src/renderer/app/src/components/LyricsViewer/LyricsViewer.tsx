@@ -1,54 +1,34 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import { useTrackLyrics } from '~/hooks/useTrackLyrics'
 import { usePlaybackState } from '~/hooks/usePlaybackState'
 import { SyncedLyrics } from '../SyncedLyrics'
 import { UnsyncedLyrics } from '../UnsyncedLyrics'
-import { rgbToCSS } from '~/helpers/colors'
+import { useLyricsCSSColors } from '~/hooks/useLyricsCSSColors/useLyricsCSSColors'
+
+const setStyleProperties = (styleMap: Record<string, string>) => {
+  Object.keys(styleMap).forEach(prop => {
+    if (styleMap[prop]) {
+      document.documentElement.style.setProperty(prop, styleMap[prop])
+    }
+  })
+}
 
 export const LyricsViewer = () => {
   const { lyrics, error, isLoading, colors } = useTrackLyrics()
   const { playbackState } = usePlaybackState()
   const lyricsNotFound = !lyrics || !lyrics.lines
 
-  const { textColor, backgroundColor, highlightColor } = useMemo(() => {
-    const highlightColor = colors?.highlightText
-      ? rgbToCSS(colors.highlightText)
-      : ''
-    const textColor = colors?.text ? rgbToCSS(colors.text) : ''
-    const backgroundColor = colors?.background
-      ? rgbToCSS(colors.background)
-      : ''
-
-    return {
-      textColor,
-      backgroundColor,
-      highlightColor,
-    }
-  }, [colors])
+  const { textColor, backgroundColor, highlightColor } =
+    useLyricsCSSColors(colors)
 
   // TODO: optimize property updates
   useEffect(() => {
-    if (textColor) {
-      document.documentElement.style.setProperty(
-        '--lyrics-color-text',
-        textColor
-      )
-    }
-
-    if (backgroundColor) {
-      document.documentElement.style.setProperty(
-        '--lyrics-color-background',
-        backgroundColor
-      )
-    }
-
-    if (highlightColor) {
-      document.documentElement.style.setProperty(
-        '--lyrics-color-highlight',
-        highlightColor
-      )
-    }
+    setStyleProperties({
+      '--lyrics-color-background': backgroundColor,
+      '--lyrics-color-highlight': highlightColor,
+      '--lyrics-color-text': textColor,
+    })
   }, [textColor, backgroundColor, highlightColor])
 
   if (playbackState?.isInactive) {
