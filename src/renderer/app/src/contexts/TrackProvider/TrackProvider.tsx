@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from 'react'
 
-import { useLyricsService } from '~/hooks/useLyricsService/useLyricsService'
+import { useLyricsServiceState } from '~/hooks/useLyricsServiceState/useLyricsServiceState'
 import { usePlaybackState } from '~/hooks/usePlaybackState/usePlaybackState'
 import type { Lyrics, LyricsColors } from '~/types/track-lyrics'
 import { TrackContext } from './TrackContext'
@@ -12,16 +12,16 @@ export const TrackProvider = ({ children }: PropsWithChildren) => {
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
 
-  const lyricsService = useLyricsService()
+  const lyricsServiceState = useLyricsServiceState()
   const { startElapsing, getTime } = useTimeElapsed()
   const { hasNewTrack, playbackState, updateProgress } = usePlaybackState()
 
-  const trackId = playbackState?.trackId
-  const progress = playbackState?.progress
-  const imageUrl = playbackState?.imageUrl
+  const trackId = playbackState.trackId
+  const progress = playbackState.progress
+  const imageUrl = playbackState.imageUrl
 
-  const isLyricsServiceConnected = lyricsService.isConnected
-  const lyricsServiceError = lyricsService.error
+  const isLyricsServiceConnected = lyricsServiceState.isConnected
+  const lyricsServiceError = lyricsServiceState.error
 
   useEffect(() => {
     if (lyricsServiceError) {

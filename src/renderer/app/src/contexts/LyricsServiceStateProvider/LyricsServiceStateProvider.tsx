@@ -1,20 +1,16 @@
-import { PropsWithChildren, useCallback, useEffect, useState } from 'react'
+import { PropsWithChildren, useEffect, useState } from 'react'
 
-import { LyricsServiceContext } from './LyricsServiceContext'
+import { LyricsServiceStateContext } from './LyricsServiceStateContext'
 import { useToastError } from '~/hooks/useToastError'
 import { useNavigate } from 'react-router-dom'
 import { LyricsServiceStatus } from '~/types/lyrics-service'
 
-export const LyricsServiceProvider = ({ children }: PropsWithChildren) => {
+export const LyricsServiceStateProvider = ({ children }: PropsWithChildren) => {
   const [error, setError] = useState('')
   const [status, setStatus] = useState<LyricsServiceStatus>('loading')
 
   const navigate = useNavigate()
   const toastError = useToastError()
-
-  const connect = useCallback(() => {
-    window.LyricsService.connect()
-  }, [])
 
   useEffect(() => {
     window.LyricsService.requestServiceState()
@@ -45,12 +41,11 @@ export const LyricsServiceProvider = ({ children }: PropsWithChildren) => {
     isConnected: status === 'connected',
     isLoading: status === 'loading',
     error,
-    connect,
   }
 
   return (
-    <LyricsServiceContext.Provider value={state}>
+    <LyricsServiceStateContext.Provider value={state}>
       {children}
-    </LyricsServiceContext.Provider>
+    </LyricsServiceStateContext.Provider>
   )
 }

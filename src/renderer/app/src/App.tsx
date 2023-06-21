@@ -3,7 +3,7 @@ import { HashRouter as Router, Route, Routes } from 'react-router-dom'
 import { PageLogin } from './pages/PageLogin'
 import { AuthProvider } from './contexts/AuthProvider'
 import { PageHome } from './pages/PageHome/PageHome'
-import { LyricsServiceProvider } from './contexts/LyricsServiceProvider'
+import { LyricsServiceStateProvider } from './contexts/LyricsServiceStateProvider'
 import { TrackProvider } from './contexts/TrackProvider'
 import { PageSettings } from './pages/PageSettings'
 import { PlaybackStateProvider } from './contexts/PlaybackStateProvider/PlaybackStateProvider'
@@ -14,7 +14,7 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <LyricsServiceProvider>
+        <LyricsServiceStateProvider>
           <PlaybackStateProvider>
             <TrackProvider>
               <Routes>
@@ -30,7 +30,7 @@ function App() {
               </Routes>
             </TrackProvider>
           </PlaybackStateProvider>
-        </LyricsServiceProvider>
+        </LyricsServiceStateProvider>
       </AuthProvider>
       <NotificationContainer />
     </Router>

@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import { HiOutlineX } from 'react-icons/hi'
 
 import { Page } from '~/components'
-import { useLyricsService } from '~/hooks/useLyricsService/useLyricsService'
+import { useLyricsServiceState } from '~/hooks/useLyricsServiceState/useLyricsServiceState'
 
 export const PageSettings = () => {
-  const { isConnected, connect } = useLyricsService()
+  const { isConnected } = useLyricsServiceState()
   const navigate = useNavigate()
 
   const handleSignOut = () => {
@@ -14,8 +14,8 @@ export const PageSettings = () => {
   }
 
   const handleLyricsConnect = useCallback(() => {
-    connect()
-  }, [connect])
+    window.LyricsService.connect()
+  }, [])
 
   const handleCloseClick = () => {
     navigate('/')
