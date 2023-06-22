@@ -1,4 +1,5 @@
 .lyrics-viewer-container {
-  margin-bottom: var(--playback-height);
+  height: calc(100% - var(--playback-height));
   background-color: var(--lyrics-color-background);
+  @apply overflow-y-auto;
 }
