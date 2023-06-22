@@ -46,9 +46,7 @@ export const PlaybackProvider = ({ children }: PropsWithChildren) => {
       await window.Playback.play(deviceId, progress)
     }
     setPlaybackState(state => ({ ...state, isPlaying: !isPlaying }))
-
-    await fetchPlaybackState()
-  }, [deviceId, progress, isPlaying, fetchPlaybackState])
+  }, [deviceId, progress, isPlaying])
 
   const skipToNext = useCallback(async () => {
     await window.Playback.skipToNext(deviceId)

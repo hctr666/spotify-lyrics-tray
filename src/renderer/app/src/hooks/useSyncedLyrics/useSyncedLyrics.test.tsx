@@ -54,9 +54,13 @@ const expectedLines = lyricsMock.lines.map((line, idx) => ({
 
 const mockedUpdateProgress = jest.fn()
 
-const renderUseSyncedLyrics = ({ progress }: Partial<UseSyncedLyricsProps>) => {
+const renderUseSyncedLyrics = ({
+  progress,
+  isPlaying = true,
+}: Partial<UseSyncedLyricsProps>) => {
   return renderHook(() =>
     useSyncedLyrics({
+      isPlaying,
       progress,
       lyrics: lyricsMock,
       updateProgress: mockedUpdateProgress,
@@ -71,6 +75,10 @@ const advanceTimer = (_wait: number) => {
 }
 
 describe('useSyncedLyrics', () => {
+  beforeEach(() => {
+    mockedUpdateProgress.mockClear()
+  })
+
   it('returns the correct line when progress is in the middle of the song', () => {
     const { result } = renderUseSyncedLyrics({ progress: 5000 })
 
@@ -119,5 +127,23 @@ describe('useSyncedLyrics', () => {
     advanceTimer(989 + Math.ceil(989 * 0.25))
 
     expect(mockedUpdateProgress).toHaveBeenCalledWith(4389)
+  })
+
+  it('does not update progress after wait time when not playing', () => {
+    const { result } = renderUseSyncedLyrics({
+      progress: 3400,
+      isPlaying: false,
+    })
+
+    expect(result.current).toEqual({
+      activeLine: expectedLines[1],
+      activeLineRef: { current: null },
+      lines: expectedLines,
+      wait: 989,
+    })
+
+    advanceTimer(989 + Math.ceil(989 * 0.25))
+
+    expect(mockedUpdateProgress).not.toHaveBeenCalled()
   })
 })

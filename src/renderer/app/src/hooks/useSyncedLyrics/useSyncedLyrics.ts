@@ -3,12 +3,14 @@ import { useEffect, useMemo, useRef } from 'react'
 import { Lyrics } from '~/types/lyrics'
 
 export interface UseSyncedLyricsProps {
+  isPlaying: boolean
   lyrics?: Lyrics
   progress?: number
   updateProgress: (progress: number) => void
 }
 
 export const useSyncedLyrics = ({
+  isPlaying,
   lyrics,
   progress = 0,
   updateProgress,
@@ -28,11 +30,12 @@ export const useSyncedLyrics = ({
     }))
 
     const [firstLine] = lines
+    const startTimeMs = Number(firstLine.startTimeMs)
 
-    if (progress < Number(firstLine.startTimeMs)) {
+    if (progress < startTimeMs) {
       return {
         activeLine: null,
-        wait: Number(firstLine.startTimeMs) - progress,
+        wait: startTimeMs - progress,
         lines,
       }
     }
@@ -60,17 +63,22 @@ export const useSyncedLyrics = ({
     // TODO: use this delay for scroll animation (css)
     // add a delay relative to wait time to avoid words moving too fast
     const delay = Math.ceil(wait * 0.25)
-    const timeout = setTimeout(() => {
-      updateProgress(progress + wait)
-    }, wait + delay)
+    let timeout: NodeJS.Timeout
+
+    if (isPlaying) {
+      timeout = setTimeout(() => {
+        updateProgress(progress + wait)
+      }, wait + delay)
+    }
 
     return () => {
       clearTimeout(timeout)
     }
-  }, [activeLine, updateProgress, progress, wait])
+  }, [activeLine, isPlaying, updateProgress, progress, wait])
 
   useEffect(() => {
     if (activeLineRef.current) {
+      // TODO: implement css animation based scroll into view
       activeLineRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'center',

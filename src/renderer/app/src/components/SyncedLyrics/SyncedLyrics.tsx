@@ -6,12 +6,12 @@ interface SyncedLyricsProps {
   lyrics?: Lyrics
 }
 
-// TODO: implement sync pause when the song is not playing
-// TODO: enhanced animation, use css
+// TODO: implement css animation based scroll into view
 export const SyncedLyrics = ({ lyrics }: SyncedLyricsProps) => {
   const { playbackState, updateProgress } = usePlayback()
-  const { progress } = playbackState
+  const { progress, isPlaying } = playbackState
   const { activeLine, activeLineRef, lines } = useSyncedLyrics({
+    isPlaying,
     lyrics,
     progress,
     updateProgress,
