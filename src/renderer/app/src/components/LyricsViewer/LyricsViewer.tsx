@@ -5,6 +5,7 @@ import { usePlayback } from '~/hooks/usePlayback'
 import { useLyricsCSSColors } from '~/hooks/useLyricsCSSColors/useLyricsCSSColors'
 import { SyncedLyrics } from '../SyncedLyrics'
 import { UnsyncedLyrics } from '../UnsyncedLyrics'
+import { LyricsViewerSkeleton } from '../LyricsViewerSkeleton/LyricsViewerSkeleton'
 
 const setStyleProperties = (styleMap: Record<string, string>) => {
   Object.keys(styleMap).forEach(prop => {
@@ -31,7 +32,7 @@ export const LyricsViewer = () => {
     })
   }, [textColor, backgroundColor, highlightColor])
 
-  if (playbackState?.isInactive) {
+  if (playbackState.isInactive) {
     return (
       <div className='text-gray-400 text-sm p-3 block'>
         <span className='block'>
@@ -43,25 +44,31 @@ export const LyricsViewer = () => {
   }
 
   if (error) {
-    return <span className='text-red-500'>{error}</span>
+    return (
+      <div className='lyrics-viewer-error'>
+        <span className='text-red-600 opacity-80 text-lg'>{error}</span>
+      </div>
+    )
   }
 
   if (isLoading) {
-    return <span className='text-white'>Loading...</span>
+    return <LyricsViewerSkeleton />
   }
 
   if (lyricsNotFound) {
     return (
-      <span className='text-white block mt-4'>
-        Could'n find lyrics for this track
-      </span>
+      <div className='lyrics-viewer-not-found'>
+        <span className='text-gray-400 text-xl'>
+          We couldn't find lyrics for this track
+        </span>
+      </div>
     )
   }
 
   return (
     <div className='lyrics-viewer-container'>
       {lyrics?.syncType === 'LINE_SYNCED' ? (
-        <SyncedLyrics progress={playbackState?.progress} lyrics={lyrics} />
+        <SyncedLyrics lyrics={lyrics} />
       ) : (
         <UnsyncedLyrics lyrics={lyrics} />
       )}

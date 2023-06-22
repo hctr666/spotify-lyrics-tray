@@ -1,5 +1,14 @@
+:root {
+  --container-height: calc(100% - var(--playback-height));
+}
+
 .lyrics-viewer-container {
-  height: calc(100% - var(--playback-height));
   background-color: var(--lyrics-color-background);
+  height: var(--container-height);
   @apply overflow-y-auto;
+}
+
+.lyrics-viewer-not-found, .lyrics-viewer-error {
+  height: var(--container-height);
+  @apply flex items-center justify-center;
 }

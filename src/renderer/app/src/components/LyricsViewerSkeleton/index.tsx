@@ -1,0 +1,1 @@
+export { LyricsViewerSkeleton } from './LyricsViewerSkeleton'
