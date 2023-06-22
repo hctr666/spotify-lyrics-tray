@@ -283,7 +283,7 @@ const initMain = async () => {
               }
             : {}
 
-          window.SpotifyWeb.sendTrackLyrics(data)
+          window.SpotifyWeb.sendTrackLyrics(data, '')
         })
         .catch(error => {
           logError(error.message)

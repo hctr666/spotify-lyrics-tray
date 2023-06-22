@@ -52,8 +52,7 @@ contextBridge.exposeInMainWorld('Auth', {
   },
 })
 
-// TODO: rename to Playback
-contextBridge.exposeInMainWorld('PlaybackState', {
+contextBridge.exposeInMainWorld('Playback', {
   play: (deviceId, positionMS) =>
     ipcRenderer.invoke(SLA_START_OR_RESUME_PLAYBACK, deviceId, positionMS),
   pause: deviceId => ipcRenderer.invoke(SLA_PAUSE_PLAYBACK, deviceId),

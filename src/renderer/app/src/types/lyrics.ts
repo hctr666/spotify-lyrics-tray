@@ -10,7 +10,7 @@ export interface Lyrics {
   lines: LyricsLine[]
   syncType: 'LINE_SYNCED' | 'UNSYNCED'
 }
-export interface TrackLyricsState {
+export interface LyricsState {
   colors?: LyricsColors
   lyrics?: Lyrics
   isLoading?: boolean

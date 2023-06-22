@@ -4,32 +4,37 @@ import { PageLogin } from './pages/PageLogin'
 import { AuthProvider } from './contexts/AuthProvider'
 import { PageHome } from './pages/PageHome/PageHome'
 import { LyricsServiceStateProvider } from './contexts/LyricsServiceStateProvider'
-import { TrackProvider } from './contexts/TrackProvider'
+import { LyricsProvider } from './contexts/LyricsProvider'
 import { PageSettings } from './pages/PageSettings'
-import { PlaybackStateProvider } from './contexts/PlaybackStateProvider/PlaybackStateProvider'
+import { PlaybackProvider } from './contexts/PlaybackProvider/PlaybackProvider'
 import { NotificationContainer } from './components/NotificationContainer'
 import { ProtectedRouteElement } from './components/ProtectedRouteElement'
+import { TrackProvider } from './contexts/TrackProvider'
 
 function App() {
   return (
     <Router>
       <AuthProvider>
         <LyricsServiceStateProvider>
-          <PlaybackStateProvider>
+          <PlaybackProvider>
             <TrackProvider>
-              <Routes>
-                <Route path='/login' element={<PageLogin />} />
-                <Route
-                  path='/settings'
-                  element={<ProtectedRouteElement element={<PageSettings />} />}
-                />
-                <Route
-                  path='/'
-                  element={<ProtectedRouteElement element={<PageHome />} />}
-                />
-              </Routes>
+              <LyricsProvider>
+                <Routes>
+                  <Route path='/login' element={<PageLogin />} />
+                  <Route
+                    path='/settings'
+                    element={
+                      <ProtectedRouteElement element={<PageSettings />} />
+                    }
+                  />
+                  <Route
+                    path='/'
+                    element={<ProtectedRouteElement element={<PageHome />} />}
+                  />
+                </Routes>
+              </LyricsProvider>
             </TrackProvider>
-          </PlaybackStateProvider>
+          </PlaybackProvider>
         </LyricsServiceStateProvider>
       </AuthProvider>
       <NotificationContainer />

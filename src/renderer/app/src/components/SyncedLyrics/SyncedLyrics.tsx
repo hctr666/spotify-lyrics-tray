@@ -1,6 +1,6 @@
-import { usePlaybackState } from '~/hooks/usePlaybackState'
+import { usePlayback } from '~/hooks/usePlayback'
 import { useSyncedLyrics } from '~/hooks/useSyncedLyrics'
-import { Lyrics } from '~/types/track-lyrics'
+import { Lyrics } from '~/types/lyrics'
 
 interface SyncedLyricsProps {
   lyrics?: Lyrics
@@ -10,7 +10,7 @@ interface SyncedLyricsProps {
 // TODO: implement sync pause when the song is not playing
 // TODO: enhanced animation, use css
 export const SyncedLyrics = ({ progress, lyrics }: SyncedLyricsProps) => {
-  const { updateProgress } = usePlaybackState()
+  const { updateProgress } = usePlayback()
   const { activeLine, activeLineRef, lines } = useSyncedLyrics({
     lyrics,
     progress,

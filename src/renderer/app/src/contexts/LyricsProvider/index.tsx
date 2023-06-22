@@ -1,0 +1,1 @@
+export { LyricsProvider } from './LyricsProvider'

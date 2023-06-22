@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 
 import { UseSyncedLyricsProps, useSyncedLyrics } from './useSyncedLyrics'
-import { Lyrics } from '~/types/track-lyrics'
+import { Lyrics } from '~/types/lyrics'
 
 jest.useFakeTimers()
 

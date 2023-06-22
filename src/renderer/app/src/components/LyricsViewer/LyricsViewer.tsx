@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 
-import { useTrackLyrics } from '~/hooks/useTrackLyrics'
-import { usePlaybackState } from '~/hooks/usePlaybackState'
+import { useLyrics } from '~/hooks/useLyrics'
+import { usePlayback } from '~/hooks/usePlayback'
+import { useLyricsCSSColors } from '~/hooks/useLyricsCSSColors/useLyricsCSSColors'
 import { SyncedLyrics } from '../SyncedLyrics'
 import { UnsyncedLyrics } from '../UnsyncedLyrics'
-import { useLyricsCSSColors } from '~/hooks/useLyricsCSSColors/useLyricsCSSColors'
 
 const setStyleProperties = (styleMap: Record<string, string>) => {
   Object.keys(styleMap).forEach(prop => {
@@ -15,8 +15,8 @@ const setStyleProperties = (styleMap: Record<string, string>) => {
 }
 
 export const LyricsViewer = () => {
-  const { lyrics, error, isLoading, colors } = useTrackLyrics()
-  const { playbackState } = usePlaybackState()
+  const { lyrics, error, isLoading, colors } = useLyrics()
+  const { playbackState } = usePlayback()
   const lyricsNotFound = !lyrics || !lyrics.lines
 
   const { textColor, backgroundColor, highlightColor } =

@@ -1,5 +1,7 @@
 import { createContext } from 'react'
 
-import { TrackLyricsState } from '~/types/track-lyrics'
+import { TrackContextValue } from '~/types/track'
 
-export const TrackContext = createContext<TrackLyricsState>({})
+export const TrackContext = createContext<TrackContextValue>({
+  displayTrack: {},
+})

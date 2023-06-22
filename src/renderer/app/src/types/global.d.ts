@@ -1,7 +1,7 @@
 import type { IpcRendererEvent } from 'electron'
 import type { AuthState } from '../contexts/AuthProvider/AuthContext'
-import type { Lyrics, LyricsColors } from './track-lyrics'
-import type { PlaybackState } from './playback-state'
+import type { Lyrics, LyricsColors } from './lyrics'
+import type { PlaybackState } from './playback'
 import type { LyricsServiceState } from './lyrics-service'
 import { Track } from './track'
 
@@ -52,8 +52,7 @@ declare global {
         listener: TrackLyricsRequestListener
       ) => UnsubscribeFunction
     }
-    // TODO: rename to Playback
-    PlaybackState: {
+    Playback: {
       play: (deviceId: string, positionMS: number) => Promise<void>
       pause: (deviceId: string) => Promise<void>
       skipToNext: (deviceId: string) => Promise<void>

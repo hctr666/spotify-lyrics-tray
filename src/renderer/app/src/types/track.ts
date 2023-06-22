@@ -17,3 +17,15 @@ export interface Track {
   album: Album
   artists: Artist[]
 }
+
+export interface DisplayTrack {
+  title?: string
+  artistName?: string
+  imageUrl?: string
+}
+
+export interface TrackContextValue {
+  displayTrack: DisplayTrack
+  isLoading?: boolean
+  error?: string
+}

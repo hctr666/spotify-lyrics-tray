@@ -1,86 +1,49 @@
-import { PropsWithChildren, useEffect, useState } from 'react'
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 
-import { useLyricsServiceState } from '~/hooks/useLyricsServiceState/useLyricsServiceState'
-import { usePlaybackState } from '~/hooks/usePlaybackState/usePlaybackState'
-import type { Lyrics, LyricsColors } from '~/types/track-lyrics'
+import { usePlayback } from '~/hooks/usePlayback/usePlayback'
+import { Track, DisplayTrack } from '~/types/track'
 import { TrackContext } from './TrackContext'
-import { useTimeElapsed } from '~/hooks/useTimeElapsed/useTimeElapsed'
 
 export const TrackProvider = ({ children }: PropsWithChildren) => {
-  const [lyrics, setLyrics] = useState<Lyrics>()
-  const [colors, setColors] = useState<LyricsColors>()
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [track, setTrack] = useState<Track>()
 
-  const lyricsServiceState = useLyricsServiceState()
-  const { startElapsing, getTime } = useTimeElapsed()
-  const { hasNewTrack, playbackState, updateProgress } = usePlaybackState()
+  const { hasNewTrack, playbackState } = usePlayback()
+  const { trackId } = playbackState
 
-  const trackId = playbackState.trackId
-  const progress = playbackState.progress
-  const imageUrl = playbackState.imageUrl
+  const displayTrack: DisplayTrack = useMemo(() => {
+    const artistName = track?.artists
+      .map(a => a.name)
+      .join(', ')
+      .trim()
 
-  const isLyricsServiceConnected = lyricsServiceState.isConnected
-  const lyricsServiceError = lyricsServiceState.error
+    const imageUrl = track?.album?.images?.[0].url
+    const title = track?.name
+
+    return { artistName, imageUrl, title }
+  }, [track])
 
   useEffect(() => {
-    if (lyricsServiceError) {
-      setError('Error in lyrics service')
-      setIsLoading(false)
-      return
-    }
-
-    const shouldRequestLyrics =
-      isLyricsServiceConnected && trackId && imageUrl && hasNewTrack
-
-    if (shouldRequestLyrics) {
-      startElapsing()
+    if (trackId && hasNewTrack) {
       setIsLoading(true)
-      window.Track.requestLyrics(trackId, imageUrl)
-    }
-  }, [
-    isLyricsServiceConnected,
-    trackId,
-    imageUrl,
-    hasNewTrack,
-    lyricsServiceError,
-    startElapsing,
-  ])
 
-  useEffect(() => {
-    const unsubscribeOnLyrics = window.Track.subscribeOnLyrics(
-      (_event, { lyrics, colors }, _error) => {
-        if (_error) {
-          setError(_error)
-          setLyrics(undefined)
-          setColors(undefined)
-        } else {
-          if (typeof progress === 'number') {
-            // eslint-disable-next-line no-console
-            console.info('Lyrics fetch response time: ', getTime())
-
-            // Add lyrics response time to align current progress
-            updateProgress(progress + getTime())
-          }
-
+      window.Track.getTrack(trackId)
+        .then(_track => {
+          setTrack(_track)
           setError('')
-          setLyrics(lyrics)
-          setColors(colors)
-        }
-        setIsLoading(false)
-      }
-    )
-
-    return () => {
-      unsubscribeOnLyrics()
+        })
+        .catch(_error => setError(_error))
+        .finally(() => {
+          setIsLoading(false)
+        })
     }
-  }, [progress, getTime, updateProgress])
+  }, [trackId, hasNewTrack])
 
   const state = {
     error,
     isLoading,
-    lyrics,
-    colors,
+    displayTrack,
   }
 
   return <TrackContext.Provider value={state}>{children}</TrackContext.Provider>

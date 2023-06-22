@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { rgbToCSS } from '~/helpers/colors'
-import { LyricsColors } from '~/types/track-lyrics'
+import { LyricsColors } from '~/types/lyrics'
 
 export const useLyricsCSSColors = (colors?: LyricsColors) => {
   const { textColor, backgroundColor, highlightColor } = useMemo(() => {

@@ -1,0 +1,1 @@
+export { useLyrics } from './useLyrics'
