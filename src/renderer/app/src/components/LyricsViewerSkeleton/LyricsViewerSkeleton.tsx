@@ -31,7 +31,7 @@ export const LyricsViewerSkeleton = () => {
       style={{ overflow: 'hidden', padding: '2rem 2.4rem' }}
     >
       {rects.map(rectProps => (
-        <rect {...rectProps} />
+        <rect key={`rect-${rectProps.y}`} {...rectProps} />
       ))}
     </ContentLoader>
   )
