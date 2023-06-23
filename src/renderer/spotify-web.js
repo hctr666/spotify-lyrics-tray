@@ -7,6 +7,7 @@ const LOGIN_BUTTON_SELECTOR = '[data-testid="preview-menu-login"]'
 const LOGOUT_BUTTON_SELECTOR = '[data-testid="settings-menu-logout"]'
 const MENU_BUTTON_SELECTOR = '[data-testid="preview-menu-button"]'
 const NOT_FOUND_STATUS = 404
+const FORBIDDEN_STATUS = 403
 const ROOT_SELECTOR = '#main'
 const SESSION_DATA_SCRIPT_SELECTOR =
   'script[id="session"][type="application/json"]'
@@ -163,7 +164,7 @@ const getTrackLyrics = async (trackId, imageUrl) => {
       },
     })
 
-    if (response.status === NOT_FOUND_STATUS) {
+    if ([NOT_FOUND_STATUS, FORBIDDEN_STATUS].includes(response.status)) {
       return null
     }
 
