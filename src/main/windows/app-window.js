@@ -23,6 +23,7 @@ class AppWindow extends BaseWindow {
       webPreferences: {
         preload: path.join(__dirname, '..', '..', 'preload/app.js'),
         devTools: isDev,
+        sandbox: false,
       },
     })
 

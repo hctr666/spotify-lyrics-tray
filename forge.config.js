@@ -4,7 +4,7 @@ const exec = util.promisify(require('child_process').exec)
 const fs = require('fs/promises')
 const ENV = process.env.NODE_ENV
 
-// Creates a .env file based on existing .envrc file to be used in prod
+// Creates a .env file based on existing .envrc for production
 const createProductionEnvFile = async buildPath => {
   try {
     const envrcFile = path.resolve(buildPath, '.envrc')

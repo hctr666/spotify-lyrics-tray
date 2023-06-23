@@ -36,6 +36,7 @@ class SpotifyWebWindow extends BaseWindow {
       webPreferences: {
         preload: path.join(__dirname, '..', '..', 'preload/spotify-web.js'),
         devTools: isDev,
+        sandbox: false,
       },
     })
 

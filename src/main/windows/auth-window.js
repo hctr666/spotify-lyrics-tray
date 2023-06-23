@@ -9,6 +9,7 @@ class AuthWindow extends BaseWindow {
       height: 600,
       webPreferences: {
         devTools: true,
+        sandbox: false,
       },
     })
 
