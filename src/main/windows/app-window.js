@@ -48,7 +48,7 @@ class AppWindow extends BaseWindow {
 
   initializeEvents() {
     this.window.on('blur', () => {
-      global.spotifyPlaybackService.stopStateCheck()
+      global.spotifyPlaybackPollingService.stopStateCheck()
 
       // There's a bug where clicking the tray icon doesn't show the window,
       // after it's been blurred, so we make sure to hide the window on blur event
@@ -76,7 +76,7 @@ class AppWindow extends BaseWindow {
 
       this.window.on('focus', () => {
         if (global.authService.isAuthenticated()) {
-          global.spotifyPlaybackService.initStateCheck()
+          global.spotifyPlaybackPollingService.initStateCheck()
         }
       })
     })

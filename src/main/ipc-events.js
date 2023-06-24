@@ -65,7 +65,7 @@ const initializeIpcEvents = () => {
   })
 
   ipcMain.handle(SLA_GET_PLAYBACK_STATE, async () => {
-    const playbackState = await global.spotifyPlaybackService.getState()
+    const playbackState = await global.spotifyPlaybackPollingService.getState()
     return playbackState
   })
 

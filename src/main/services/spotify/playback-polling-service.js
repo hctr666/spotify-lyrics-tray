@@ -1,4 +1,3 @@
-// TODO: rename this class to something more specific such checking, polling... service
 const { isDevelopment } = require('../../helpers/environment')
 const { Emittable } = require('../../libs/emittable/emittable')
 const { SpotifyClient } = require('../../libs/spotify-client')
@@ -9,7 +8,7 @@ const areObjectsEqual = (obj1, obj2) => {
 
 const RETRY_AFTER = isDevelopment() ? 4500 : 3000
 
-class SpotifyPlaybackService extends Emittable {
+class SpotifyPlaybackPollingService extends Emittable {
   events = ['state-changed']
   retryAfter = RETRY_AFTER
   isChecking = false
@@ -90,5 +89,5 @@ class SpotifyPlaybackService extends Emittable {
 }
 
 module.exports = {
-  SpotifyPlaybackService,
+  SpotifyPlaybackPollingService,
 }

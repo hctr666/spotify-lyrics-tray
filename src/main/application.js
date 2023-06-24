@@ -4,8 +4,8 @@ const path = require('path')
 const { REDIRECT_URI } = require('./constants/spotify')
 const { AuthService } = require('./services/auth')
 const {
-  SpotifyPlaybackService,
-} = require('./services/spotify/spotify-playback-service')
+  SpotifyPlaybackPollingService,
+} = require('./services/spotify/playback-polling-service')
 const AppWindow = require('./windows/app-window')
 const AuthWindow = require('./windows/auth-window')
 const SpotifyWebWindow = require('./windows/spotify-web-window')
@@ -19,14 +19,14 @@ const {
 class Application {
   constructor() {
     this.authService = new AuthService()
-    this.spotifyPlaybackService = new SpotifyPlaybackService()
+    this.spotifyPlaybackPollingService = new SpotifyPlaybackPollingService()
     this.appWindow = new AppWindow()
     this.authWindow = new AuthWindow()
     this.spotifyWebWindow = new SpotifyWebWindow()
     this.appTray = new AppTray()
 
     global.authService = this.authService
-    global.spotifyPlaybackService = this.spotifyPlaybackService
+    global.spotifyPlaybackPollingService = this.spotifyPlaybackPollingService
     global.authWindow = this.authWindow
     global.appWindow = this.appWindow
     global.spotifyWebWindow = this.spotifyWebWindow
@@ -35,6 +35,7 @@ class Application {
   }
 
   handleProtocolIntercept = () => {
+    // TODO: handle deprecated interceptFileProtocol
     protocol.interceptFileProtocol('file', (request, callback) => {
       if (request.url.startsWith('file:///static')) {
         return callback(
@@ -59,7 +60,7 @@ class Application {
   }
 
   handleSpotifyServiceEvents = () => {
-    this.spotifyPlaybackService.on('state-changed', state => {
+    this.spotifyPlaybackPollingService.on('state-changed', state => {
       const appWindow = this.appWindow.getWindow()
       appWindow?.webContents.send(SLA_ON_PLAYBACK_STATE, state)
     })
@@ -73,7 +74,7 @@ class Application {
         isAuthenticated: false,
       })
 
-      this.spotifyPlaybackService.abortStateCheck()
+      this.spotifyPlaybackPollingService.abortStateCheck()
     })
   }
 
