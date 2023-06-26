@@ -4,9 +4,11 @@ import { HiCog } from 'react-icons/hi'
 import { Page } from '~/components'
 import { LyricsViewer } from '~/components/LyricsViewer'
 import { Playback } from '~/components/Playback'
+import { usePlayback } from '~/hooks/usePlayback'
 
 export const PageHome = () => {
   const navigate = useNavigate()
+  const { playbackState } = usePlayback()
 
   const handleSettingsClick = () => {
     navigate('/settings')
@@ -24,7 +26,7 @@ export const PageHome = () => {
       </Page.Header>
       <Page.Content noHeader noPaddingX>
         <LyricsViewer />
-        <Playback />
+        {!playbackState.isInactive && <Playback />}
       </Page.Content>
     </Page>
   )
