@@ -70,9 +70,10 @@ class SpotifyPlaybackPollingService extends Emittable {
 
     this.isChecking = true
 
-    if (this.timer) return
-
-    await handleStateChange()
+    if (this.timer) {
+      await handleStateChange()
+      return
+    }
 
     this.timer = setInterval(await handleStateChange, this.retryAfter)
   }
