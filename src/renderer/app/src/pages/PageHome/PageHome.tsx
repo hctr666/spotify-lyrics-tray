@@ -9,6 +9,7 @@ import { usePlayback } from '~/hooks/usePlayback'
 import { useLyricsServiceState } from '~/hooks/useLyricsServiceState/useLyricsServiceState'
 import { PlaybackInactiveMessage } from '~/components/PlaybackInactiveMessage'
 import { LyricsNotConnected } from '~/components/LyricsNotConnected'
+import { LyricsProvider } from '~/contexts/LyricsProvider'
 
 export const PageHome = () => {
   const navigate = useNavigate()
@@ -26,7 +27,13 @@ export const PageHome = () => {
 
     return (
       <>
-        {lyricsService.isConnected ? <LyricsViewer /> : <LyricsNotConnected />}
+        {lyricsService.isConnected ? (
+          <LyricsProvider>
+            <LyricsViewer />
+          </LyricsProvider>
+        ) : (
+          <LyricsNotConnected />
+        )}
         <Playback />
       </>
     )
