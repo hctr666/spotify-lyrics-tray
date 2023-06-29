@@ -32,6 +32,10 @@ class TrayManager {
     this.updatePosition()
   }
 
+  hideWindow = () => {
+    this.window.hide()
+  }
+
   toggleVisibility = () => {
     if (!this.window.isVisible()) {
       this.showWindow()

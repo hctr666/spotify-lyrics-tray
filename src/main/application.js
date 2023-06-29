@@ -1,4 +1,4 @@
-const { session, protocol } = require('electron')
+const { session, protocol, globalShortcut } = require('electron')
 const path = require('path')
 
 const { REDIRECT_URI } = require('./constants/spotify')
@@ -35,7 +35,7 @@ class Application {
   }
 
   handleProtocolIntercept = () => {
-    // TODO: handle deprecated interceptFileProtocol
+    // TODO: use protocol.handle method
     protocol.interceptFileProtocol('file', (request, callback) => {
       if (request.url.startsWith('file:///static')) {
         return callback(
@@ -99,18 +99,29 @@ class Application {
     })
   }
 
+  handleGlobalShortcuts = () => {
+    globalShortcut.register('CommandOrControl+Alt+L', () => {
+      this.trayManager.showWindow()
+    })
+
+    globalShortcut.register('Escape', () => {
+      this.trayManager.hideWindow()
+    })
+  }
+
   initializeTrayApp = () => {
     this.appTray.create()
 
     const tray = this.appTray.getTray()
     const window = this.appWindow.getWindow()
-    const trayManager = new TrayManager(tray, window)
+    this.trayManager = new TrayManager(tray, window)
 
     window.on('ready-to-show', () => {
-      trayManager.showWindow()
+      this.trayManager.showWindow()
+      this.handleGlobalShortcuts()
     })
 
-    global.trayManager = trayManager
+    global.trayManager = this.trayManager
   }
 }
 
