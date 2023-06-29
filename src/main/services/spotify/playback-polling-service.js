@@ -1,4 +1,3 @@
-const { isDevelopment } = require('../../helpers/environment')
 const { Emittable } = require('../../libs/emittable/emittable')
 const { SpotifyClient } = require('../../libs/spotify-client')
 
@@ -6,7 +5,7 @@ const areObjectsEqual = (obj1, obj2) => {
   return JSON.stringify(obj1) === JSON.stringify(obj2)
 }
 
-const RETRY_AFTER = isDevelopment() ? 4500 : 3000
+const RETRY_AFTER = 10000
 
 class SpotifyPlaybackPollingService extends Emittable {
   events = ['state-changed']

@@ -60,15 +60,12 @@ export const useSyncedLyrics = ({
   }, [lyrics, progress])
 
   useEffect(() => {
-    // TODO: use this delay for scroll animation (css)
-    // add a delay relative to wait time to avoid words moving too fast
-    const delay = Math.ceil(wait * 0.25)
     let timeout: NodeJS.Timeout
 
     if (isPlaying) {
       timeout = setTimeout(() => {
         updateProgress(progress + wait)
-      }, wait + delay)
+      }, wait)
     }
 
     return () => {
@@ -84,7 +81,7 @@ export const useSyncedLyrics = ({
         block: 'center',
       })
     }
-  }, [progress])
+  }, [activeLine])
 
   return { activeLine, activeLineRef, lines, wait }
 }
