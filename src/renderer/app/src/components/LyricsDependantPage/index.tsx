@@ -1,1 +1,0 @@
-export { LyricsDependantPage } from './LyricsDependantPage'

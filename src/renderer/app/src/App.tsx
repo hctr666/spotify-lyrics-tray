@@ -10,7 +10,6 @@ import { PlaybackProvider } from './contexts/PlaybackProvider/PlaybackProvider'
 import { NotificationContainer } from './components/NotificationContainer'
 import { ProtectedRouteElement } from './components/ProtectedRouteElement'
 import { TrackProvider } from './contexts/TrackProvider'
-import { LyricsDependantPage } from './components/LyricsDependantPage'
 
 function App() {
   return (
@@ -30,11 +29,7 @@ function App() {
                   />
                   <Route
                     path='/'
-                    element={
-                      <ProtectedRouteElement
-                        element={<LyricsDependantPage page={<PageHome />} />}
-                      />
-                    }
+                    element={<ProtectedRouteElement element={<PageHome />} />}
                   />
                 </Routes>
               </LyricsProvider>
