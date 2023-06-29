@@ -47,10 +47,13 @@ const lyricsMock: Lyrics = {
   syncType: 'LINE_SYNCED',
 }
 
-const expectedLines = lyricsMock.lines.map((line, idx) => ({
-  id: `line-${idx}`,
-  ...line,
-}))
+const getExpectedLines = (activeLineIdx?: number) => {
+  return lyricsMock.lines.map((line, idx) => ({
+    id: `line-${idx}`,
+    passed: typeof activeLineIdx === 'number' && idx < activeLineIdx,
+    ...line,
+  }))
+}
 
 const mockedUpdateProgress = jest.fn()
 
@@ -82,6 +85,8 @@ describe('useSyncedLyrics', () => {
   it('returns the correct line when progress is in the middle of the song', () => {
     const { result } = renderUseSyncedLyrics({ progress: 5000 })
 
+    const expectedLines = getExpectedLines(2)
+
     expect(result.current).toEqual({
       activeLine: expectedLines[2],
       activeLineRef: { current: null },
@@ -96,13 +101,14 @@ describe('useSyncedLyrics', () => {
     expect(result.current).toEqual({
       activeLine: null,
       activeLineRef: { current: null },
-      lines: expectedLines,
+      lines: getExpectedLines(),
       wait: 80,
     })
   })
 
   it('returns the last line when progress is greater than the maximum start time', () => {
     const { result } = renderUseSyncedLyrics({ progress: 16700 })
+    const expectedLines = getExpectedLines(5)
 
     expect(result.current).toEqual({
       activeLine: expectedLines[5],
@@ -116,6 +122,7 @@ describe('useSyncedLyrics', () => {
     const { result } = renderUseSyncedLyrics({
       progress: 3400,
     })
+    const expectedLines = getExpectedLines(1)
 
     expect(result.current).toEqual({
       activeLine: expectedLines[1],
@@ -134,6 +141,7 @@ describe('useSyncedLyrics', () => {
       progress: 3400,
       isPlaying: false,
     })
+    const expectedLines = getExpectedLines(1)
 
     expect(result.current).toEqual({
       activeLine: expectedLines[1],

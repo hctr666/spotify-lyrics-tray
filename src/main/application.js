@@ -104,9 +104,10 @@ class Application {
       this.trayManager.showWindow()
     })
 
-    globalShortcut.register('Escape', () => {
-      this.trayManager.hideWindow()
-    })
+    // TODO: handle Escape shortcut in renderer to avoid collision with other apps
+    // globalShortcut.register('Escape', () => {
+    //   this.trayManager.hideWindow()
+    // })
   }
 
   initializeTrayApp = () => {

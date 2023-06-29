@@ -26,6 +26,7 @@ export const useSyncedLyrics = ({
 
     const lines = lyrics.lines.map((line, idx) => ({
       id: `line-${idx}`,
+      passed: false,
       ...line,
     }))
 
@@ -44,7 +45,7 @@ export const useSyncedLyrics = ({
       (prevLine, currentLine, idx, _lines) => {
         if (Number(currentLine.startTimeMs) <= progress) {
           const nextLine = _lines[idx + 1]
-
+          prevLine.passed = true
           wait = nextLine ? Number(nextLine.startTimeMs) - progress : 0
 
           return currentLine

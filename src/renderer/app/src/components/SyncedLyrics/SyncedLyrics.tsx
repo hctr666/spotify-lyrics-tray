@@ -34,7 +34,10 @@ export const SyncedLyrics = ({ lyrics }: SyncedLyricsProps) => {
           }
 
           return (
-            <div className='synced-lyrics-line' key={line.id}>
+            <div
+              className={`synced-lyrics-line${line.passed ? '--passed' : ''}`}
+              key={line.id}
+            >
               {line.words}
             </div>
           )

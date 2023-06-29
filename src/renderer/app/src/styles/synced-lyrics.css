@@ -3,11 +3,17 @@
 }
 
 .synced-lyrics-lines {
-  @apply flex flex-col gap-1 leading-8 text-lg text-gray-500 font-medium;
+  @apply flex flex-col gap-1 leading-7 text-lg text-gray-500 font-medium;
 }
 
 .synced-lyrics-line {
   color: var(--lyrics-color-text);
+}
+
+.synced-lyrics-line--passed {
+  color: var(--lyrics-color-highlight);
+  opacity: 0.65;
+  @apply transition-all ease-out duration-200
 }
 
 .synced-lyrics-line--active {
