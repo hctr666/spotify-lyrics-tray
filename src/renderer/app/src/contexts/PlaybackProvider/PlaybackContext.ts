@@ -4,7 +4,7 @@ import { PlaybackContextValue } from '~/types/playback'
 
 export const initialPlaybackState = {
   isPlaying: false,
-  isInactive: true,
+  isInactive: false,
   progress: 0,
   trackId: '',
   imageUrl: '',
