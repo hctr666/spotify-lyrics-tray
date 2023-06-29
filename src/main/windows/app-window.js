@@ -13,7 +13,7 @@ class AppWindow extends BaseWindow {
     this.window = new BrowserWindow({
       show: isDev,
       width: 400,
-      height: 400,
+      height: 250,
       titleBarStyle: 'hidden',
       fullscreenable: false,
       resizable: false,

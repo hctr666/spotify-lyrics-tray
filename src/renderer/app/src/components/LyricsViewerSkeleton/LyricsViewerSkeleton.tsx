@@ -1,6 +1,6 @@
 import ContentLoader from 'react-content-loader'
 
-const GAP = 40
+const GAP = 32
 const widths = [270, 250, 120, 280, 180]
 
 const getRandomWidth = () => widths[Math.floor(Math.random() * widths.length)]
@@ -10,7 +10,7 @@ const initialRect = {
   x: 0,
   rx: 5,
   ry: 5,
-  height: 14,
+  height: 10,
   width: getRandomWidth(),
 }
 

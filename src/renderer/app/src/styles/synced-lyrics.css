@@ -3,7 +3,7 @@
 }
 
 .synced-lyrics-lines {
-  @apply flex flex-col gap-1 leading-8 text-xl text-gray-500 font-medium;
+  @apply flex flex-col gap-1 leading-8 text-lg text-gray-500 font-medium;
 }
 
 .synced-lyrics-line {
