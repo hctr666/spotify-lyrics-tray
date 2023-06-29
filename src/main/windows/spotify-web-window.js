@@ -47,11 +47,9 @@ class SpotifyWebWindow extends BaseWindow {
       Logger.logError(error)
     }
 
-    this.window.webContents.on(
-      'did-finish-load',
-      async event =>
-        await this.#handleWindowDidFinishLoad(event.sender.getURL())
-    )
+    this.window.webContents.on('did-finish-load', async () => {
+      await this.#handleWindowDidFinishLoad(this.window.webContents.getURL())
+    })
 
     this.handleWebContentsLoadFailed()
     this.initDevtools()
