@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
 import { useLyrics } from '~/hooks/useLyrics'
-import { usePlayback } from '~/hooks/usePlayback'
 import { useLyricsCSSColors } from '~/hooks/useLyricsCSSColors/useLyricsCSSColors'
 import { SyncedLyrics } from '../SyncedLyrics'
 import { UnsyncedLyrics } from '../UnsyncedLyrics'
@@ -17,7 +16,6 @@ const setStyleProperties = (styleMap: Record<string, string>) => {
 
 export const LyricsViewer = () => {
   const { lyrics, error, isLoading, colors } = useLyrics()
-  const { playbackState } = usePlayback()
   const lyricsNotFound = !lyrics || !lyrics.lines
 
   const { textColor, backgroundColor, highlightColor } =
@@ -31,17 +29,6 @@ export const LyricsViewer = () => {
       '--lyrics-color-text': textColor,
     })
   }, [textColor, backgroundColor, highlightColor])
-
-  if (playbackState.isInactive) {
-    return (
-      <div className='text-gray-400 text-sm p-3 block'>
-        <span className='block'>
-          Playback inactive or in private session, please open your Spotify app,
-          make sure private session is not enabled and play a song!
-        </span>
-      </div>
-    )
-  }
 
   if (error) {
     return (

@@ -1,32 +1,49 @@
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { HiCog } from 'react-icons/hi'
+import { HiOutlineCog } from 'react-icons/hi'
 
 import { Page } from '~/components'
 import { LyricsViewer } from '~/components/LyricsViewer'
 import { Playback } from '~/components/Playback'
 import { usePlayback } from '~/hooks/usePlayback'
+import { useLyricsServiceState } from '~/hooks/useLyricsServiceState/useLyricsServiceState'
+import { PlaybackInactiveMessage } from '~/components/PlaybackInactiveMessage'
+import { LyricsNotConnected } from '~/components/LyricsNotConnected'
 
 export const PageHome = () => {
   const navigate = useNavigate()
-  const { playbackState } = usePlayback()
+  const { playbackState: playback } = usePlayback()
+  const lyricsService = useLyricsServiceState()
 
   const handleSettingsClick = () => {
     navigate('/settings')
   }
+
+  const pageContent = useMemo(() => {
+    if (playback.isInactive) {
+      return <PlaybackInactiveMessage />
+    }
+
+    return (
+      <>
+        {lyricsService.isConnected ? <LyricsViewer /> : <LyricsNotConnected />}
+        <Playback />
+      </>
+    )
+  }, [lyricsService, playback])
 
   return (
     <Page>
       <Page.Header>
         <button
           onClick={handleSettingsClick}
-          className='text-gray-900 text-2xl fixed top-3 right-2'
+          className='text-gray-200 text-2xl fixed top-3 right-2'
         >
-          <HiCog />
+          <HiOutlineCog />
         </button>
       </Page.Header>
       <Page.Content noHeader noPaddingX>
-        <LyricsViewer />
-        {!playbackState.isInactive && <Playback />}
+        {pageContent}
       </Page.Content>
     </Page>
   )
