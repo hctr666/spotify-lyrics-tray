@@ -176,7 +176,7 @@ const getTrackLyrics = async (trackId, imageUrl) => {
 
     return data
   } catch (error) {
-    throw new Error(error)
+    throw new Error(error.message)
   }
 }
 
@@ -290,11 +290,11 @@ const initMain = async () => {
           logError(error.message)
           window.SpotifyWeb.sendTrackLyrics({}, errors.LYRICS_FETCH_FAILED)
 
-          // Logout when token sent is invalid
+          // Logout/login when token sent is invalid
           if (error.message === errors.INVALID_TOKEN) {
-            logout().catch(error => {
-              logError(error.message)
-            })
+            logout()
+              .then(() => window.SpotifyWeb.sendServiceState(state))
+              .catch(logError)
           }
         })
     })
