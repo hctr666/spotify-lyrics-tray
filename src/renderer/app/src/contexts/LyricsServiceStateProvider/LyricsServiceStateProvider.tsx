@@ -2,14 +2,12 @@ import { PropsWithChildren, useEffect, useState } from 'react'
 
 import { LyricsServiceStateContext } from './LyricsServiceStateContext'
 import { useToastError } from '~/hooks/useToastError'
-import { useNavigate } from 'react-router-dom'
 import { LyricsServiceStatus } from '~/types/lyrics-service'
 
 export const LyricsServiceStateProvider = ({ children }: PropsWithChildren) => {
   const [error, setError] = useState('')
   const [status, setStatus] = useState<LyricsServiceStatus>('loading')
 
-  const navigate = useNavigate()
   const toastError = useToastError()
 
   useEffect(() => {
@@ -25,10 +23,6 @@ export const LyricsServiceStateProvider = ({ children }: PropsWithChildren) => {
         } else {
           setError('')
         }
-
-        navigate(
-          ['disconnected', 'error'].includes(state.status) ? '/settings' : '/'
-        )
       })
 
     return () => {
