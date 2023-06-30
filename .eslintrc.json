@@ -5,7 +5,12 @@
     "browser": true,
     "jest": true
   },
-  "extends": ["eslint:recommended", "prettier", "react-app", "react-app/jest"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react-hooks/recommended",
+    "prettier",
+    "react-app/jest"
+  ],
   "overrides": [],
   "parserOptions": {
     "ecmaVersion": "latest",

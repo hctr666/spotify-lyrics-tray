@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --lyrics-color-background: transparent;
+  --lyrics-color-highlight: #fff;
+  --lyrics-color-text: #fff;
+  --page-header-height: 50px;
+  --playback-height: 52px;
+  --theme-color-gray-dark: #1f1f1f;
+  --theme-color-gray-darker: rgb(24, 24, 24);
+}
+
+body, #root {
+  height: 100vh;
+  overflow: hidden;
+}

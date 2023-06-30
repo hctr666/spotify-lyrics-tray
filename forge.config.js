@@ -1,3 +1,4 @@
+// TODO: integrate vite plugin - https://www.electronforge.io/config/plugins/vite
 const path = require('path')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)

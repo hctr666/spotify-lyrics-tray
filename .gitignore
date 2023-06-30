@@ -22,5 +22,6 @@ yarn-debug.log*
 yarn-error.log*
 
 out
-src/renderer/app/tsconfig.tsbuildinfo
-src/renderer/app/build
+/dist-electron
+/**/*/tsconfig.tsbuildinfo
+/**/*/build
