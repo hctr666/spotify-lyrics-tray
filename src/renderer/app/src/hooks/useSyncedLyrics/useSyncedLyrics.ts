@@ -9,6 +9,7 @@ export interface UseSyncedLyricsProps {
   updateProgress: (progress: number) => void
 }
 
+// TODO: request playback state once the song has finished
 export const useSyncedLyrics = ({
   isPlaying,
   lyrics,

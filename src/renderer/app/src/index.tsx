@@ -1,4 +1,4 @@
-// TODO: get rid of create-react-app, evaluate remix, vercel or nextjs
+// TODO: migrate app to vite
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
