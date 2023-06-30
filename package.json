@@ -61,7 +61,7 @@
     "jest-environment-jsdom": "^27.4.3",
     "jest-resolve": "^27.4.2",
     "jest-watch-typeahead": "^1.0.0",
-    "lint-staged": "13.2.2",
+    "lint-staged": "13.2.3",
     "postcss": "^8.4.24",
     "prettier": "^2.7.1",
     "prompts": "^2.4.2",
