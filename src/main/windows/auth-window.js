@@ -1,8 +1,8 @@
-const { BrowserWindow } = require('electron')
+import { BrowserWindow } from 'electron'
 
-const BaseWindow = require('./base-window')
+import { BaseWindow } from './base-window'
 
-class AuthWindow extends BaseWindow {
+export class AuthWindow extends BaseWindow {
   create() {
     this.window = new BrowserWindow({
       width: 800,
@@ -20,5 +20,3 @@ class AuthWindow extends BaseWindow {
     this.window.loadURL(url)
   }
 }
-
-module.exports = AuthWindow

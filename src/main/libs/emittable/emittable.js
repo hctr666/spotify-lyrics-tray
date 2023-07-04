@@ -1,6 +1,6 @@
 const { EventEmitter } = require('events')
 
-class Emittable {
+export class Emittable {
   events = []
   eventEmitter = new EventEmitter()
 
@@ -23,8 +23,4 @@ class Emittable {
 
     return this.eventEmitter.emit(event, ...args)
   }
-}
-
-module.exports = {
-  Emittable,
 }

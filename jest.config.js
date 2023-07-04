@@ -35,11 +35,10 @@ module.exports = {
     '^.+\\.module\\.(css|sass|scss)$',
   ],
   transform: {
-    '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$':
-      '<rootDir>/config/renderer/jest/babelTransform.js',
-    '^.+\\.css$': '<rootDir>/config/renderer/jest/cssTransform.js',
+    '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': '<rootDir>/config/jest/babelTransform.js',
+    '^.+\\.css$': '<rootDir>/config/jest/cssTransform.js',
     '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
-      '<rootDir>/config/renderer/jest/fileTransform.js',
+      '<rootDir>/config/jest/fileTransform.js',
   },
   watchPlugins: [
     'jest-watch-typeahead/filename',

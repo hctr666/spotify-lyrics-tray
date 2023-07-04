@@ -1,16 +1,9 @@
-const { app, safeStorage } = require('electron')
+import { app, safeStorage } from 'electron'
 
-require('./helpers/configDotEnv')()
+import { initializeIpcMainEvents } from './ipc-events'
+import { Application } from './application'
 
-const { isDevelopment } = require('./helpers/environment')
-const { configLogger } = require('./libs/logger')
-
-configLogger({ logToFile: !isDevelopment() })
-
-const { initializeIpcEvents } = require('./ipc-events')
-const MainApplication = require('./application')
-
-const main = new MainApplication()
+const main = new Application()
 
 app.whenReady().then(async () => {
   main.handleProtocolIntercept()
@@ -43,4 +36,4 @@ app.on('before-quit', () => {
   global.isAppQuitting = true
 })
 
-initializeIpcEvents()
+initializeIpcMainEvents()

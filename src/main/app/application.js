@@ -1,22 +1,20 @@
-const { session, protocol, globalShortcut } = require('electron')
-const path = require('path')
+import { session, protocol, globalShortcut } from 'electron'
+import path from 'path'
 
-const { REDIRECT_URI } = require('./constants/spotify')
-const { AuthService } = require('./services/auth')
-const {
-  SpotifyPlaybackPollingService,
-} = require('./services/spotify/playback-polling-service')
-const AppWindow = require('./windows/app-window')
-const AuthWindow = require('./windows/auth-window')
-const SpotifyWebWindow = require('./windows/spotify-web-window')
-const AppTray = require('./tray/app-tray')
-const TrayManager = require('./tray/tray-manager')
-const {
-  SLA_AUTH_STATE,
-  SLA_ON_PLAYBACK_STATE,
-} = require('./constants/ipc-channels')
+import SpotifyConstants from '../constants/spotify'
+import { AuthService } from '../services/auth'
+import { SpotifyPlaybackPollingService } from '../services/spotify/playback-polling-service'
+import { AppWindow } from '../windows/app-window'
+import { AuthWindow } from '../windows/auth-window'
+import { SpotifyWebWindow } from '../windows/spotify-web-window'
+import { AppTray } from '../tray/app-tray'
+import { TrayManager } from '../tray/tray-manager'
+import IpcChannels from '../constants/ipc-channels'
 
-class Application {
+const { REDIRECT_URI } = SpotifyConstants
+const { SLA_AUTH_STATE, SLA_ON_PLAYBACK_STATE } = IpcChannels
+
+export class Application {
   constructor() {
     this.authService = new AuthService()
     this.spotifyPlaybackPollingService = new SpotifyPlaybackPollingService()
@@ -125,5 +123,3 @@ class Application {
     global.trayManager = this.trayManager
   }
 }
-
-module.exports = Application

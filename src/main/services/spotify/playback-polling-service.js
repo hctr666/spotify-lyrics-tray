@@ -1,5 +1,5 @@
-const { Emittable } = require('../../libs/emittable/emittable')
-const { SpotifyClient } = require('../../libs/spotify-client')
+import { Emittable } from '../../libs/emittable/emittable'
+import { SpotifyClient } from '../../libs/spotify-client'
 
 const areObjectsEqual = (obj1, obj2) => {
   return JSON.stringify(obj1) === JSON.stringify(obj2)
@@ -7,7 +7,7 @@ const areObjectsEqual = (obj1, obj2) => {
 
 const RETRY_AFTER = 10000
 
-class SpotifyPlaybackPollingService extends Emittable {
+export class SpotifyPlaybackPollingService extends Emittable {
   events = ['state-changed']
   retryAfter = RETRY_AFTER
   isChecking = false
@@ -86,8 +86,4 @@ class SpotifyPlaybackPollingService extends Emittable {
     clearInterval(this.timer)
     this.timer = null
   }
-}
-
-module.exports = {
-  SpotifyPlaybackPollingService,
 }

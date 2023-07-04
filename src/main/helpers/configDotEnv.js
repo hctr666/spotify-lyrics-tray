@@ -1,12 +1,15 @@
-const path = require('path')
-const fs = require('fs')
+import path from 'path'
+import dotenv from 'dotenv'
+import fs from 'fs'
 
-const configDotEnv = () => {
-  const dotEnvFile = path.resolve(__dirname, '..', '..', '..', '.env')
+export const configDotEnv = () => {
+  try {
+    const dotEnvFile = path.resolve(__dirname, '.env')
 
-  if (fs.existsSync(dotEnvFile)) {
-    require('dotenv').config({ path: dotEnvFile })
+    if (fs.existsSync(dotEnvFile)) {
+      dotenv.config({ path: dotEnvFile })
+    }
+  } catch (error) {
+    throw new Error(error)
   }
 }
-
-module.exports = configDotEnv

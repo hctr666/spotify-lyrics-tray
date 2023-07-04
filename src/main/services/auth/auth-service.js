@@ -1,13 +1,13 @@
 // TODO: consider PKCE implementation for more security
-const { BaseService } = require('../base')
-const SafeStore = require('../../libs/safe-store')
-const { SpotifyClient } = require('../../libs/spotify-client/')
-const { getUrlSearchParams } = require('../../helpers/getUrlSearchParams')
-const { Logger } = require('../../libs/logger')
+import { BaseService } from '../base'
+import { SafeStore } from '../../libs/safe-store'
+import { SpotifyClient } from '../../libs/spotify-client/'
+import { getUrlSearchParams } from '../../helpers/getUrlSearchParams'
+import Logger from '../../libs/logger'
 
 const AUTH_TOKEN_ID = 'sla:auth-token'
 
-class AuthService extends BaseService {
+export class AuthService extends BaseService {
   constructor() {
     super()
     this.safeStore = new SafeStore()
@@ -82,8 +82,4 @@ class AuthService extends BaseService {
       this.logout()
     }
   }
-}
-
-module.exports = {
-  AuthService,
 }

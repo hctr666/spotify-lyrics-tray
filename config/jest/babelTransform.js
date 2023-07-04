@@ -1,4 +1,5 @@
-const babelJest = require('babel-jest').default;
+// TODO: replace babel with @swc/jest to improve performance
+const babelJest = require('babel-jest').default
 
 const hasJsxRuntime = (() => {
   if (process.env.DISABLE_NEW_JSX_TRANSFORM === 'true') {
@@ -24,4 +25,4 @@ module.exports = babelJest.createTransformer({
   ],
   babelrc: false,
   configFile: false,
-});
+})

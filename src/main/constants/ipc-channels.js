@@ -1,5 +1,5 @@
 // TODO: rename ipc channels
-module.exports = {
+export default {
   SLA_AUTH_SIGN_IN: 'sla:auth:sing-in',
   SLA_AUTH_SIGN_OUT: 'sla:auth:sing-out',
   SLA_AUTH_STATE: 'sla:auth:status',

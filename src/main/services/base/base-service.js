@@ -1,7 +1,3 @@
-const { Emittable } = require('../../libs/emittable/emittable')
+import { Emittable } from '../../libs/emittable/emittable'
 
-class BaseService extends Emittable {}
-
-module.exports = {
-  BaseService,
-}
+export class BaseService extends Emittable {}

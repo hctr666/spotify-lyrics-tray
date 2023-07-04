@@ -1,5 +1,3 @@
-const SpotifyClient = require('./spotify-client')
+import SpotifyClient from './spotify-client'
 
-module.exports = {
-  SpotifyClient,
-}
+export { SpotifyClient }

@@ -1,6 +1,6 @@
-const Logger = require('electron-log')
+import Logger from 'electron-log'
 
-const configLogger = ({ logToFile } = { logToFile: false }) => {
+export const configLogger = ({ logToFile } = { logToFile: false }) => {
   Logger.initialize({
     preload: true,
   })
@@ -26,10 +26,9 @@ const configLogger = ({ logToFile } = { logToFile: false }) => {
   })
 }
 
-module.exports = {
-  configLogger,
-  Logger: Object.assign(Logger, {
-    logInfo: Logger.info,
-    logError: Logger.error,
-  }),
-}
+const CustomLogger = Object.assign(Logger, {
+  logInfo: Logger.info,
+  logError: Logger.error,
+})
+
+export default CustomLogger

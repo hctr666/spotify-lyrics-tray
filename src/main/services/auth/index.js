@@ -1,5 +1,1 @@
-const { AuthService } = require('./auth-service')
-
-module.exports = {
-  AuthService,
-}
+export { AuthService } from './auth-service'

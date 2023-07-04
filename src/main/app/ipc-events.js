@@ -1,4 +1,7 @@
-const { ipcMain } = require('electron')
+import { ipcMain } from 'electron'
+import IpcChannels from '../constants/ipc-channels'
+import { SpotifyClient } from '../libs/spotify-client'
+
 const {
   SLA_LYRICS_CONNECT,
   SLA_AUTH_SIGN_OUT,
@@ -14,8 +17,7 @@ const {
   SLA_SKIP_TO_NEXT_TRACK,
   SLA_SKIP_TO_PREVIOUS_TRACK,
   SLA_GET_TRACK,
-} = require('./constants/ipc-channels')
-const { SpotifyClient } = require('./libs/spotify-client')
+} = IpcChannels
 
 const sendToSpotifyWebWindow = (channel, ...args) => {
   /** @type {Electron.BrowserWindow | null} */
@@ -35,7 +37,7 @@ const sendToAppWindow = (channel, value) => {
   }
 }
 
-const initializeIpcEvents = () => {
+export const initializeIpcMainEvents = () => {
   ipcMain.on(SLA_LYRICS_CONNECT, () => {
     sendToSpotifyWebWindow(SLA_LYRICS_CONNECT_REQUEST)
   })
@@ -93,5 +95,3 @@ const initializeIpcEvents = () => {
     return track
   })
 }
-
-module.exports = { initializeIpcEvents }

@@ -1,6 +1,6 @@
-const { contextBridge, ipcRenderer } = require('electron')
+import { contextBridge, ipcRenderer } from 'electron'
 
-const { isDevelopment } = require('../main/helpers/environment')
+import { isDevelopment } from '../main/helpers/environment'
 
 contextBridge.exposeInMainWorld('Core', {
   log: (payload, level) =>

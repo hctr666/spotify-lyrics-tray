@@ -1,10 +1,12 @@
-const { v4: uuid } = require('uuid')
-const fetch = require('node-fetch')
+import fetch from 'node-fetch'
 
-const { API_URL } = require('../../constants/spotify')
-const { REDIRECT_URI } = require('../../constants/spotify')
-const { isDevelopment } = require('../../helpers/environment')
-const { Logger } = require('../logger')
+import SpotifyConstants from '../../constants/spotify'
+import { isDevelopment } from '../../helpers/environment'
+import Logger from '../logger'
+
+const { v4: uuid } = require('uuid')
+
+const { API_URL, REDIRECT_URI } = SpotifyConstants
 
 const ACCOUNTS_DOMAIN = 'https://accounts.spotify.com'
 const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID
@@ -195,4 +197,4 @@ class SpotifyClient {
   }
 }
 
-module.exports = new SpotifyClient()
+export default new SpotifyClient()

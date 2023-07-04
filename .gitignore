@@ -25,3 +25,4 @@ out
 /dist-electron
 /**/*/tsconfig.tsbuildinfo
 /**/*/build
+.vite

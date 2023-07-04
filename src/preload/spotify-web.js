@@ -1,4 +1,7 @@
-const { contextBridge, ipcRenderer } = require('electron')
+import { contextBridge, ipcRenderer } from 'electron'
+
+import IpcChannels from '../main/constants/ipc-channels'
+import './core'
 
 const {
   SLA_LYRICS_SERVICE_STATE_REPLY,
@@ -6,9 +9,7 @@ const {
   SLA_TRACK_LYRICS_REQUEST,
   SLA_TRACK_LYRICS_REPLY,
   SLA_LYRICS_CONNECT_REQUEST,
-} = require('../main/constants/ipc-channels')
-
-require('./core')
+} = IpcChannels
 
 contextBridge.exposeInMainWorld('SpotifyWeb', {
   sendServiceState: state =>

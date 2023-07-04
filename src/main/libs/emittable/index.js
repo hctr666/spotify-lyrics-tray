@@ -1,5 +1,1 @@
-const { Emittable } = require('./emittable')
-
-module.exports = {
-  Emittable,
-}
+export { Emittable } from './emittable'

@@ -1,9 +1,9 @@
-const path = require('path')
-const { Tray, app } = require('electron')
+import path from 'path'
+import { Tray, app } from 'electron'
 
-const ICON_PATH = path.join(__dirname, 'icons/trayIconTemplate.png')
+const ICON_PATH = path.resolve(__dirname, 'images/trayIconTemplate.png')
 
-class AppTray {
+export class AppTray {
   create() {
     const tray = new Tray(ICON_PATH)
 
@@ -17,5 +17,3 @@ class AppTray {
     return this.tray
   }
 }
-
-module.exports = AppTray

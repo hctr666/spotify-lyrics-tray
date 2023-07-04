@@ -1,14 +1,15 @@
-const path = require('path')
-const { BrowserWindow, app } = require('electron')
+import path from 'path'
+import { BrowserWindow, app } from 'electron'
 
-const BaseWindow = require('./base-window')
-const { isDevelopment } = require('../helpers/environment')
-const { SLA_AUTH_STATE } = require('../constants/ipc-channels')
-const { Logger } = require('../libs/logger')
+import { BaseWindow } from './base-window'
+import { isDevelopment } from '../helpers/environment'
+import IpcChannels from '../constants/ipc-channels'
+import Logger from '../libs/logger'
 
+const { SLA_AUTH_STATE } = IpcChannels
 const isDev = isDevelopment()
 
-class AppWindow extends BaseWindow {
+export class AppWindow extends BaseWindow {
   create() {
     this.window = new BrowserWindow({
       show: isDev,
@@ -21,21 +22,24 @@ class AppWindow extends BaseWindow {
       roundedCorners: false,
       transparent: true,
       webPreferences: {
-        preload: path.join(__dirname, '..', '..', 'preload/app.js'),
-        devTools: isDev,
+        preload: path.resolve(__dirname, 'preload/app.js'),
+        devTools: true,
         sandbox: false,
       },
     })
 
-    global.APP_WINDOW_ID = this.window.webContents.id
-
     if (isDev) {
       // TODO: implement secure url
-      this.window.loadURL('http://localhost:4014')
+      // eslint-disable-next-line no-undef
+      this.window.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
     } else {
       this.window
         .loadFile(
-          path.resolve(__dirname, '..', '..', 'renderer/app/build/index.html')
+          path.join(
+            __dirname,
+            // eslint-disable-next-line no-undef
+            `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`
+          )
         )
         .catch(Logger.logError)
     }
@@ -84,5 +88,3 @@ class AppWindow extends BaseWindow {
     this.handleWebContentsLoadFailed()
   }
 }
-
-module.exports = AppWindow

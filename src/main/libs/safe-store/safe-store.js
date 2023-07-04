@@ -1,9 +1,9 @@
-const { safeStorage } = require('electron')
-const Store = require('electron-store')
+import { safeStorage } from 'electron'
+import Store from 'electron-store'
 
 const DEFAULT_ENCODING = 'latin1'
 
-class SafeStore {
+export class SafeStore {
   constructor() {
     this.store = new Store({
       name: 'app-encrypted',

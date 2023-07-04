@@ -1,12 +1,17 @@
-// TODO: integrate vite plugin - https://www.electronforge.io/config/plugins/vite
 const path = require('path')
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
 const fs = require('fs/promises')
-const ENV = process.env.NODE_ENV
 
-// Creates a .env file based on existing .envrc for production
-const createProductionEnvFile = async buildPath => {
+const {
+  appSrc,
+  appPreload,
+  appMainIndexJs,
+  spotifyInject,
+} = require('./config/paths')
+
+// Creates a .env file based on existing .envrc
+const createEnvFile = async (buildPath, env) => {
   try {
     const envrcFile = path.resolve(buildPath, '.envrc')
     const envrcContents = await fs.readFile(envrcFile, { encoding: 'utf-8' })
@@ -15,10 +20,10 @@ const createProductionEnvFile = async buildPath => {
       .split('\n')
       .map(line => line.replace(/^export\s/g, ''))
 
-    dotenvContents.push(`NODE_ENV=${ENV}`) // append current environment
+    dotenvContents.push(`NODE_ENV=${env}`) // append current environment
     dotenvContents = dotenvContents.join('\n')
 
-    const dotenvFile = path.resolve(buildPath, '.env')
+    const dotenvFile = path.resolve(buildPath, `.vite/build/.env`)
 
     await fs.writeFile(dotenvFile, dotenvContents)
   } catch (error) {
@@ -29,7 +34,7 @@ const createProductionEnvFile = async buildPath => {
 module.exports = {
   packagerConfig: {
     all: false,
-    icon: path.resolve(__dirname, 'src/assets/logo.icns'),
+    icon: `${appSrc}/assets/logo.icns`,
     asar: {
       unpackDir: 'bin',
     },
@@ -44,11 +49,8 @@ module.exports = {
   },
   rebuildConfig: {},
   hooks: {
-    prePackage: async () => {
-      await exec('yarn renderer:build')
-    },
     packageAfterCopy: async (_config, buildPath) => {
-      await createProductionEnvFile(buildPath)
+      await createEnvFile(buildPath, process.env.NODE_ENV)
       await exec(`cd ${buildPath} && yarn install --production`)
     },
   },
@@ -68,6 +70,41 @@ module.exports = {
     {
       name: '@electron-forge/maker-rpm',
       config: {},
+    },
+  ],
+  plugins: [
+    {
+      name: '@electron-forge/plugin-vite',
+      config: {
+        build: [
+          {
+            entry: appMainIndexJs,
+            config: 'config/vite/main.config.ts',
+          },
+          {
+            entry: `${appPreload}/app.js`,
+            config: 'config/vite/preload.config.ts',
+          },
+          {
+            entry: `${appPreload}/spotify-web.js`,
+            config: 'config/vite/preload.config.ts',
+          },
+          {
+            entry: `${appPreload}/core.js`,
+            config: 'config/vite/preload.config.ts',
+          },
+          {
+            entry: `${spotifyInject}/index.js`,
+            config: 'config/vite/spotify-inject.config.ts',
+          },
+        ],
+        renderer: [
+          {
+            name: 'main_window',
+            config: 'config/vite/renderer.config.ts',
+          },
+        ],
+      },
     },
   ],
 }

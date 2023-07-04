@@ -1,21 +1,20 @@
-const path = require('path')
-const fs = require('fs').promises
-const { BrowserWindow } = require('electron')
+import path from 'path'
+import fs from 'fs/promises'
+import { BrowserWindow } from 'electron'
 
-const { getIsSpotifyOpenUrl } = require('../helpers/isSpotifyOpenUrl')
-const { getIsSpotifyAccountsUrl } = require('../helpers/isSpotifyAccountsUrl')
-const { SPOTIFY_WEB_URL } = require('../constants/spotify')
-const BaseWindow = require('./base-window')
-const { isDevelopment } = require('../helpers/environment')
-const { Logger } = require('../libs/logger')
+import { getIsSpotifyOpenUrl } from '../helpers/isSpotifyOpenUrl'
+import { getIsSpotifyAccountsUrl } from '../helpers/isSpotifyAccountsUrl'
+import SpotifyConstants from '../constants/spotify'
+import { BaseWindow } from './base-window'
+import { isDevelopment } from '../helpers/environment'
+import Logger from '../libs/logger'
 
+const { SPOTIFY_WEB_URL } = SpotifyConstants
 const isDev = isDevelopment()
 
 const getSpotifyRendererScript = async () => {
   try {
-    const file = await fs.readFile(
-      path.join(__dirname, '..', '..', 'renderer/spotify-web.js')
-    )
+    const file = await fs.readFile(path.join(__dirname, 'spotify-inject.js'))
 
     return file.toString()
   } catch (error) {
@@ -27,14 +26,14 @@ const getSpotifyRendererScript = async () => {
  * This window represents the process running in the background
  * in charge of providing lyrics to the main application
  */
-class SpotifyWebWindow extends BaseWindow {
+export class SpotifyWebWindow extends BaseWindow {
   async create() {
     this.window = new BrowserWindow({
       show: isDev,
       width: 750,
       height: 600,
       webPreferences: {
-        preload: path.join(__dirname, '..', '..', 'preload/spotify-web.js'),
+        preload: path.join(__dirname, 'preload/spotify-web.js'),
         devTools: isDev,
         sandbox: false,
       },

@@ -1,4 +1,4 @@
-// TODO: create spotify-web renderer ts app
+// TODO: modularize spotify inject script
 const DATA_LAYER_EVENT = 'webplayer_datalayer_init'
 const ELEMENT_WAIT_TIMEOUT = 4500
 const GEARS_BUTTON_SELECTOR = '[data-testid="gears-button"]'

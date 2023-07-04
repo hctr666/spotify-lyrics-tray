@@ -1,5 +1,1 @@
-const { BaseService } = require('./base-service')
-
-module.exports = {
-  BaseService,
-}
+export { BaseService } from './base-service'

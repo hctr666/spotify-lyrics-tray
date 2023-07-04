@@ -6,7 +6,7 @@ const getX = (trayBounds, windowWidth) => {
 
 const getY = trayBounds => Math.round(trayBounds.y + trayBounds.height)
 
-class TrayManager {
+export class TrayManager {
   constructor(tray, window) {
     /** @type {Electron.Tray}  */
     this.tray = tray
@@ -50,5 +50,3 @@ class TrayManager {
     })
   }
 }
-
-module.exports = TrayManager

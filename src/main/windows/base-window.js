@@ -1,9 +1,10 @@
 // eslint-disable-next-line no-unused-vars
-const { BrowserWindow } = require('electron')
-const { isDevelopment } = require('../helpers/environment')
-const { Logger } = require('../libs/logger')
+import { BrowserWindow } from 'electron'
 
-class BaseWindow {
+import { isDevelopment } from '../helpers/environment'
+import Logger from '../libs/logger'
+
+export class BaseWindow {
   constructor() {
     /** @type {BrowserWindow | null} */
     this.window = null
@@ -45,5 +46,3 @@ class BaseWindow {
     )
   }
 }
-
-module.exports = BaseWindow

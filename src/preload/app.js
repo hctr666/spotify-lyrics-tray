@@ -1,4 +1,7 @@
-const { contextBridge, ipcRenderer } = require('electron')
+import { contextBridge, ipcRenderer } from 'electron'
+
+import IpcChannels from '../main/constants/ipc-channels'
+import './core'
 
 const {
   SLA_LYRICS_CONNECT,
@@ -9,16 +12,14 @@ const {
   SLA_LYRICS_SERVICE_STATE_REPLY,
   SLA_TRACK_LYRICS_REQUEST,
   SLA_TRACK_LYRICS_REPLY,
-  SLA_GET_PLAYBACK_STATE: SLA_REQUEST_PLAYBACK_STATE,
+  SLA_GET_PLAYBACK_STATE,
   SLA_ON_PLAYBACK_STATE,
   SLA_START_OR_RESUME_PLAYBACK,
   SLA_PAUSE_PLAYBACK,
   SLA_SKIP_TO_NEXT_TRACK,
   SLA_SKIP_TO_PREVIOUS_TRACK,
   SLA_GET_TRACK,
-} = require('../main/constants/ipc-channels')
-
-require('./core')
+} = IpcChannels
 
 contextBridge.exposeInMainWorld('LyricsService', {
   connect: () => ipcRenderer.send(SLA_LYRICS_CONNECT),
@@ -59,7 +60,7 @@ contextBridge.exposeInMainWorld('Playback', {
   skipToNext: deviceId => ipcRenderer.invoke(SLA_SKIP_TO_NEXT_TRACK, deviceId),
   skipToPrevious: deviceId =>
     ipcRenderer.invoke(SLA_SKIP_TO_PREVIOUS_TRACK, deviceId),
-  getState: () => ipcRenderer.invoke(SLA_REQUEST_PLAYBACK_STATE),
+  getState: () => ipcRenderer.invoke(SLA_GET_PLAYBACK_STATE),
   subscribeOnState: listener => {
     ipcRenderer.addListener(SLA_ON_PLAYBACK_STATE, listener)
 
