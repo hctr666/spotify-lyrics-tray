@@ -19,7 +19,7 @@
   "author": "hctr.441@gmail.com",
   "license": "CC0-1.0",
   "devDependencies": {
-    "@babel/core": "^7.16.0",
+    "@babel/core": "^7.22.8",
     "@electron-forge/cli": "^6.1.1",
     "@electron-forge/maker-deb": "^6.1.1",
     "@electron-forge/maker-rpm": "^6.1.1",
