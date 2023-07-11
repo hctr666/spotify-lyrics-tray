@@ -1,4 +1,4 @@
-import { session, protocol, globalShortcut } from 'electron'
+import { session, protocol, globalShortcut, net } from 'electron'
 import path from 'path'
 
 import SpotifyConstants from '../constants/spotify'
@@ -32,28 +32,27 @@ export class Application {
     global.isAppQuitting = false
   }
 
-  handleProtocolIntercept = () => {
-    // TODO: use protocol.handle method
-    protocol.interceptFileProtocol('file', (request, callback) => {
-      if (request.url.startsWith('file:///static')) {
-        return callback(
+  handleFileProtocol = () => {
+    protocol.handle('file', request => {
+      const appRoutePathRegExp = new RegExp(
+        // eslint-disable-next-line no-undef
+        `.vite/renderer/${MAIN_WINDOW_VITE_NAME}/index.html#/?((w+-?/?)+)?`,
+        'g'
+      )
+
+      // Making sure to strip react routes out from the index url to prevent reload issues
+      if (request.url.match(appRoutePathRegExp)) {
+        return net.fetch(
           path.resolve(
             __dirname,
             '..',
-            'renderer/app/build',
-            request.url.substring(8)
+            // eslint-disable-next-line no-undef
+            `renderer/${MAIN_WINDOW_VITE_NAME}/index.html`
           )
         )
       }
 
-      // Making sure to strip react routes out from the index url to prevent reload issues
-      if (request.url.match(/\/build\/index.html#\/?((\w+-?\/?)+)?/g)) {
-        return callback(
-          path.resolve(__dirname, '..', 'renderer/app/build', 'index.html')
-        )
-      }
-
-      return callback(request.url.substring(8))
+      return net.fetch(request.url)
     })
   }
 

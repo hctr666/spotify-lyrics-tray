@@ -7,7 +7,7 @@ import { isDevelopment } from '../helpers/environment'
 const main = new Application()
 
 app.whenReady().then(async () => {
-  main.handleProtocolIntercept()
+  main.handleFileProtocol()
 
   if (!safeStorage.isEncryptionAvailable()) {
     throw new Error('Encryption is not available')
