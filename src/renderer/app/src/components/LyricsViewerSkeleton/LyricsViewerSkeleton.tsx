@@ -16,7 +16,7 @@ const initialRect = {
 
 export const LyricsViewerSkeleton = () => {
   const rects = [...Array(10).keys()].reduce(
-    (acc, _) => {
+    acc => {
       const last = acc[acc.length - 1]
       return [...acc, { ...last, y: last.y + GAP, width: getRandomWidth() }]
     },

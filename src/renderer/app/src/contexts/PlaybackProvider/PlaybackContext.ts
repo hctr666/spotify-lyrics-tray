@@ -18,6 +18,14 @@ export const PlaybackContext = createContext<PlaybackContextValue>({
   playOrPause: () => Promise.resolve(),
   skipToNext: () => Promise.resolve(),
   skipToPrevious: () => Promise.resolve(),
-  updateProgress: () => {},
-  updatePlaybackState: () => {},
+  updateProgress: () => {
+    console.error(
+      'Using PlaybackContext without PlaybackProvider is forbidden!'
+    )
+  },
+  updatePlaybackState: () => {
+    console.error(
+      'Using PlaybackContext without PlaybackProvider is forbidden!'
+    )
+  },
 })

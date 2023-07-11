@@ -4,6 +4,7 @@ import SpotifyConstants from '../../constants/spotify'
 import { isDevelopment } from '../../helpers/environment'
 import Logger from '../logger'
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { v4: uuid } = require('uuid')
 
 const { API_URL, REDIRECT_URI } = SpotifyConstants

@@ -7,12 +7,19 @@
   },
   "extends": [
     "eslint:recommended",
-    // "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
     "prettier",
     "react-app/jest"
   ],
-  "overrides": [],
+  "overrides": [
+    {
+      "files": ["config/**/*.js", "*.config.js"],
+      "rules": {
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    }
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -20,6 +27,9 @@
   },
   "rules": {
     "semi": 0,
-    "no-console": "warn"
+    "no-console": ["error", { "allow": ["warn", "error", "info"] }],
+    // must be turned off in favor of typescript-eslint/no-unused-vars
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "error"
   }
 }

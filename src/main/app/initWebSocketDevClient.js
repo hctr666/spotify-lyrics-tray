@@ -5,6 +5,7 @@ import EventEmitter from 'events'
 const initWebSocketDevClient = () => {
   if (!isDevelopment()) return
 
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const WebSocket = require('ws')
 
   try {

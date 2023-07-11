@@ -11,7 +11,7 @@ if (process.env.NODE_ENV === 'development') {
 
   wss.on('connection', _ws => {
     _ws.on('error', console.error)
-    console.log(`ws server running on port ${process.env.WSS_PORT}...`)
+    console.info(`ws server running on port ${process.env.WSS_PORT}...`)
     ws = _ws
   })
 }
