@@ -122,4 +122,14 @@ export class Application {
 
     global.trayManager = this.trayManager
   }
+
+  handleSpotifyWebWindowReload = () => {
+    const spotifyWebWindow = this.spotifyWebWindow.getWindow()
+
+    global.ws.onMessage('electron:window-reload', payload => {
+      if (payload.window === 'spotify-web') {
+        spotifyWebWindow.webContents.reload()
+      }
+    })
+  }
 }

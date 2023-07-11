@@ -2,6 +2,7 @@ import { app, safeStorage } from 'electron'
 
 import { initializeIpcMainEvents } from './ipc-events'
 import { Application } from './application'
+import { isDevelopment } from '../helpers/environment'
 
 const main = new Application()
 
@@ -13,6 +14,11 @@ app.whenReady().then(async () => {
   }
 
   await main.spotifyWebWindow.create()
+
+  if (isDevelopment()) {
+    main.handleSpotifyWebWindowReload()
+  }
+
   main.appWindow.create()
   main.handleAuthServiceEvents()
   main.handleAuthRedirectUriRequest()

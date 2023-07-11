@@ -35,9 +35,7 @@ module.exports = {
   packagerConfig: {
     all: false,
     icon: `${appSrc}/assets/logo.icns`,
-    asar: {
-      unpackDir: 'bin',
-    },
+    asar: false,
     packageManager: 'yarn',
     overwrite: true,
     ignore: path => {
@@ -87,10 +85,6 @@ module.exports = {
           },
           {
             entry: `${appPreload}/spotify-web.js`,
-            config: 'config/vite/preload.config.ts',
-          },
-          {
-            entry: `${appPreload}/core.js`,
             config: 'config/vite/preload.config.ts',
           },
           {

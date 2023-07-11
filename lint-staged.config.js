@@ -4,5 +4,5 @@ module.exports = {
     'yarn lint',
   ],
   'src/**/*.{ts,tsx}?(x)': () => 'yarn typecheck',
-  'src/**/*.{tes,spec}.{ts,tsx}?(x)': () => 'yarn renderer:test',
+  'src/**/*.{test,spec}.{ts,tsx}?(x)': () => 'yarn test',
 }

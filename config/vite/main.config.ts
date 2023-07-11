@@ -10,6 +10,7 @@ export default defineConfig({
         dir: appBuild,
         entryFileNames: 'main.js',
       },
+      external: ['ws'],
     },
   },
   resolve: {
