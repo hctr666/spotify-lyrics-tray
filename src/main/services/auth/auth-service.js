@@ -1,4 +1,5 @@
 // TODO: consider PKCE implementation for more security
+// TODO: implement Spotify SSO
 import { BaseService } from '../base'
 import { SafeStore } from '../../libs/safe-store'
 import { SpotifyClient } from '../../libs/spotify-client/'

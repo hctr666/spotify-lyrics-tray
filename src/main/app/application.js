@@ -12,7 +12,7 @@ import { TrayManager } from '../tray/tray-manager'
 import IpcChannels from '../constants/ipc-channels'
 
 const { REDIRECT_URI } = SpotifyConstants
-const { SLA_AUTH_STATE, SLA_ON_PLAYBACK_STATE } = IpcChannels
+const { MSA_AUTH_STATE, MSA_ON_PLAYBACK_STATE } = IpcChannels
 
 export class Application {
   constructor() {
@@ -59,7 +59,7 @@ export class Application {
   handleSpotifyServiceEvents = () => {
     this.spotifyPlaybackPollingService.on('state-changed', state => {
       const appWindow = this.appWindow.getWindow()
-      appWindow?.webContents.send(SLA_ON_PLAYBACK_STATE, state)
+      appWindow?.webContents.send(MSA_ON_PLAYBACK_STATE, state)
     })
   }
 
@@ -67,7 +67,7 @@ export class Application {
     this.authService.on('logout', () => {
       const appWindow = this.appWindow.getWindow()
 
-      appWindow?.webContents.send(SLA_AUTH_STATE, {
+      appWindow?.webContents.send(MSA_AUTH_STATE, {
         isAuthenticated: false,
       })
 
@@ -86,7 +86,7 @@ export class Application {
       const appWindow = this.appWindow.getWindow()
 
       if (appWindow) {
-        appWindow.webContents.send(SLA_AUTH_STATE, {
+        appWindow.webContents.send(MSA_AUTH_STATE, {
           isAuthenticated: true,
         })
         appWindow.show()

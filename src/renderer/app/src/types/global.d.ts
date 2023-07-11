@@ -40,8 +40,8 @@ declare global {
     }
     LyricsService: {
       connect: () => void
-      requestServiceState: () => void
-      subscribeOnServiceState: (
+      requestState: () => void
+      subscribeOnState: (
         listener: LyricsServiceStateListener
       ) => UnsubscribeFunction
     }

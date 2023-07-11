@@ -4,35 +4,34 @@ import IpcChannels from '../main/constants/ipc-channels'
 import './core'
 
 const {
-  SLA_LYRICS_SERVICE_STATE_REPLY,
-  SLA_LYRICS_SERVICE_STATE_REQUEST,
-  SLA_TRACK_LYRICS_REQUEST,
-  SLA_TRACK_LYRICS_REPLY,
-  SLA_LYRICS_CONNECT_REQUEST,
+  MSA_LYRICS_SERVICE_STATE_REPLY,
+  MSA_LYRICS_SERVICE_STATE_REQUEST,
+  MSA_TRACK_LYRICS_REQUEST,
+  MSA_TRACK_LYRICS_REPLY,
+  MSA_LYRICS_SERVICE_CONNECT_REQUEST,
 } = IpcChannels
 
 contextBridge.exposeInMainWorld('SpotifyWeb', {
   sendServiceState: state =>
-    ipcRenderer.send(SLA_LYRICS_SERVICE_STATE_REPLY, state),
+    ipcRenderer.send(MSA_LYRICS_SERVICE_STATE_REPLY, state),
   subscribeOnConnect: listener => {
-    ipcRenderer.addListener(SLA_LYRICS_CONNECT_REQUEST, listener)
+    ipcRenderer.addListener(MSA_LYRICS_SERVICE_CONNECT_REQUEST, listener)
 
     return () =>
-      ipcRenderer.removeListener(SLA_LYRICS_CONNECT_REQUEST, listener)
+      ipcRenderer.removeListener(MSA_LYRICS_SERVICE_CONNECT_REQUEST, listener)
   },
-  fetchLyricsMockAPI: () => require('../../api-mocks/lyrics-mock.json'),
   sendTrackLyrics: (lyrics, error) => {
-    return ipcRenderer.send(SLA_TRACK_LYRICS_REPLY, lyrics, error)
+    return ipcRenderer.send(MSA_TRACK_LYRICS_REPLY, lyrics, error)
   },
   subscribeOnStateRequest: listener => {
-    ipcRenderer.addListener(SLA_LYRICS_SERVICE_STATE_REQUEST, listener)
+    ipcRenderer.addListener(MSA_LYRICS_SERVICE_STATE_REQUEST, listener)
 
     return () =>
-      ipcRenderer.removeListener(SLA_LYRICS_SERVICE_STATE_REQUEST, listener)
+      ipcRenderer.removeListener(MSA_LYRICS_SERVICE_STATE_REQUEST, listener)
   },
   subscribeOnTrackLyrics: listener => {
-    ipcRenderer.addListener(SLA_TRACK_LYRICS_REQUEST, listener)
+    ipcRenderer.addListener(MSA_TRACK_LYRICS_REQUEST, listener)
 
-    return () => ipcRenderer.removeListener(SLA_TRACK_LYRICS_REQUEST, listener)
+    return () => ipcRenderer.removeListener(MSA_TRACK_LYRICS_REQUEST, listener)
   },
 })

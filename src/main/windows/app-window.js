@@ -6,7 +6,7 @@ import { isDevelopment } from '../helpers/environment'
 import IpcChannels from '../constants/ipc-channels'
 import Logger from '../libs/logger'
 
-const { SLA_AUTH_STATE } = IpcChannels
+const { MSA_AUTH_STATE } = IpcChannels
 const isDev = isDevelopment()
 
 export class AppWindow extends BaseWindow {
@@ -74,7 +74,7 @@ export class AppWindow extends BaseWindow {
     this.window.webContents.on('did-finish-load', async () => {
       await global.authService.requestRefreshToken()
 
-      this.window.webContents.send(SLA_AUTH_STATE, {
+      this.window.webContents.send(MSA_AUTH_STATE, {
         isAuthenticated: global.authService.isAuthenticated(),
       })
 

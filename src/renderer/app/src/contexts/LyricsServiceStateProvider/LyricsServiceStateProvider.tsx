@@ -11,10 +11,10 @@ export const LyricsServiceStateProvider = ({ children }: PropsWithChildren) => {
   const toastError = useToastError()
 
   useEffect(() => {
-    window.LyricsService.requestServiceState()
+    window.LyricsService.requestState()
 
-    const unsubscribeOnServiceState =
-      window.LyricsService.subscribeOnServiceState((_event, state) => {
+    const unsubscribeOnState = window.LyricsService.subscribeOnState(
+      (_event, state) => {
         setStatus(state.status)
 
         if (state.error) {
@@ -23,10 +23,11 @@ export const LyricsServiceStateProvider = ({ children }: PropsWithChildren) => {
         } else {
           setError('')
         }
-      })
+      }
+    )
 
     return () => {
-      unsubscribeOnServiceState()
+      unsubscribeOnState()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
