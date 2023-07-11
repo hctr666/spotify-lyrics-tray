@@ -44,7 +44,7 @@
     "camelcase": "^6.2.1",
     "classnames": "^2.3.2",
     "concurrently": "^7.3.0",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.3.1",
     "dotenv-expand": "^5.1.0",
     "electron": "^25.2.0",
     "eslint": "^8.3.0",
@@ -87,7 +87,7 @@
     "ws": "^8.13.0"
   },
   "dependencies": {
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.3.1",
     "electron-log": "^5.0.0-beta.24",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.0.2",
